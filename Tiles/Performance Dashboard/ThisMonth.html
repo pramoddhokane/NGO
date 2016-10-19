@@ -1,35 +1,29 @@
-<html>
-
-<head>
+<html><head>
     <title>Entity Locations On Map </title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    
- 
-      <link href="new_Fontawesome.css" rel="stylesheet" type="text/css">
+    <link href="new_Fontawesome.css" rel="stylesheet" type="text/css">
     <link href="new_Fontawesome.api.css" rel="stylesheet" type="text/css">
-    <link href="new_bootstrap.min.css" rel="stylesheet" />
+    <link href="new_bootstrap.min.css" rel="stylesheet">
     <script src="new_JQuery_1.11.3"></script>
     <script src="new_jquery.easing.js"></script>
-     <script src="new_Loadash.js"></script>   
- <script src="new_Performancetiles.js"></script>
+    <script src="new_Loadash.js"></script>
+    <script src="new_Performancetiles.js"></script>
     <style>
-        
         [class*="fontawesome-"]:before {
             font-family: 'FontAwesome', sans-serif;
         }
-        
+
         body {
             background: #FFFFFF;
             /*padding: 30px;*/
             margin: 0;
         }
-        
         .tile {
             position: relative;
             float: left;
             width: 100%;
             height: 110px;
-           /* background: #A26FF9;
+            /* background: #A26FF9;
             margin: 0 10px 10px 0;*/
             padding-top: 10%;
             opacity: 0;
@@ -37,76 +31,89 @@
             font-size: 2em;
             color: #333;
             cursor: pointer;
-            border-style:groove;
-            border-radius:6%
+            border-style: groove;
+            border-radius: 6%;
         }
-        
+
         .col-half-offset {
-            margin-left: 6.166667%
+            margin-left: 6.166667%;
         }
     </style>
     <meta>
     <meta>
     <script>
-        $(function(){
-  $.easing.def = 'easeOutBack';
-  
-/*  $('.tile').click(function(){
-    $('.tile').animate({'opacity':0},300)
-    setTimeout(animate(),300)
-  })*/
-  animate()
-  
-  function animate(){ 
-  $('.tile').each(function(i){
-    time=200+(100*i)
-    icon=Math.floor((Math.random()*16));
-    $(this).css({
-      'top':'-200px',
-      'left':'-200px',
-    }).delay(time).animate({
-      'opacity':'1',
-      'top':'0',
-      'left':'0'
-    },700)
-  })
-  }
-})
+        $(function () {
+            $.easing.def = 'easeOutBack';
+
+            /*  $('.tile').click(function(){
+                $('.tile').animate({'opacity':0},300)
+                setTimeout(animate(),300)
+              })*/
+            animate()
+
+            function animate() {
+                $('.tile').each(function (i) {
+                    time = 200 + (100 * i)
+                    icon = Math.floor((Math.random() * 16));
+                    $(this).css({
+                        'top': '-200px',
+                        'left': '-200px',
+                    }).delay(time).animate({
+                        'opacity': '1',
+                        'top': '0',
+                        'left': '0'
+                    }, 700)
+                })
+            }
+        })
     </script>
-</head>
+    <meta>
+    <meta>
+    <meta>
+<meta><meta></head>
 
 <body style="word-wrap: break-word;width:98%" onload="getMemberRegisteredInMonth()">
     <div class="row" style="padding-top:1%">
 
         <div class="col-md-5 col-xs-5">
             <div class="col-md-6 col-xs-6">
-                <div class="tile">   
-                <span style="font-size: initial;color:green"  id="Memberregistrations"></span>                               
-               <hr style="margin: 0; margin-bottom: 0;">
-                <span style="font-size: initial;color:green">Total Members this month</span>
+                <div class="tile">
+                    <span style="font-size: initial;color:green" id="Memberregistrations"></span>
+                    <hr style="margin: 0; margin-bottom: 0;">
+                    <span style="font-size: initial;color:green">Total Members this month</span>
                 </div>
             </div>
             <div class="col-md-6 col-xs-6">
-                <div class="tile"><i></i><span>&#x20B9;</span><span id="TotalDonations"></span>  <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;color:orange">Total Donated</div></div>
+                <div class="tile">
+                    <i></i><span>₹</span><span id="TotalDonations"></span>  <hr style="margin: 0; margin-bottom: 0;">
+                    <div style="font-size: initial;color:orange">Total Donated</div>
+                </div>
             </div>
         </div>
         <div class="col-md-2 col-xs-2">
-            <div class="tile "><i></i><span>&#x20B9;</span><span id="Donationsthismonth"></span>  <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;color:blue"> Donations this month</div></div>
+            <div class="tile ">
+                <i></i><span></span><span id="DonationThisMonth"></span>  <hr style="margin: 0; margin-bottom: 0;">
+                <div style="font-size: initial;color:blue"> Donors Registered this month</div>
+            </div>
         </div>
         <div class="col-md-5 col-xs-5">
             <div class="col-md-6 col-xs-6">
-                <div class="tile "><span id="donationCount">168</span> <i class="fa fa-users"></i> <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;color:brown">New Constituents in this month</div></div>
-            </div>          
+                <div class="tile ">
+                    <span id="Constituentsregistrations"></span> <i class="fa fa-users"></i> <hr style="margin: 0; margin-bottom: 0;">
+                    <div style="font-size: initial;color:brown">New Constituents in this month</div>
+                </div>
+            </div>
 
             <div class="col-md-6 col-xs-6">
-                <div class="tile "><i></i><span id="totalDonors">24</span>&nbsp;&nbsp;<img src="https://esplngoproduct.crm8.dynamics.com//WebResources/new_usericon"> <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;color:orange">New Members in this month</div></div>
+                <div class="tile ">
+                    <i></i><span id="MembersRenewalThisMonth"></span>&nbsp;&nbsp;<img src="new_usericon"> <hr style="margin: 0; margin-bottom: 0;">
+                    <div style="font-size: initial;color:orange">Members Renewal Due this month</div>
+                </div>
             </div>
         </div>
     </div>
-</body>
 
-</html>
+
+
+
+</body></html>
