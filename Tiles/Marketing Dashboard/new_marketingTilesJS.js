@@ -67,7 +67,7 @@ function getConstituent(record, id) {
             //  allCampDonations.push(campdonation);
             //  console.log(allCampDonations);
             //     document.getElementById("campaign" + campdonation.record).innerHTML = campdonation.name;
-
+            console.log(record);
             document.getElementById("constituent" + record).innerHTML = campdonation.constituent;
 
             //     document.getElementById("donation" + campdonation.record).innerHTML = (campdonation.fundRaised / 1000).toLocaleString() + "K";
