@@ -1,4 +1,4 @@
-var data = {};
+﻿var data = {};
 var allCampDonations = new Array(5);
 var campdonation = {};
 var retrieveReq = new XMLHttpRequest();
@@ -38,10 +38,10 @@ function calculateCampaigns(res) {
         document.getElementById("campaign" + campdonation.record).innerHTML = campdonation.name;
 
         if (campdonation.fundRaised > 1000) {
-            document.getElementById("donation" + campdonation.record).innerHTML = (Math.round(parseFloat(campdonation.fundRaised) / 1000)).toLocaleString() + "K";
+            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(parseFloat(campdonation.fundRaised) / 1000)).toLocaleString() + "K";
         }
         else {
-            document.getElementById("donation" + campdonation.record).innerHTML = (Math.round(campdonation.fundRaised * 100) / 100).toLocaleString();
+            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(campdonation.fundRaised * 100) / 100).toLocaleString();
         }
 
         //  getConstituent(campdonation.record, allCampDonations[camp]);
@@ -67,7 +67,7 @@ function getConstituent(record, id) {
             //  allCampDonations.push(campdonation);
             //  console.log(allCampDonations);
             //     document.getElementById("campaign" + campdonation.record).innerHTML = campdonation.name;
-
+            console.log(record);
             document.getElementById("constituent" + record).innerHTML = campdonation.constituent;
 
             //     document.getElementById("donation" + campdonation.record).innerHTML = (campdonation.fundRaised / 1000).toLocaleString() + "K";
