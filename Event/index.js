@@ -4,6 +4,9 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         var eventActivityDetails = {};
         var querystring;
         var nonEmptyVoluteers = [];
+        var approvedVol;
+        var causeVol;
+        var skillVol;
         $scope.globalData = {}
         $scope.gridOptions = {
             data: [],
@@ -126,6 +129,15 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 });
             }
         }
+        $scope.displaySkillVoluteers = function (event) {
+            console.log(event)
+        }
+        $scope.displayCauseVolunteers = function (event) {
+            console.log(event)
+        }
+        $scope.displayAllVolunteers = function (event) {
+            console.log(event)
+        }
     }])
     .factory('ngoEventService', function ($http, CommonService) {
         return {
@@ -168,7 +180,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
             getEmptyVolunteers: function (queryString) {
                 return $http({
                     method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_volunteers?fetchXml=' + queryString
+                    url: CommonService.serverURL + '/api/data/v8.0/new_volunteers?' + queryString
                 });
             },
             getNonEmptyCauseVolunteer: function () {
@@ -197,7 +209,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         this.serverURL = window.parent.Xrm.Page.context.getClientUrl();
 
         this.createQueryString = function (queryValues) {
-            return '<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
+            return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
                 ' <entity name="new_volunteer">  ' +
                 '<order attribute="new_name" descending="false" />' +
                 '<filter type="and">' +

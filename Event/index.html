@@ -22,50 +22,36 @@
 </head>
 
 <body ng-app="app" ng-controller="EventController" ng-cloak>
-    <div layout="column" layout-fill>
-        <!--<md-toolbar layout="row" layout-align="center">
-            <div class="md-toolbar-tools" flex-gt-md="60" flex-md="80" flex-sm="100">
-                <span>Angular Data Grid &mdash; Material Design</span>
-            </div>
-        </md-toolbar>-->
+    <div layout="column" layout-fill>       
         <md-content layout="row" layout-align="center">
             <div flex-gt-md="100" flex-md="100" flex-xs="100">
                 <div>
-                    <h4>Event Activity Volunteer</h4>
+                    <h3>Event Activity Volunteer</h3>
                 </div>
-                <hr>
                 <div layout-gt-xs="row" layout-xs="column" layout-align="stretch center">
                     <div layout="row" layout-align="center start">
                         <md-input-container md-no-float md-is-error="false" class="md-block flex-gt-xs flex-xs">
                             <input ng-model="new_name" class="md-input" ng-change="gridActions.filter()" id="order" placeholder="Search by Order #" filter-by="new_name"
                                 filter-type="text" aria-invalid="false">
                         </md-input-container>
-                    </div>
-                    <!--<div layout="row" layout-align="start center">
-                        <md-datepicker ng-model="dateFrom" flex="100" md-placeholder="From Date" is-open="dateFromOpened" ng-click="dateFromOpened = true"
-                            filter-by="placed" filter-type="dateFrom" ng-change="gridActions.filter()"></md-datepicker>
-                    </div>
-                    <div layout="row" layout-align="start center">
-                        <md-datepicker ng-model="dateTo" flex="100" md-placeholder="To Date" is-open="dateToOpened" ng-click="dateToOpened = true"
-                            filter-by="placed" filter-type="dateTo" ng-change="gridActions.filter()"></md-datepicker>
-                    </div>-->
+                    </div>                   
                 </div>
                 <div grid-data id="test" grid-options="gridOptions" grid-actions="gridActions">
                     <div layout-gt-sm="row" layout-sm="column" layout-align="center">
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <span>{{filtered.length}} items total</span>
                         </div>
-                        <div layout="row" layout-align="start center">
-                            <md-switch ng-model="data.cb1" aria-label="Switch 1">
-                            </md-switch>
+                        <div  flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">                           
+                            <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="displayAllVolunteers(allApproved)" >
+                            </md-switch> All Approved Volunteers
                         </div>
-                        <div layout="row" layout-align="start center">
-                            <md-switch ng-model="data.cb1" aria-label="Switch 1">
-                            </md-switch>
+                        <div  flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">                           
+                            <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="displayCauseVolunteers(sameCauseVol)">
+                            </md-switch> Volunteers with same cause
                         </div>
-                        <div layout="row" layout-align="start center">
-                            <md-switch ng-model="data.cb1" aria-label="Switch 1">
-                            </md-switch>
+                        <div  flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center" >                         
+                            <md-switch ng-model="sameSkillVol" aria-label="Switch 1"  ng-change="displaySkillVoluteers(sameSkillVol)" >   
+                            </md-switch>Volunteers with same skills
                         </div>
                         <div flex-gt-sm="75" flex-xs="100">
                             <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
