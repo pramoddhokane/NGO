@@ -2,6 +2,7 @@ var allStudents;
 var donationAmount = 0;
 var donationsResult = 0;
 var donationResults = 0;
+var duedonationResults = 0;
 var data = {};
 var retrieveReq = new XMLHttpRequest();
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -48,8 +49,15 @@ function getTotalDonations() {
             for (var donation = 0; donation < donationsResult.length; donation++) {
                 donationAmount += donationsResult[donation].new_amount;
             }
-            donationAmount = donationAmount - 45000;
-            document.getElementById("TotalDonations").innerHTML = "₹" + donationAmount;
+           
+            //document.getElementById("TotalDonations").innerHTML = "₹" + donationAmount;
+              if(donationAmount>=1000){
+               document.getElementById("TotalDonations").innerHTML ="₹" +(Math.round(parseFloat(donationAmount)/1000 * 100) / 100).toLocaleString() + "K";               
+            }
+            else
+            {                
+               document.getElementById("TotalDonations").innerHTML = "₹" +(Math.round(donationAmount * 100) / 100).toLocaleString();               
+            }
             document.getElementById("donationmonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
             newConstituentsThisMonth();
         }
@@ -129,10 +137,37 @@ function donorsThisMonth() {
             // data.newMembers = JSON.parse(this.responseText).value.length;
             document.getElementById("donorsinthismonth").innerHTML = donationResults; 
             document.getElementById("donorsmonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            dueDonationThisMonth();
         }
     };
     retrieveReq.send();
 }
+
+function dueDonationThisMonth() {
+    var date = new Date();
+    var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
+    var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+    var lastDay1 = lastDay.split('T')[0];
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=Microsoft.Dynamics.CRM.Between(PropertyName='new_duedate',";
+    odataSelect += 'PropertyValues=["' + firstDay + 'T00:00:00Z","' + lastDay1 + 'T23:59:59Z"])';
+    retrieveReq.open("GET", odataSelect, true);
+    retrieveReq.setRequestHeader("Accept", "application/json");
+    retrieveReq.setRequestHeader("Content-Type", "application/json");
+    retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
+    retrieveReq.setRequestHeader("Prefer", 'odata.include-annotations="*"');
+    retrieveReq.setRequestHeader("OData-Version", "4.0");
+    retrieveReq.onreadystatechange = function () {
+        if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
+            duedonationResults = JSON.parse(this.response).value.length;
+            // data.newMembers = JSON.parse(this.responseText).value.length;
+            document.getElementById("duedonationthismonth").innerHTML = duedonationResults;
+            document.getElementById("duedonationmonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+        }
+    };
+    retrieveReq.send();
+}
+
+
 
 function getODataUTCDateFilter(date) {
     var monthString;
