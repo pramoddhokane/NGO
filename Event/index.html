@@ -22,7 +22,7 @@
 </head>
 
 <body ng-app="app" ng-controller="EventController" ng-cloak>
-    <div layout="column" layout-fill>       
+    <div layout="column" layout-fill>
         <md-content layout="row" layout-align="center">
             <div flex-gt-md="100" flex-md="100" flex-xs="100">
                 <div>
@@ -34,23 +34,23 @@
                             <input ng-model="new_name" class="md-input" ng-change="gridActions.filter()" id="order" placeholder="Search by Order #" filter-by="new_name"
                                 filter-type="text" aria-invalid="false">
                         </md-input-container>
-                    </div>                   
+                    </div>
                 </div>
                 <div grid-data id="test" grid-options="gridOptions" grid-actions="gridActions">
                     <div layout-gt-sm="row" layout-sm="column" layout-align="center">
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <span>{{filtered.length}} items total</span>
                         </div>
-                        <div  flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">                           
-                            <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="displayAllVolunteers(allApproved)" >
+                        <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                            <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
                             </md-switch> All Approved Volunteers
                         </div>
-                        <div  flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">                           
-                            <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="displayCauseVolunteers(sameCauseVol)">
+                        <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                            <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
                             </md-switch> Volunteers with same cause
                         </div>
-                        <div  flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center" >                         
-                            <md-switch ng-model="sameSkillVol" aria-label="Switch 1"  ng-change="displaySkillVoluteers(sameSkillVol)" >   
+                        <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                            <md-switch ng-model="sameSkillVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
                             </md-switch>Volunteers with same skills
                         </div>
                         <div flex-gt-sm="75" flex-xs="100">
@@ -76,17 +76,18 @@
                                     <th sortable="new_name" class="sortable mdl-data-table__cell--non-numeric">
                                         <span>Volunteer Id</span>
                                     </th>
+                                    <th sortable="new_nameofvolunteer" class="sortable">
+                                        <span>Volunteer Name</span>
+                                    </th>
                                     <th class="st-sort-disable th-dropdown">
                                         <md-select filter-by="statusDisplay" filter-type="select" ng-model="status" placeholder="Status" ng-change="filter()">
                                             <md-option value="">All Statuses</md-option>
-                                            <md-option ng-repeat="option in statusOptions track by option.value" value="{{option.value}}">
+                                            <!--<md-option ng-repeat="option in statusOptions track by option.value" value="{{option.value}}">
                                                 {{option.text}}
-                                            </md-option>
+                                            </md-option>-->
                                         </md-select>
                                     </th>
-                                    <th sortable="placed" class="sortable">
-                                        <span>Date Placed</span>
-                                    </th>
+
                                     <th sortable="total.value" class="sortable">
                                         <span>Total</span>
                                     </th>
@@ -98,7 +99,7 @@
                                         <span ng-bind="item.new_name"></span>
                                     </td>
                                     <td></td>
-                                    <td ng-bind="item.placed | date:'MM/dd/yyyy'"></td>
+                                    <td ng-bind="item.new_nameofvolunteer | date:'MM/dd/yyyy'"></td>
                                     <td ng-bind="item.total.formattedValue"></td>
                                 </tr>
                             </tbody>
