@@ -4,6 +4,10 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         var eventActivityDetails = {};
         var querystring;
         var nonEmptyVoluteers = [];
+
+        $scope.allApproved = false;
+        $scope.sameCauseVol = false;
+        $scope.sameSkillVol = false;
         $scope.globalData = {}
         $scope.gridOptions = {
             data: [],
@@ -60,7 +64,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 }
                 $scope.getAllVolunteers();
             });
-        }
+        };
 
         $scope.getAllVolunteers = function () {
             var queryValues = '';
@@ -71,7 +75,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 }
 
                 if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues);
+                    var queryString = CommonService.createQueryString(queryValues, 100000000);
                     ngoEventService.getEmptyVolunteers(queryString).then(function (emptyVolunteers) {
                         var emptySkilledVolunteer = emptyVolunteers.data.value;
                         $scope.globalData.emptySkilledVolunteer = [];
@@ -82,7 +86,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                     });
                 }
             });
-        }
+        };
 
         $scope.getAllEmptyCauseVolunteers = function () {
             var queryValues = '';
@@ -93,7 +97,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 }
 
                 if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues);
+                    var queryString = CommonService.createQueryString(queryValues, 100000000);
                     ngoEventService.getEmptyVolunteers(queryString).then(function (emptyCauseVolunteers) {
                         var emptyCauseVolunteer = emptyCauseVolunteers.data.value;
                         $scope.globalData.emptyCauseVolunteers = [];
@@ -104,13 +108,14 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                     });
                 }
             });
-        }
+        };
+
         $scope.filteredVolunteers = function (globalData) {
             var non_EmptyFil_Vol = [];
             non_EmptyFil_Vol = _.intersection(globalData.causes.volunteers, globalData.skills.volunteers);
             $scope.globalData.filteredVolunteer = _.union(non_EmptyFil_Vol, _.intersection(globalData.emptySkilledVolunteer, globalData.emptyCauseVolunteers));
-            $scope.filteredVolunteersList();
-        }
+            $scope.allCurrentVolunteers();
+        };
 
         $scope.filteredVolunteersList = function () {
             var queryValues = '';
@@ -118,14 +123,106 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 queryValues += '<value>{' + $scope.globalData.filteredVolunteer[vol] + '}</value>';
             }
             if (queryValues != '') {
-                var queryString = CommonService.createQueryString(queryValues);
+                var queryString = CommonService.createQueryString(queryValues, 100000000);
                 ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
                     $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
                     $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                    console.log($scope.gridOptions);
                 });
             }
-        }
+        };
+
+        $scope.allCurrentVolunteers = function () {
+            var queryString = '$filter=new_volunteerid ne null';
+            ngoEventService.getEmptyVolunteers(queryString).then(function (allVolunteers) {
+                $scope.globalData.allCurrentVolunteers = allVolunteers.data.value;
+                $scope.gridOptions.data = $scope.globalData.allCurrentVolunteers;
+                console.log($scope.globalData);
+            });
+        };
+
+        $scope.validateVolunteersDetails = function (approved, cause, skill) {
+            //all filtered
+            if (approved === true && cause === true && skill === true) {
+                $scope.filteredVolunteersList();
+            }
+            //only skilled
+            else if (approved === true && cause === true && skill === false) {
+                var queryValues = '';
+                for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
+                    queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
+                }
+                if (queryValues !== '') {
+                    var queryString = CommonService.createQueryString(queryValues, 100000000);
+                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
+                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
+                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
+                    });
+                }
+            }
+            //only caused
+            else if (approved === true && cause === false && skill === true) {
+                var queryValues = '';
+                for (var vol = 0; vol < $scope.globalData.causes.volunteers.length; vol++) {
+                    queryValues += '<value>{' + $scope.globalData.causes.volunteers[vol] + '}</value>';
+                }
+                if (queryValues !== '') {
+                    var queryString = CommonService.createQueryString(queryValues, 100000000);
+                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
+                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
+                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
+                    });
+                }
+            }
+            //onlyApproved
+            else if (approved === true && cause === false && skill === false) {
+                var queryString = '$filter=statuscode eq 100000000';
+                ngoEventService.getEmptyVolunteers(queryString).then(function (allVolunteers) {
+                    $scope.globalData.allCurrentVolunteers = allVolunteers.data.value;
+                    $scope.gridOptions.data = $scope.globalData.allCurrentVolunteers;
+                });
+            }
+            //pending skills volunteer   
+            else if (approved === false && cause === true && skill === false) {
+                var queryValues = '';
+                for (var vol = 0; vol < $scope.globalData.causes.volunteers.length; vol++) {
+                    queryValues += '<value>{' + $scope.globalData.causes.volunteers[vol] + '}</value>';
+                }
+                if (queryValues !== '') {
+                    var queryString = CommonService.createQueryString(queryValues, 100000004);
+                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
+                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
+                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
+                    });
+                }
+            }
+            //pending caused Volunteer
+            else if (approved === false && cause === false && skill === true) {
+                var queryValues = '';
+                for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
+                    queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
+                }
+                if (queryValues !== '') {
+                    var queryString = CommonService.createQueryString(queryValues, 100000004);
+                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
+                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
+                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
+                    });
+                }
+            }
+            else if (approved === false && cause === false && skill === true) {
+                /*     var queryValues = '';
+                     for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
+                         queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
+                     }
+                     if (queryValues !== '') {
+                         var queryString = CommonService.createQueryString(queryValues, 100000004);
+                         ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
+                             $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
+                             $scope.gridOptions.data = $scope.globalData.volunteerDetails;
+                         });
+                     }*/
+            }
+        };
     }])
     .factory('ngoEventService', function ($http, CommonService) {
         return {
@@ -168,7 +265,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
             getEmptyVolunteers: function (queryString) {
                 return $http({
                     method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_volunteers?fetchXml=' + queryString
+                    url: CommonService.serverURL + '/api/data/v8.0/new_volunteers?' + queryString
                 });
             },
             getNonEmptyCauseVolunteer: function () {
@@ -196,14 +293,14 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
 
         this.serverURL = window.parent.Xrm.Page.context.getClientUrl();
 
-        this.createQueryString = function (queryValues) {
-            return '<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
+        this.createQueryString = function (queryValues, statusCode) {
+            return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
                 ' <entity name="new_volunteer">  ' +
                 '<order attribute="new_name" descending="false" />' +
                 '<filter type="and">' +
                 '<condition attribute="new_volunteerid" operator="in">' + queryValues +
                 '</condition>' +
-                '<condition attribute="statuscode" operator="eq" value="100000000" />' +
+                '<condition attribute="statuscode" operator="eq" value="' + statusCode + '" />' +
                 '</filter>' +
                 '</entity>' +
                 '</fetch>';

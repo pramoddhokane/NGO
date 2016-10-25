@@ -23,17 +23,11 @@
 
 <body ng-app="app" ng-controller="EventController" ng-cloak>
     <div layout="column" layout-fill>
-        <!--<md-toolbar layout="row" layout-align="center">
-            <div class="md-toolbar-tools" flex-gt-md="60" flex-md="80" flex-sm="100">
-                <span>Angular Data Grid &mdash; Material Design</span>
-            </div>
-        </md-toolbar>-->
         <md-content layout="row" layout-align="center">
             <div flex-gt-md="100" flex-md="100" flex-xs="100">
                 <div>
-                    <h4>Event Activity Volunteer</h4>
+                    <h3>Event Activity Volunteer</h3>
                 </div>
-                <hr>
                 <div layout-gt-xs="row" layout-xs="column" layout-align="stretch center">
                     <div layout="row" layout-align="center start">
                         <md-input-container md-no-float md-is-error="false" class="md-block flex-gt-xs flex-xs">
@@ -41,31 +35,23 @@
                                 filter-type="text" aria-invalid="false">
                         </md-input-container>
                     </div>
-                    <!--<div layout="row" layout-align="start center">
-                        <md-datepicker ng-model="dateFrom" flex="100" md-placeholder="From Date" is-open="dateFromOpened" ng-click="dateFromOpened = true"
-                            filter-by="placed" filter-type="dateFrom" ng-change="gridActions.filter()"></md-datepicker>
-                    </div>
-                    <div layout="row" layout-align="start center">
-                        <md-datepicker ng-model="dateTo" flex="100" md-placeholder="To Date" is-open="dateToOpened" ng-click="dateToOpened = true"
-                            filter-by="placed" filter-type="dateTo" ng-change="gridActions.filter()"></md-datepicker>
-                    </div>-->
                 </div>
                 <div grid-data id="test" grid-options="gridOptions" grid-actions="gridActions">
                     <div layout-gt-sm="row" layout-sm="column" layout-align="center">
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <span>{{filtered.length}} items total</span>
                         </div>
-                        <div layout="row" layout-align="start center">
-                            <md-switch ng-model="data.cb1" aria-label="Switch 1">
-                            </md-switch>
+                        <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                            <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
+                            </md-switch> All Approved Volunteers
                         </div>
-                        <div layout="row" layout-align="start center">
-                            <md-switch ng-model="data.cb1" aria-label="Switch 1">
-                            </md-switch>
+                        <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                            <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
+                            </md-switch> Volunteers with same cause
                         </div>
-                        <div layout="row" layout-align="start center">
-                            <md-switch ng-model="data.cb1" aria-label="Switch 1">
-                            </md-switch>
+                        <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                            <md-switch ng-model="sameSkillVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
+                            </md-switch>Volunteers with same skills
                         </div>
                         <div flex-gt-sm="75" flex-xs="100">
                             <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
@@ -90,17 +76,18 @@
                                     <th sortable="new_name" class="sortable mdl-data-table__cell--non-numeric">
                                         <span>Volunteer Id</span>
                                     </th>
+                                    <th sortable="new_nameofvolunteer" class="sortable">
+                                        <span>Volunteer Name</span>
+                                    </th>
                                     <th class="st-sort-disable th-dropdown">
                                         <md-select filter-by="statusDisplay" filter-type="select" ng-model="status" placeholder="Status" ng-change="filter()">
                                             <md-option value="">All Statuses</md-option>
-                                            <md-option ng-repeat="option in statusOptions track by option.value" value="{{option.value}}">
+                                            <!--<md-option ng-repeat="option in statusOptions track by option.value" value="{{option.value}}">
                                                 {{option.text}}
-                                            </md-option>
+                                            </md-option>-->
                                         </md-select>
                                     </th>
-                                    <th sortable="placed" class="sortable">
-                                        <span>Date Placed</span>
-                                    </th>
+
                                     <th sortable="total.value" class="sortable">
                                         <span>Total</span>
                                     </th>
@@ -112,7 +99,7 @@
                                         <span ng-bind="item.new_name"></span>
                                     </td>
                                     <td></td>
-                                    <td ng-bind="item.placed | date:'MM/dd/yyyy'"></td>
+                                    <td ng-bind="item.new_nameofvolunteer | date:'MM/dd/yyyy'"></td>
                                     <td ng-bind="item.total.formattedValue"></td>
                                 </tr>
                             </tbody>
