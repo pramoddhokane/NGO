@@ -25,14 +25,11 @@
     <div layout="column" layout-fill>
         <md-content layout="row" layout-align="center">
             <div flex-gt-md="100" flex-md="100" flex-xs="100">
-                <div>
-                    <h3>Event Activity Volunteer</h3>
-                </div>
                 <div layout-gt-xs="row" layout-xs="column" layout-align="stretch center">
                     <div layout="row" layout-align="center start">
                         <md-input-container md-no-float md-is-error="false" class="md-block flex-gt-xs flex-xs">
-                            <input ng-model="new_name" class="md-input" ng-change="gridActions.filter()" id="order" placeholder="Search by Order #" filter-by="new_name"
-                                filter-type="text" aria-invalid="false">
+                            <input ng-model="new_name" class="md-input" ng-change="gridActions.filter()" id="order" placeholder="Search by Volunteer Name"
+                                filter-by="new_name" filter-type="text" aria-invalid="false">
                         </md-input-container>
                     </div>
                 </div>
@@ -79,17 +76,17 @@
                                     <th sortable="new_nameofvolunteer" class="sortable">
                                         <span>Volunteer Name</span>
                                     </th>
-                                    <th class="st-sort-disable th-dropdown">
-                                        <md-select filter-by="statusDisplay" filter-type="select" ng-model="status" placeholder="Status" ng-change="filter()">
-                                            <md-option value="">All Statuses</md-option>
-                                            <!--<md-option ng-repeat="option in statusOptions track by option.value" value="{{option.value}}">
-                                                {{option.text}}
-                                            </md-option>-->
-                                        </md-select>
+                                    <th sortable="new_city" class="st-sort-disable th-dropdown">
+                                        <span>City</span>
                                     </th>
-
-                                    <th sortable="total.value" class="sortable">
-                                        <span>Total</span>
+                                    <th sortable="new_totalvolunteerhours" class="st-sort-disable th-dropdown">
+                                        <span>Time Logged</span>
+                                    </th>
+                                    <th sortable="new_nameofvolunteer" class="st-sort-disable th-dropdown">
+                                        <span>Assign</span>
+                                    </th>
+                                    <th style="display:none" class="sortable">
+                                        <span>ID</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -98,9 +95,18 @@
                                     <td class="mdl-data-table__cell--non-numeric">
                                         <span ng-bind="item.new_name"></span>
                                     </td>
-                                    <td></td>
-                                    <td ng-bind="item.new_nameofvolunteer | date:'MM/dd/yyyy'"></td>
-                                    <td ng-bind="item.total.formattedValue"></td>
+                                    <td ng-bind="item.new_nameofvolunteer"></td>
+                                    <td ng-bind="item.new_city"></td>
+                                    <!--time Logged-->
+                                    <td ng-bind="item.new_totalvolunteerhours"></td>
+                                    <td>
+                                        <div div ng-transclude="">
+                                            <md-checkbox aria-label="Checkbox 1">
+                                                Checkbox 1: {{ data.cb1 }}
+                                            </md-checkbox>
+                                        </div>
+                                    </td>
+                                    <td style="display:none" ng-bind="item.new_volunteerid"></td>
                                 </tr>
                             </tbody>
                         </table>

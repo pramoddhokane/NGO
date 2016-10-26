@@ -13,13 +13,14 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
             data: [],
             urlSync: false
         };
+
         ngoEventService.getEventActivityDetails().then(function (response) {
             $scope.globalData.causes = {};
             eventActivityDetails = response.data;
             $scope.globalData.event = eventActivityDetails;
-            ngoEventService.getSkillSets().then(function (skillsetResponse) {
+            ngoEventService.getSkillSets().then(function (skillsetResponse) {  // skill set of Event Activity
                 $scope.globalData.skills = skillsetResponse.data.value;
-                ngoEventService.getEventCause(eventActivityDetails._new_usedforcamp_value).then(function (causeDetails) {
+                ngoEventService.getEventCause(eventActivityDetails._new_usedforcamp_value).then(function (causeDetails) { // cause of event activity
                     $scope.globalData.causes.cause = causeDetails.data;
                     $scope.getVolunteerBySkills();
                 });
@@ -41,7 +42,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 }
             }
             if ($scope.globalData.skills.length !== 0) {
-                ngoEventService.getvolunteerBySkills(querystring).then(function (skilledVolunteer) {
+                ngoEventService.getvolunteerBySkills(querystring).then(function (skilledVolunteer) { //all volunteers has matching skills
                     var volunteers = skilledVolunteer.data.value;
                     $scope.globalData.skills.volunteers = [];
                     for (var volunteer = 0; volunteer < volunteers.length; volunteer++) {
@@ -56,7 +57,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         }
         $scope.getvolunteersByCause = function () {
             var causeDetails = $scope.globalData.causes.cause;
-            ngoEventService.getvolunteerByCause(causeDetails._new_cause_value).then(function (causedVolunteer) {
+            ngoEventService.getvolunteerByCause(causeDetails._new_cause_value).then(function (causedVolunteer) { // all volunteers has matching cause
                 var c_volunteers = causedVolunteer.data.value;
                 $scope.globalData.causes.volunteers = [];
                 for (var volunteer = 0; volunteer < c_volunteers.length; volunteer++) {
@@ -73,9 +74,8 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 for (var vol = 0; vol < nonEmptyVolunteer.data.value.length; vol++) {
                     queryValues += '<value>{' + nonEmptyVolunteer.data.value[vol].new_volunteerid + '}</value>';
                 }
-
                 if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues, 100000000);
+                    var queryString = CommonService.createQueryStringEmpty(queryValues, '');
                     ngoEventService.getEmptyVolunteers(queryString).then(function (emptyVolunteers) {
                         var emptySkilledVolunteer = emptyVolunteers.data.value;
                         $scope.globalData.emptySkilledVolunteer = [];
@@ -97,7 +97,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 }
 
                 if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues, 100000000);
+                    var queryString = CommonService.createQueryStringEmpty(queryValues, '');
                     ngoEventService.getEmptyVolunteers(queryString).then(function (emptyCauseVolunteers) {
                         var emptyCauseVolunteer = emptyCauseVolunteers.data.value;
                         $scope.globalData.emptyCauseVolunteers = [];
@@ -111,19 +111,19 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         };
 
         $scope.filteredVolunteers = function (globalData) {
-            var non_EmptyFil_Vol = [];
-            non_EmptyFil_Vol = _.intersection(globalData.causes.volunteers, globalData.skills.volunteers);
-            $scope.globalData.filteredVolunteer = _.union(non_EmptyFil_Vol, _.intersection(globalData.emptySkilledVolunteer, globalData.emptyCauseVolunteers));
+            var exactSkillCause = [];
+            $scope.globalData.exactSkillCause = _.intersection(globalData.causes.volunteers, globalData.skills.volunteers);
+            // $scope.globalData.filteredVolunteer = _.union(exactSkillCause, _.intersection(globalData.emptySkilledVolunteer, globalData.emptyCauseVolunteers));
             $scope.allCurrentVolunteers();
         };
 
-        $scope.filteredVolunteersList = function () {
+        $scope.filteredVolunteersList = function (status) {
             var queryValues = '';
-            for (var vol = 0; vol < $scope.globalData.filteredVolunteer.length; vol++) {
-                queryValues += '<value>{' + $scope.globalData.filteredVolunteer[vol] + '}</value>';
+            for (var vol = 0; vol < $scope.globalData.exactSkillCause.length; vol++) {
+                queryValues += '<value>{' + $scope.globalData.exactSkillCause[vol] + '}</value>';
             }
             if (queryValues != '') {
-                var queryString = CommonService.createQueryString(queryValues, 100000000);
+                var queryString = CommonService.createQueryStringNonEmpty(queryValues, status);
                 ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
                     $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
                     $scope.gridOptions.data = $scope.globalData.volunteerDetails;
@@ -132,7 +132,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         };
 
         $scope.allCurrentVolunteers = function () {
-            var queryString = '$filter=new_volunteerid ne null';
+            var queryString = '$filter=statuscode eq 100000004';
             ngoEventService.getEmptyVolunteers(queryString).then(function (allVolunteers) {
                 $scope.globalData.allCurrentVolunteers = allVolunteers.data.value;
                 $scope.gridOptions.data = $scope.globalData.allCurrentVolunteers;
@@ -141,39 +141,35 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         };
 
         $scope.validateVolunteersDetails = function (approved, cause, skill) {
-            //all filtered
             if (approved === true && cause === true && skill === true) {
-                $scope.filteredVolunteersList();
+                $scope.filteredVolunteersList(100000000);
             }
-            //only skilled
             else if (approved === true && cause === true && skill === false) {
-                var queryValues = '';
-                for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
-                    queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
-                }
-                if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues, 100000000);
-                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
-                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
-                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                    });
-                }
-            }
-            //only caused
-            else if (approved === true && cause === false && skill === true) {
                 var queryValues = '';
                 for (var vol = 0; vol < $scope.globalData.causes.volunteers.length; vol++) {
                     queryValues += '<value>{' + $scope.globalData.causes.volunteers[vol] + '}</value>';
                 }
                 if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues, 100000000);
+                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000000);
                     ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
                         $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
                         $scope.gridOptions.data = $scope.globalData.volunteerDetails;
                     });
                 }
             }
-            //onlyApproved
+            else if (approved === true && cause === false && skill === true) {
+                var queryValues = '';
+                for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
+                    queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
+                }
+                if (queryValues !== '') {
+                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000000);
+                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
+                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
+                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
+                    });
+                }
+            }
             else if (approved === true && cause === false && skill === false) {
                 var queryString = '$filter=statuscode eq 100000000';
                 ngoEventService.getEmptyVolunteers(queryString).then(function (allVolunteers) {
@@ -181,46 +177,37 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                     $scope.gridOptions.data = $scope.globalData.allCurrentVolunteers;
                 });
             }
-            //pending skills volunteer   
             else if (approved === false && cause === true && skill === false) {
                 var queryValues = '';
                 for (var vol = 0; vol < $scope.globalData.causes.volunteers.length; vol++) {
                     queryValues += '<value>{' + $scope.globalData.causes.volunteers[vol] + '}</value>';
                 }
                 if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues, 100000004);
+                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000004);
                     ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
                         $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
                         $scope.gridOptions.data = $scope.globalData.volunteerDetails;
                     });
                 }
             }
-            //pending caused Volunteer
             else if (approved === false && cause === false && skill === true) {
                 var queryValues = '';
                 for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
                     queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
                 }
                 if (queryValues !== '') {
-                    var queryString = CommonService.createQueryString(queryValues, 100000004);
+                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000004);
                     ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
                         $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
                         $scope.gridOptions.data = $scope.globalData.volunteerDetails;
                     });
                 }
             }
-            else if (approved === false && cause === false && skill === true) {
-                /*     var queryValues = '';
-                     for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
-                         queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
-                     }
-                     if (queryValues !== '') {
-                         var queryString = CommonService.createQueryString(queryValues, 100000004);
-                         ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
-                             $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
-                             $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                         });
-                     }*/
+            else if (approved === false && cause === true && skill === true) {
+                $scope.filteredVolunteersList(100000004);
+            }
+            else if (approved === false && cause === false && skill === false) {
+                $scope.allCurrentVolunteers();
             }
         };
     }])
@@ -293,14 +280,32 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
 
         this.serverURL = window.parent.Xrm.Page.context.getClientUrl();
 
-        this.createQueryString = function (queryValues, statusCode) {
+        this.createQueryStringNonEmpty = function (queryValues, statusCode) {
+            var conditionAttribute = '';
+            if (statusCode !== '') {
+                conditionAttribute = '<condition attribute="statuscode" operator="eq" value="' + statusCode + '" />'
+            }
             return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
                 ' <entity name="new_volunteer">  ' +
                 '<order attribute="new_name" descending="false" />' +
                 '<filter type="and">' +
                 '<condition attribute="new_volunteerid" operator="in">' + queryValues +
-                '</condition>' +
-                '<condition attribute="statuscode" operator="eq" value="' + statusCode + '" />' +
+                '</condition>' + conditionAttribute +
+                '</filter>' +
+                '</entity>' +
+                '</fetch>';
+        };
+        this.createQueryStringEmpty = function (queryValues, statusCode) {
+            var conditionAttribute = '';
+            if (statusCode !== '') {
+                conditionAttribute = '<condition attribute="statuscode" operator="eq" value="' + statusCode + '" />'
+            }
+            return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
+                ' <entity name="new_volunteer">  ' +
+                '<order attribute="new_name" descending="false" />' +
+                '<filter type="and">' +
+                '<condition attribute="new_volunteerid" operator="not-in">' + queryValues +
+                '</condition>' + conditionAttribute +
                 '</filter>' +
                 '</entity>' +
                 '</fetch>';
