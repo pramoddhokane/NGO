@@ -70,43 +70,39 @@
                         <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
                             <thead>
                                 <tr>
-                                    <th sortable="new_name" class="sortable mdl-data-table__cell--non-numeric">
+                                    <th sortable="new_name" class="sortable align">
                                         <span>Volunteer Id</span>
                                     </th>
-                                    <th sortable="new_nameofvolunteer" class="sortable">
+                                    <th sortable="new_nameofvolunteer" class="sortable align">
                                         <span>Volunteer Name</span>
                                     </th>
-                                    <th sortable="new_city" class="st-sort-disable th-dropdown">
+                                    <th sortable="new_city" class="sortable align">
                                         <span>City</span>
                                     </th>
-                                    <th sortable="new_totalvolunteerhours" class="st-sort-disable th-dropdown">
+                                    <th sortable="new_totalvolunteerhours" class="sortable align">
                                         <span>Time Logged</span>
                                     </th>
-                                    <th sortable="new_nameofvolunteer" class="st-sort-disable th-dropdown">
+                                    <th sortable="new_nameofvolunteer" class="sortable align">
                                         <span>Assign</span>
                                     </th>
-                                    <th style="display:none" class="sortable">
+                                    <th style="display:none" class="sortable align">
                                         <span>ID</span>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr grid-item>
-                                    <td class="mdl-data-table__cell--non-numeric">
-                                        <span ng-bind="item.new_name"></span>
+                                    <td ng-bind="item.new_name" class="align">
                                     </td>
-                                    <td ng-bind="item.new_nameofvolunteer"></td>
+                                    <td ng-bind="item.new_nameofvolunteer" class="align"></td>
                                     <td ng-bind="item.new_city"></td>
                                     <!--time Logged-->
-                                    <td ng-bind="item.new_totalvolunteerhours"></td>
+                                    <td ng-bind="item.new_totalvolunteerhours" class="align"></td>
                                     <td>
-                                        <div div ng-transclude="">
-                                            <md-checkbox aria-label="Checkbox 1">
-                                                Checkbox 1: {{ data.cb1 }}
-                                            </md-checkbox>
-                                        </div>
+                                        <input ng-model="item.new_volunteerid" type="checkbox" class="align" ng-change="assignVolunteer(item.new_volunteerid,item)">
+                                        <span style="display:none" ng-bind="item.new_volunteerid"></span>
                                     </td>
-                                    <td style="display:none" ng-bind="item.new_volunteerid"></td>
+                                    <td style="display:none" ng-bind="item.new_volunteerid" class="align"></td>
                                 </tr>
                             </tbody>
                         </table>

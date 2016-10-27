@@ -54,7 +54,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
             else {
                 $scope.getvolunteersByCause();
             }
-        }
+        };
         $scope.getvolunteersByCause = function () {
             var causeDetails = $scope.globalData.causes.cause;
             ngoEventService.getvolunteerByCause(causeDetails._new_cause_value).then(function (causedVolunteer) { // all volunteers has matching cause
@@ -210,6 +210,24 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 $scope.allCurrentVolunteers();
             }
         };
+        $scope.assignVolunteer = function (event, volunteer) {
+            if (event) {
+                var selectedVolunteer = {
+                    'new_volunteertypeorignal': volunteer.new_constituentvolunteertype,
+                    'new_name': volunteer.new_nameofvolunteer,
+                    'new_volunteerstatus': 2,
+                    'new_city': volunteer.new_city,
+                    'new_Volunteername@odata.bind': '/new_volunteers(' + volunteer.new_volunteerid + ')',
+                    'new_campactivityname@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')'
+                }
+                ngoEventService.assignVolunteertoEvent(selectedVolunteer).then(function(response){
+                    console.log(response);
+                });
+            }
+            else {
+
+            }
+        }
     }])
     .factory('ngoEventService', function ($http, CommonService) {
         return {
@@ -259,6 +277,13 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                 return $http({
                     method: 'GET',
                     url: CommonService.serverURL + '/api/data/v8.0/new_new_areaofinterest_new_volunteerset'
+                });
+            },
+            assignVolunteertoEvent: function (volunteer) {
+                return $http({
+                    method: 'POST',
+                    url: CommonService.serverURL + '/api/data/v8.0/new_campactivitymembers',
+                    data: volunteer
                 });
             }
         };
