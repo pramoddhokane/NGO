@@ -18,10 +18,10 @@
     <script src="https://angular-data-grid.github.io/dist/pagination.js"></script>
     <script src="https://cdn.jsdelivr.net/lodash/4.16.4/lodash.min.js"></script>
     <script src="https://angular-data-grid.github.io/dist/dataGrid.js"></script>
-    <script src="new_eventActivityVolunteer.js"></script>
+    <script src="new_eventActivityServiceProviders"></script>
 </head>
 
-<body ng-app="app" ng-controller="EventController" ng-cloak>
+<body ng-app="spApp" ng-controller="spEventController" ng-cloak>
     <div layout="column" layout-fill>
         <md-content layout="row" layout-align="center">
             <div flex-gt-md="100" flex-md="100" flex-xs="100">
@@ -39,16 +39,16 @@
                             <span>{{filtered.length}} items total</span>
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch> All Approved Volunteers
+                            <md-switch ng-model="allApprovedProviders" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
+                            </md-switch> All Approved Service Providers
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch> Volunteers with same cause
+                            <md-switch ng-model="sameServices" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
+                            </md-switch> Providers with same Services
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="sameSkillVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch>Volunteers with same skills
+                            <md-switch ng-model="sameGoods" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
+                            </md-switch>Providers with same Goods
                         </div>
                         <div flex-gt-sm="75" flex-xs="100">
                             <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">

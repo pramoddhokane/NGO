@@ -1,308 +1,177 @@
 "use strict";
-angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
-    .controller('EventController', ['$scope', 'ngoEventService', 'CommonService', function ($scope, ngoEventService, CommonService) {
+angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
+    .controller('spEventController', ['$scope', 'ngoSPEventService', 'CommonSPService', function ($scope, ngoSPEventService, CommonSPService) {
         var eventActivityDetails = {};
         var querystring;
         var nonEmptyVoluteers = [];
 
-        $scope.allApproved = false;
-        $scope.sameCauseVol = false;
-        $scope.sameSkillVol = false;
+        $scope.allApprovedProviders = false;
+        $scope.sameServices = false;
+        $scope.sameGoods = false;
         $scope.globalData = {}
         $scope.gridOptions = {
             data: [],
             urlSync: false
         };
 
-        ngoEventService.getEventActivityDetails().then(function (response) {
-            $scope.globalData.causes = {};
+        ngoSPEventService.getEventActivityDetails().then(function (response) {
             eventActivityDetails = response.data;
             $scope.globalData.event = eventActivityDetails;
-            ngoEventService.getSkillSets().then(function (skillsetResponse) {  // skill set of Event Activity
-                $scope.globalData.skills = skillsetResponse.data.value;
-                ngoEventService.getEventCause(eventActivityDetails._new_usedforcamp_value).then(function (causeDetails) { // cause of event activity
-                    $scope.globalData.causes.cause = causeDetails.data;
-                    $scope.getVolunteerBySkills();
-                });
+            ngoSPEventService.getGoodsandServices().then(function (goodsServiceResponse) {
+                $scope.globalData.goodsServices = goodsServiceResponse.data.value;
+                $scope.getGoodsProviders();
             });
         });
-        $scope.getVolunteerBySkills = function () {
-            var skillAttribute = 'new_skillsetid';
-            if ($scope.globalData.skills.length === 1) {
-                querystring = skillAttribute + ' eq ' + $scope.globalData.skills[0].new_skillsetid;
-            }
-            else {
-                for (var skill = 0; skill < $scope.globalData.skills.length; skill++) {
-                    if (skill === 0) {
-                        querystring = skillAttribute + ' eq ' + $scope.globalData.skills[skill].new_skillsetid;
-                    }
-                    else if (skill < $scope.globalData.skills.length) {
-                        querystring += ' or ' + skillAttribute + ' eq ' + $scope.globalData.skills[skill].new_skillsetid;
-                    }
-                }
-            }
-            if ($scope.globalData.skills.length !== 0) {
-                ngoEventService.getvolunteerBySkills(querystring).then(function (skilledVolunteer) { //all volunteers has matching skills
-                    var volunteers = skilledVolunteer.data.value;
-                    $scope.globalData.skills.volunteers = [];
-                    for (var volunteer = 0; volunteer < volunteers.length; volunteer++) {
-                        $scope.globalData.skills.volunteers.push(volunteers[volunteer].new_volunteerid);
-                    }
-                    $scope.getvolunteersByCause();
-                });
-            }
-            else {
-                $scope.getvolunteersByCause();
-            }
-        };
-        $scope.getvolunteersByCause = function () {
-            var causeDetails = $scope.globalData.causes.cause;
-            ngoEventService.getvolunteerByCause(causeDetails._new_cause_value).then(function (causedVolunteer) { // all volunteers has matching cause
-                var c_volunteers = causedVolunteer.data.value;
-                $scope.globalData.causes.volunteers = [];
-                for (var volunteer = 0; volunteer < c_volunteers.length; volunteer++) {
-                    $scope.globalData.causes.volunteers.push(c_volunteers[volunteer].new_volunteerid);
-                }
-                $scope.getAllVolunteers();
-            });
-        };
 
-        $scope.getAllVolunteers = function () {
+        $scope.getGoodsProviders = function () {
             var queryValues = '';
-            nonEmptyVoluteers = [];
-            ngoEventService.getNonEmpty().then(function (nonEmptyVolunteer) {
-                for (var vol = 0; vol < nonEmptyVolunteer.data.value.length; vol++) {
-                    queryValues += '<value>{' + nonEmptyVolunteer.data.value[vol].new_volunteerid + '}</value>';
-                }
-                if (queryValues !== '') {
-                    var queryString = CommonService.createQueryStringEmpty(queryValues, '');
-                    ngoEventService.getEmptyVolunteers(queryString).then(function (emptyVolunteers) {
-                        var emptySkilledVolunteer = emptyVolunteers.data.value;
-                        $scope.globalData.emptySkilledVolunteer = [];
-                        for (var volunteer = 0; volunteer < emptySkilledVolunteer.length; volunteer++) {
-                            $scope.globalData.emptySkilledVolunteer.push(emptySkilledVolunteer[volunteer].new_volunteerid);
-                        }
-                        $scope.getAllEmptyCauseVolunteers();
-                    });
-                }
-            });
-        };
-
-        $scope.getAllEmptyCauseVolunteers = function () {
-            var queryValues = '';
-            nonEmptyVoluteers = [];
-            ngoEventService.getNonEmptyCauseVolunteer().then(function (nonEmptyVolunteer) {
-                for (var vol = 0; vol < nonEmptyVolunteer.data.value.length; vol++) {
-                    queryValues += '<value>{' + nonEmptyVolunteer.data.value[vol].new_volunteerid + '}</value>';
-                }
-
-                if (queryValues !== '') {
-                    var queryString = CommonService.createQueryStringEmpty(queryValues, '');
-                    ngoEventService.getEmptyVolunteers(queryString).then(function (emptyCauseVolunteers) {
-                        var emptyCauseVolunteer = emptyCauseVolunteers.data.value;
-                        $scope.globalData.emptyCauseVolunteers = [];
-                        for (var volunteer = 0; volunteer < emptyCauseVolunteer.length; volunteer++) {
-                            $scope.globalData.emptyCauseVolunteers.push(emptyCauseVolunteer[volunteer].new_volunteerid);
-                        }
-                        $scope.filteredVolunteers($scope.globalData);
-                    });
-                }
-            });
-        };
-
-        $scope.filteredVolunteers = function (globalData) {
-            var exactSkillCause = [];
-            $scope.globalData.exactSkillCause = _.intersection(globalData.causes.volunteers, globalData.skills.volunteers);
-            // $scope.globalData.filteredVolunteer = _.union(exactSkillCause, _.intersection(globalData.emptySkilledVolunteer, globalData.emptyCauseVolunteers));
-            $scope.allCurrentVolunteers();
-        };
-
-        $scope.filteredVolunteersList = function (status) {
-            var queryValues = '';
-            for (var vol = 0; vol < $scope.globalData.exactSkillCause.length; vol++) {
-                queryValues += '<value>{' + $scope.globalData.exactSkillCause[vol] + '}</value>';
+            for (var vol = 0; vol < $scope.globalData.goodsServices.length; vol++) {
+                queryValues += '<value>{' + $scope.globalData.goodsServices[vol].new_goods_servicesid + '}</value>';
             }
-            if (queryValues != '') {
-                var queryString = CommonService.createQueryStringNonEmpty(queryValues, status);
-                ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
-                    $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
-                    $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                });
-            }
-        };
-
-        $scope.allCurrentVolunteers = function () {
-            var queryString = '$filter=statuscode eq 100000004';
-            ngoEventService.getEmptyVolunteers(queryString).then(function (allVolunteers) {
-                $scope.globalData.allCurrentVolunteers = allVolunteers.data.value;
-                $scope.gridOptions.data = $scope.globalData.allCurrentVolunteers;
-                console.log($scope.globalData);
-            });
-        };
-
-        $scope.validateVolunteersDetails = function (approved, cause, skill) {
-            if (approved === true && cause === true && skill === true) {
-                $scope.filteredVolunteersList(100000000);
-            }
-            else if (approved === true && cause === true && skill === false) {
-                var queryValues = '';
-                for (var vol = 0; vol < $scope.globalData.causes.volunteers.length; vol++) {
-                    queryValues += '<value>{' + $scope.globalData.causes.volunteers[vol] + '}</value>';
-                }
-                if (queryValues !== '') {
-                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000000);
-                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
-                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
-                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                    });
-                }
-            }
-            else if (approved === true && cause === false && skill === true) {
-                var queryValues = '';
-                for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
-                    queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
-                }
-                if (queryValues !== '') {
-                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000000);
-                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
-                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
-                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                    });
-                }
-            }
-            else if (approved === true && cause === false && skill === false) {
-                var queryString = '$filter=statuscode eq 100000000';
-                ngoEventService.getEmptyVolunteers(queryString).then(function (allVolunteers) {
-                    $scope.globalData.allCurrentVolunteers = allVolunteers.data.value;
-                    $scope.gridOptions.data = $scope.globalData.allCurrentVolunteers;
-                });
-            }
-            else if (approved === false && cause === true && skill === false) {
-                var queryValues = '';
-                for (var vol = 0; vol < $scope.globalData.causes.volunteers.length; vol++) {
-                    queryValues += '<value>{' + $scope.globalData.causes.volunteers[vol] + '}</value>';
-                }
-                if (queryValues !== '') {
-                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000004);
-                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
-                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
-                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                    });
-                }
-            }
-            else if (approved === false && cause === false && skill === true) {
-                var queryValues = '';
-                for (var vol = 0; vol < $scope.globalData.skills.volunteers.length; vol++) {
-                    queryValues += '<value>{' + $scope.globalData.skills.volunteers[vol] + '}</value>';
-                }
-                if (queryValues !== '') {
-                    var queryString = CommonService.createQueryStringNonEmpty(queryValues, 100000004);
-                    ngoEventService.getEmptyVolunteers(queryString).then(function (filteredVolunteersDetails) {
-                        $scope.globalData.volunteerDetails = filteredVolunteersDetails.data.value;
-                        $scope.gridOptions.data = $scope.globalData.volunteerDetails;
-                    });
-                }
-            }
-            else if (approved === false && cause === true && skill === true) {
-                $scope.filteredVolunteersList(100000004);
-            }
-            else if (approved === false && cause === false && skill === false) {
-                $scope.allCurrentVolunteers();
-            }
-        };
-        $scope.assignVolunteer = function (event, volunteer) {
-            if (event) {
-                var selectedVolunteer = {
-                    'new_volunteertypeorignal': volunteer.new_constituentvolunteertype,
-                    'new_name': volunteer.new_nameofvolunteer,
-                    'new_volunteerstatus': 2,
-                    'new_city': volunteer.new_city,
-                    'new_Volunteername@odata.bind': '/new_volunteers(' + volunteer.new_volunteerid + ')',
-                    'new_campactivityname@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')'
-                }
-                ngoEventService.assignVolunteertoEvent(selectedVolunteer).then(function (response) {
-                    console.log(response);
-                });
-            }
-            else {
-                var queryString = '$filter=_new_volunteername_value eq ' + volunteer.new_volunteerid + ' and _new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid;
-                ngoEventService.getassignVolunteerDetails(queryString).then(function (volunteerRes) {
-                    var volDetails = volunteerRes.data.value;
-                    var recordId = volDetails[0].new_campactivitymemberid;
-                    ngoEventService.deleteAssignedVolunteer(recordId).then(function(response){
-                        console.log('Delete');
-                    })
+            if (queryValues !== '') {
+                var queryString = CommonSPService.allGoodsProviders(queryValues, 'in');
+                ngoSPEventService.getGoodsProviders(queryString).then(function (goodsProvidersResponse) {
+                    var goodsProviders = goodsProvidersResponse.data.value;
+                    $scope.globalData.goodsProviders = [];
+                    for (var volunteer = 0; volunteer < goodsProviders.length; volunteer++) {
+                        $scope.globalData.goodsProviders.push(goodsProviders[volunteer]._new_providername_value);
+                    }
+                    $scope.getserviceProviders();
                 });
             }
         }
-    }])
-    .factory('ngoEventService', function ($http, CommonService) {
-        return {
-            getSkillSets: function () {
-                return $http({
-                    method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_new_eventactivity_new_skillsetset?$filter=new_eventactivityid eq ' + CommonService.recordId
+
+        $scope.getserviceProviders = function () {
+            var queryValues = '';
+            for (var vol = 0; vol < $scope.globalData.goodsServices.length; vol++) {
+                queryValues += '<value>{' + $scope.globalData.goodsServices[vol].new_goods_servicesid + '}</value>';
+            }
+            if (queryValues !== '') {
+                var queryString = CommonSPService.allserviceProviders(queryValues, 'in');
+                ngoSPEventService.getserviceProviders(queryString).then(function (serviceProvidersResponse) {
+                    var serviceProviders = serviceProvidersResponse.data.value;
+                    $scope.globalData.serviceProviders = [];
+                    for (var volunteer = 0; volunteer < serviceProviders.length; volunteer++) {
+                        $scope.globalData.serviceProviders.push(serviceProviders[volunteer]._new_serviceprovider_value);
+                    }
+                    $scope.getNonserviceProviders();
                 });
-            },
+            }
+        }
+
+        $scope.getNonserviceProviders = function () {
+            var queryValues = '';
+            for (var vol = 0; vol < $scope.globalData.serviceProviders.length; vol++) {
+                queryValues += '<value>{' + $scope.globalData.serviceProviders[vol] + '}</value>';
+            }
+            if (queryValues !== '') {
+                var queryString = CommonSPService.allserviceProviders(queryValues, 'not-in');
+                ngoSPEventService.getserviceProviders(queryString).then(function (nonServiceProvidersResponse) {
+                    var nonServiceProviders = nonServiceProvidersResponse.data.value;
+                    $scope.globalData.nonServiceProviders = [];
+                    for (var volunteer = 0; volunteer < nonServiceProviders.length; volunteer++) {
+                        $scope.globalData.nonServiceProviders.push(nonServiceProviders[volunteer]._new_serviceprovider_value);
+                    }
+                    $scope.getNonGoodsProviders();
+                });
+            }
+        }
+
+        $scope.getNonGoodsProviders = function () {
+            var queryValues = '';
+            for (var vol = 0; vol < $scope.globalData.goodsProviders.length; vol++) {
+                queryValues += '<value>{' + $scope.globalData.goodsProviders[vol] + '}</value>';
+            }
+            if (queryValues !== '') {
+                var queryString = CommonSPService.allGoodsProviders(queryValues, 'not-in');
+                ngoSPEventService.getGoodsProviders(queryString).then(function (nonGoodsProvidersResponse) {
+                    var nonGoodsProviders = nonGoodsProvidersResponse.data.value;
+                    $scope.globalData.nonGoodsProviders = [];
+                    for (var volunteer = 0; volunteer < nonGoodsProviders.length; volunteer++) {
+                        $scope.globalData.nonGoodsProviders.push(nonGoodsProviders[volunteer]._new_providername_value);
+                    }
+                    $scope.preSelectedSP();
+                });
+            }
+        };
+        $scope.getFilteredProviders = function (array1, array2, operator, status) {
+            var filteredArray = _.union(array1, array2);
+            var queryValues = '';
+            for (var vol = 0; vol < filteredArray.length; vol++) {
+                queryValues += '<value>{' + filteredArray[vol] + '}</value>';
+            }
+            if (queryValues !== '') {
+                var queryString = CommonSPService.getserviceProviders(queryValues, operator, status);
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (nonMatchingResponse) {
+                    $scope.gridOptions.data = nonMatchingResponse.data.value;
+                    console.log($scope.globalData);
+                })
+            }
+        }
+        $scope.preSelectedSP = function () {
+            $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.nonServiceProviders, 'in', 100000000)
+        }
+
+        $scope.validateProvidersDetails = function (approved, service, goods) {
+            if (approved === true && service === true && goods === true) {
+                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
+            }
+            else if (approved === true && service === true && goods === false) {
+                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
+            }
+            else if (approved === true && service === false && goods === true) {
+                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000002);
+            }
+            else if (approved === true && service === false && goods === false) {
+                var queryString = '$filter=new_serviceproviderstatus eq 100000002';
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (approvedProviders) {
+                    $scope.gridOptions.data = approvedProviders.data.value;
+                })
+            }
+            else if (approved === false && service === true && goods === false) {
+                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000000);
+            }
+            else if (approved === false && service === false && goods === true) {
+                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000000);
+            }
+            else if (approved === false && service === true && goods === true) {
+                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
+            }
+            else if (approved === false && service === false && goods === false) {
+                $scope.preSelectedSP();
+            }
+        };
+    }])
+    .factory('ngoSPEventService', function ($http, CommonSPService) {
+        return {
             getEventActivityDetails: function () {
                 return $http({
                     method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_eventactivities(' + CommonService.recordId + ')'
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_eventactivities(' + CommonSPService.recordId + ')'
                 });
             },
-            getvolunteerBySkills: function (querystring) {
+            getGoodsandServices: function () {
                 return $http({
                     method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_new_skillset_new_volunteerset?$filter=' + querystring
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_new_eventactivity_new_goods_servicesset?$filter=new_eventactivityid eq ' + CommonSPService.recordId
                 });
             },
-            getvolunteerByCause: function (cause) {
+            getGoodsProviders: function (queryString) {
                 return $http({
                     method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_new_areaofinterest_new_volunteerset?$filter=new_areaofinterestid eq ' + cause
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_goodses?' + queryString
                 });
             },
-            getEventCause: function (cause) {
+            getserviceProviders: function (queryString) {
                 return $http({
                     method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_camps(' + cause + ')?$select=_new_cause_value'
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_services?' + queryString
                 });
             },
-            getNonEmpty: function () {
+            getserviceProvidersDetails: function (queryString) {
                 return $http({
                     method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_new_skillset_new_volunteerset'
-                });
-            },
-            getEmptyVolunteers: function (queryString) {
-                return $http({
-                    method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_volunteers?' + queryString
-                });
-            },
-            getNonEmptyCauseVolunteer: function () {
-                return $http({
-                    method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_new_areaofinterest_new_volunteerset'
-                });
-            },
-            assignVolunteertoEvent: function (volunteer) {
-                return $http({
-                    method: 'POST',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_campactivitymembers',
-                    data: volunteer
-                });
-            },
-            getassignVolunteerDetails: function () {
-                return $http({
-                    method: 'GET',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_campactivitymembers'
-                });
-            },
-            deleteAssignedVolunteer: function (recordID) {
-                return $http({
-                    method: 'DELETE',
-                    url: CommonService.serverURL + '/api/data/v8.0/new_campactivitymembers(' + recordID + ')'
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_serviceproviders?' + queryString
                 });
             }
         };
@@ -319,39 +188,45 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
         };
     }).config(function ($httpProvider) {
         $httpProvider.interceptors.push('httpRequestInterceptor');
-    }).service('CommonService', function () {
+    }).service('CommonSPService', function () {
         this.recordId = (window.parent.Xrm.Page.data.entity.getId()).replace('{', '').replace('}', '');
 
         this.serverURL = window.parent.Xrm.Page.context.getClientUrl();
 
-        this.createQueryStringNonEmpty = function (queryValues, statusCode) {
-            var conditionAttribute = '';
-            if (statusCode !== '') {
-                conditionAttribute = '<condition attribute="statuscode" operator="eq" value="' + statusCode + '" />'
-            }
+        this.allGoodsProviders = function (queryValues, operator) {
             return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
-                ' <entity name="new_volunteer">  ' +
-                '<order attribute="new_name" descending="false" />' +
+                '<entity name="new_goods">  ' +
+                '<order attribute="new_units" descending="false" />' +
                 '<filter type="and">' +
-                '<condition attribute="new_volunteerid" operator="in">' + queryValues +
-                '</condition>' + conditionAttribute +
+                '<condition attribute="new_nameofgoodscommodity" operator="' + operator + '">' + queryValues +
+                '</condition>' +
                 '</filter>' +
                 '</entity>' +
                 '</fetch>';
         };
-        this.createQueryStringEmpty = function (queryValues, statusCode) {
-            var conditionAttribute = '';
-            if (statusCode !== '') {
-                conditionAttribute = '<condition attribute="statuscode" operator="eq" value="' + statusCode + '" />'
-            }
+
+        this.allserviceProviders = function (queryValues, operator) {
             return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
-                ' <entity name="new_volunteer">  ' +
+                '<entity name="new_service">' +
                 '<order attribute="new_name" descending="false" />' +
                 '<filter type="and">' +
-                '<condition attribute="new_volunteerid" operator="not-in">' + queryValues +
-                '</condition>' + conditionAttribute +
+                '<condition attribute="new_nameofservice" operator="' + operator + '">' + queryValues +
+                '</condition>' +
                 '</filter>' +
                 '</entity>' +
                 '</fetch>';
-        }
+        };
+
+        this.getserviceProviders = function (queryValues, operator, status) {
+            return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
+                '<entity name="new_serviceprovider">' +
+                '<order attribute="new_name" descending="false" />' +
+                '<filter type="and">' +
+                '<condition attribute="new_serviceproviderid" operator="' + operator + '">' + queryValues +
+                '</condition>' +
+                '<condition attribute="new_serviceproviderstatus" operator="eq" value="' + status + '" />' +
+                '</filter>' +
+                '</entity>' +
+                '</fetch>';
+        };
     });
