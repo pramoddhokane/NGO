@@ -231,7 +231,7 @@ angular.module('app', ['dataGrid', 'pagination', 'ngMaterial'])
                     var recordId = volDetails[0].new_campactivitymemberid;
                     ngoEventService.deleteAssignedVolunteer(recordId).then(function(response){
                         console.log('Delete');
-                    })
+                    });
                 });
             }
         }

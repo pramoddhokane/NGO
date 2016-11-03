@@ -94,6 +94,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 });
             }
         };
+
         $scope.getFilteredProviders = function (array1, array2, operator, status) {
             var filteredArray = _.union(array1, array2);
             var queryValues = '';
@@ -105,9 +106,9 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 ngoSPEventService.getserviceProvidersDetails(queryString).then(function (nonMatchingResponse) {
                     $scope.gridOptions.data = nonMatchingResponse.data.value;
                     console.log($scope.globalData);
-                })
+                });
             }
-        }
+        };
         $scope.preSelectedSP = function () {
             $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.nonServiceProviders, 'in', 100000000)
         }
@@ -136,6 +137,30 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
             }
             else if (approved === false && service === false && goods === false) {
 
+            }
+        };
+        $scope.assignServiceProviders = function (event, serviceProvider) {
+            if (event) {
+                var spDetails = {
+                    'new_providertype': serviceProvider.new_providertype,
+                    'new_name': serviceProvider['_new_associatedorganization_value@OData.Community.Display.V1.FormattedValue'],
+                    'new_serviceproviderstatus': 2,
+                    'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')',
+                    'new_ServiceProviderid@odata.bind': '/new_serviceproviders(' + serviceProvider.new_serviceproviderid + ')'
+                };
+                ngoSPEventService.assignserviceProviderstoEvent(spDetails).then(function (response) {
+                    console.log(response);
+                });
+            }
+            else {
+                var queryString = '$filter=_new_serviceproviderid_value eq ' + serviceProvider.new_serviceproviderid + ' and _new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid;
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (spResponse) {
+                    var spDetails = spResponse.data.value;
+                    var recordId = spDetails[0].new_goodsandservicememberid;
+                    ngoSPEventService.deleteAssignedVolunteer(recordId).then(function (response) {
+                        console.log('Delete');
+                    });
+                });
             }
         };
     }])
@@ -169,6 +194,19 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 return $http({
                     method: 'GET',
                     url: CommonSPService.serverURL + '/api/data/v8.0/new_serviceproviders?' + queryString
+                });
+            },
+            assignserviceProviderstoEvent: function (serviceProvider) {
+                return $http({
+                    method: 'POST',
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers',
+                    data: serviceProvider
+                });
+            },
+            deleteAssignedServiceProviders: function (recordID) {
+                return $http({
+                    method: 'DELETE',
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_campactivitymembers(' + recordID + ')'
                 });
             }
         };
