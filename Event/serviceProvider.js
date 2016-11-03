@@ -117,28 +117,25 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
             }
             else if (approved === true && service === true && goods === false) {
-                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
+
             }
             else if (approved === true && service === false && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000002);
+
             }
             else if (approved === true && service === false && goods === false) {
-                var queryString = '$filter=new_serviceproviderstatus eq 100000002';
-                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (approvedProviders) {
-                    $scope.gridOptions.data = approvedProviders.data.value;
-                })
+
             }
             else if (approved === false && service === true && goods === false) {
-                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000000);
+
             }
             else if (approved === false && service === false && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000000);
+
             }
             else if (approved === false && service === true && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
+
             }
             else if (approved === false && service === false && goods === false) {
-                $scope.preSelectedSP();
+
             }
         };
     }])
