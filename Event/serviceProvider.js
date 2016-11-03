@@ -118,25 +118,28 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
             }
             else if (approved === true && service === true && goods === false) {
-
+                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
             }
             else if (approved === true && service === false && goods === true) {
-
+                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000002);
             }
             else if (approved === true && service === false && goods === false) {
-
+                var queryString = '$filter=new_serviceproviderstatus eq 100000002';
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (approvedProviders) {
+                    $scope.gridOptions.data = approvedProviders.data.value;
+                });
             }
             else if (approved === false && service === true && goods === false) {
-
+                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000000);
             }
             else if (approved === false && service === false && goods === true) {
-
+                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000000);
             }
             else if (approved === false && service === true && goods === true) {
-
+                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
             }
             else if (approved === false && service === false && goods === false) {
-
+                $scope.preSelectedSP();
             }
         };
         $scope.assignServiceProviders = function (event, serviceProvider) {
@@ -154,10 +157,10 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
             }
             else {
                 var queryString = '$filter=_new_serviceproviderid_value eq ' + serviceProvider.new_serviceproviderid + ' and _new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid;
-                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (spResponse) {
+                ngoSPEventService.getAssignserviceProviders(queryString).then(function (spResponse) {
                     var spDetails = spResponse.data.value;
                     var recordId = spDetails[0].new_goodsandservicememberid;
-                    ngoSPEventService.deleteAssignedVolunteer(recordId).then(function (response) {
+                    ngoSPEventService.deleteAssignedServiceProviders(recordId).then(function (response) {
                         console.log('Delete');
                     });
                 });
@@ -203,10 +206,17 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                     data: serviceProvider
                 });
             },
+            getAssignserviceProviders: function (queryString) {
+                return $http({
+                    method: 'GET',
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers?' + queryString
+
+                });
+            },
             deleteAssignedServiceProviders: function (recordID) {
                 return $http({
                     method: 'DELETE',
-                    url: CommonSPService.serverURL + '/api/data/v8.0/new_campactivitymembers(' + recordID + ')'
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers(' + recordID + ')'
                 });
             }
         };
