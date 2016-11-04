@@ -39,7 +39,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                     $scope.getserviceProviders();
                 });
             }
-        }
+        };
 
         $scope.getserviceProviders = function () {
             var queryValues = '';
@@ -57,7 +57,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                     $scope.getNonserviceProviders();
                 });
             }
-        }
+        };
 
         $scope.getNonserviceProviders = function () {
             var queryValues = '';
@@ -75,7 +75,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                     $scope.getNonGoodsProviders();
                 });
             }
-        }
+        };
 
         $scope.getNonGoodsProviders = function () {
             var queryValues = '';
@@ -109,9 +109,10 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 });
             }
         };
+
         $scope.preSelectedSP = function () {
             $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.nonServiceProviders, 'in', 100000000)
-        }
+        };
 
         $scope.validateProvidersDetails = function (approved, service, goods) {
             if (approved === true && service === true && goods === true) {
@@ -142,6 +143,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 $scope.preSelectedSP();
             }
         };
+
         $scope.assignServiceProviders = function (event, serviceProvider) {
             if (event) {
                 var spDetails = {

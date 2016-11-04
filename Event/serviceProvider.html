@@ -66,17 +66,14 @@
                             <thead>
                                 <tr>
                                     <th sortable="new_name" class="sortable align">
-                                        <span>Service Providers Id</span>
+                                        <span>Service Provider Id</span>
                                     </th>
-                                    <th sortable="new_nameofvolunteer" class="sortable align">
-                                        <span>Service Providers Name</span>
+                                    <th sortable="new_serviceprovider1" class="sortable align">
+                                        <span>Service Provider Name</span>
                                     </th>
                                     <th sortable="new_city" class="sortable align">
                                         <span>City</span>
-                                    </th>
-                                    <th sortable="new_totalvolunteerhours" class="sortable align">
-                                        <span>Charges</span>
-                                    </th>
+                                    </th>                                   
                                     <th sortable="new_nameofvolunteer" class="sortable align">
                                         <span>Assign</span>
                                     </th>
@@ -89,10 +86,9 @@
                                 <tr grid-item="">
                                     <td ng-bind="item.new_name" class="align">
                                     </td>
-                                    <td ng-bind="item.new_nameofvolunteer" class="align"></td>
+                                    <td ng-bind="item.new_serviceprovider1" class="align"></td>
                                     <td ng-bind="item.new_city"></td>
-                                    <!--time Logged-->
-                                    <td ng-bind="item.new_totalvolunteerhours" class="align"></td>
+                                    <!--time Logged-->                                  
                                     <td>
                                         <input ng-model="item.status" type="checkbox" class="align" ng-change="assignServiceProviders(item.status,item)">
                                         
