@@ -1,0 +1,344 @@
+<html>
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="new_bootstrapCSS">
+    <link rel="stylesheet" href="new_bootstrapSwitchCSS">
+
+    <script src="new_jquery.min.js"></script>
+    <script src="new_bootstrapJS"></script>
+    <script src="new_bootstrapSwitchJS"></script>
+
+    <script src="new_ConfigurationScript"></script>
+
+    <style>
+        body {
+            font-family: Roboto;
+        }
+        
+        .type-table {
+            margin-bottom: 0;
+        }
+        
+        .type-table td {
+            font-size: 13px!important;
+            vertical-align: middle!important;
+            text-align: center;
+        }
+        
+        .type-table tr td:first-child {
+            background: #f9f9f9;
+            width: 50%;
+        }
+        
+        .form-text {
+            box-shadow: none!important;
+            border-radius: 0;
+        }
+        
+        .form-text:focus {
+            box-shadow: none!important;
+            border-color: grey;
+        }
+        
+        .main-panel-body {
+            padding-bottom: 0;
+        }
+        
+        .sub-panel .panel-heading {
+            padding: 2px 15px;
+        }
+        
+        .main-panel-heading {
+            font-size: 15px;
+            letter-spacing: 1px;
+            padding: 4px 15px!important;
+        }
+        
+        .bootstrap-switch {
+            height: 24px!important;
+            box-shadow: none!important;
+        }
+        
+        .bootstrap-switch .bootstrap-switch-handle-on,
+        .bootstrap-switch .bootstrap-switch-handle-off {
+            font-size: 10px;
+        }
+        
+        .bootstrap-switch .bootstrap-switch-handle-on,
+        .bootstrap-switch .bootstrap-switch-handle-off,
+        .bootstrap-switch .bootstrap-switch-label {
+            padding: 2px 12px!important;
+        }
+        
+        button {
+            font-size: 12px!important;
+        }
+        
+        .save-btn-box {
+            text-align: right;
+        }
+        
+        .save-btn {
+            padding: 4px 15px;
+            border: none;
+            font-size: 13px!important;
+            background: #337ab7;
+            color: #fff;
+        }
+        
+        @media (max-width: 767px) {
+            .main-container {
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .type-table td {
+                font-size: 12px!important;
+            }
+        }
+    </style>
+
+    <script>
+	/*	$(document).ready(function() {
+			$("[name='switch-checkbox']").bootstrapSwitch({onColor: 'primary',offColor: 'info'});
+		});*/
+	</script>
+
+
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+</head>
+
+<body onload="retreiveCurrentConfiguration();" style="word-wrap: break-word;">
+    <div class="main-container">
+
+        <!-- Organization Setup Box -->
+        <div class="col-md-6">
+            <!-- Organization Setup Panel -->
+            <div class="panel panel-default main-panel">
+                <div class="panel-heading main-panel-heading">1. Organization Setup</div>
+                <div class="panel-body main-panel-body">
+
+                    <!-- Row 1-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- Sub panel 1 -->
+                            <div class="panel panel-primary sub-panel">
+                                <div class="panel-heading"></div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-condensed type-table table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Organization Type</td>
+                                                    <td>
+                                                        <input type="checkbox" id="OrgType" name="switch-checkbox" data-on-text="NGO" data-off-text="NPO" data-off-color="success">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Organization Name</td>
+                                                    <td>
+                                                        <input type="text" id="OrgName" class="form-control form-text" placeholder="Enter organization name">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Manage Currency</td>
+                                                    <td><button class="btn btn-default" onclick="reDirectCurrency()">Set currency</button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td> Manage Time Zone &amp; Language</td>
+                                                    <td><button class="btn btn-default" onclick="reDirectTimeZone()">Set time zones</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- .table-responsive Ends -->
+                                </div>
+                                <!--<div class="panel-footer clearfix">
+									<div class="pull-right">
+										<button class="save-btn" onclick="configuration()">Save</button>
+									</div>-->
+                            </div>
+                        </div>
+                        <!-- Sub panel 1 Ends -->
+                    </div>
+                </div>
+
+
+                <!-- Row 2-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Sub panel 2 -->
+                        <div class="panel panel-primary sub-panel">
+                            <div class="panel-heading"></div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed type-table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>Manage Branches</td>
+                                                <td><button class="btn btn-default" onclick="reDirectBusinessUnit()"> Add branches</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- .table-responsive Ends -->
+                            </div>
+                        </div>
+                        <!-- Sub panel 2 Ends -->
+                    </div>
+                </div>
+
+
+                <!-- Row 3-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Sub panel 3 -->
+                        <div class="panel panel-primary sub-panel">
+                            <div class="panel-heading"></div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed type-table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>Manage Users &amp; Security Roles</td>
+                                                <td><button class="btn btn-default" onclick="reDirectUsers();">Add users</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- .table-responsive Ends -->
+                            </div>
+                        </div>
+                        <!-- Sub panel 3 Ends -->
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <!-- Organization Setup Panel Ends -->
+    </div>
+    <!-- Organization Setup Box Ends -->
+
+    <!--**************************************************************************************************-->
+
+    <!-- Environment Setup Box -->
+    <div class="col-md-6">
+        <!-- Environment Setup Panel -->
+        <div class="panel panel-default main-panel">
+            <div class="panel-heading main-panel-heading">2. Configuration Setup</div>
+            <div class="panel-body main-panel-body">
+                <!-- Row 3-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Sub panel 3 -->
+                        <div class="panel panel-primary sub-panel">
+                            <div class="panel-heading"></div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed type-table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>Manage Identity proof Documents</td>
+                                                <td><button class="btn btn-default" onclick="reDirectDocument()">Set documents</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Manage Membership Levels</td>
+                                                <td><button class="btn btn-default" onclick="reDirectMemberShipLevels()">Set level</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- .table-responsive Ends -->
+                            </div>
+                        </div>
+                        <!-- Sub panel 3 Ends -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Environment Setup Panel Ends -->
+    </div>
+    <!-- Environment Setup Box Ends -->
+
+    <!--**************************************************************************************************-->
+
+
+    <div class="col-md-6">
+        <!-- Environment Setup Panel -->
+        <div class="panel panel-default main-panel">
+            <div class="panel-heading main-panel-heading">3. Payment Setup </div>
+            <div class="panel-body main-panel-body">
+                <!-- Row 3-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Sub panel 3 -->
+                        <div class="panel panel-primary sub-panel">
+                            <div class="panel-heading"></div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed type-table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>Payment Limit</td>
+                                                <td>
+                                                    <input type="text" id="PaymentLimit" class="form-control form-text" placeholder="Enter Max Limit">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Anonymous Payment Limit</td>
+                                                <td>
+                                                    <input type="text" id="AnonymousPaymentLimit" class="form-control form-text" placeholder="Enter Max Limit">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>PAN CARD</td>
+                                                <td>
+                                                    
+                                                    <input type="text" id="panCard" class="form-control form-text" placeholder="Enter Pan-Card Number">
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>TAN</td>
+                                                <td><input type="text" id="panCard" class="form-control form-text" placeholder="Enter Tan Number"></td>
+                                            </tr>
+                                            
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- .table-responsive Ends -->
+                            </div>
+                            <div class="panel-footer clearfix">
+                                <div class="pull-right">
+                                    <button type="submit" class="save-btn" onclick="configuration()">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Sub panel 3 Ends -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Environment Setup Panel Ends -->
+    </div>
+    <!-- Environment Setup Box Ends -->
+
+
+
+
+    <script>
+    </script>
+
+</body>
+
+</html>
