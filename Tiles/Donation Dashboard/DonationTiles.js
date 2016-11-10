@@ -12,7 +12,7 @@ function getTotalDonations() {
     var length;
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
-    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000001 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
     odataSelect += 'PropertyValues=["' + currentYear + '-01-01T00:00:00Z","' + currentYear + '-12-31T23:59:59Z"])';      
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
@@ -26,8 +26,14 @@ function getTotalDonations() {
             for (var donation = 0; donation < donationsResult.length; donation++) {
                 donationAmount += donationsResult[donation].new_amount;
             }
-            donationAmount = donationAmount - 45000;
-            document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + donationAmount;
+             if(donationAmount>=1000){
+               document.getElementById("TotalDonationsThisYear").innerHTML ="₹" +(Math.round(parseFloat(donationAmount)/1000 * 100) / 100).toLocaleString() + "K";               
+            }
+            else
+            {                
+               document.getElementById("TotalDonationsThisYear").innerHTML = "₹" +(Math.round(donationAmount * 100) / 100).toLocaleString();               
+            }
+            //document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + donationAmount;
             document.getElementById("DonationThisyear").innerHTML =date.getFullYear();   
         }
     };
@@ -125,27 +131,27 @@ function totalDonors(data) {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
             data.totalDonors = JSON.parse(this.responseText).value.length;
             if(data.PaidDonation>=1000){
-               document.getElementById("receiveddonation").innerHTML =(Math.round(parseFloat(data.PaidDonation)/1000 * 100) / 100).toLocaleString() + "K";               
+               document.getElementById("receiveddonation").innerHTML ="₹" +(Math.round(parseFloat(data.PaidDonation)/1000 * 100) / 100).toLocaleString() + "K";               
             }
             else
             {                
-               document.getElementById("receiveddonation").innerHTML = (Math.round(data.PaidDonation * 100) / 100).toLocaleString();               
+               document.getElementById("receiveddonation").innerHTML = "₹" +(Math.round(data.PaidDonation * 100) / 100).toLocaleString();               
             }
             if(data.plannedDonation>=1000)
             {               
-               document.getElementById("expectedDonation").innerHTML =(Math.round(parseFloat(data.plannedDonation)/1000 * 100) / 100).toLocaleString() + "K";              
+               document.getElementById("expectedDonation").innerHTML ="₹" +(Math.round(parseFloat(data.plannedDonation)/1000 * 100) / 100).toLocaleString() + "K";              
             }
             else
             {
-                 document.getElementById("expectedDonation").innerHTML = (Math.round(data.plannedDonation * 100) / 100).toLocaleString(); 
+                 document.getElementById("expectedDonation").innerHTML ="₹" + (Math.round(data.plannedDonation * 100) / 100).toLocaleString(); 
             }   
             if(data.Average>=1000)
             {
-                document.getElementById("averageDonation").innerHTML =(Math.round(parseFloat(data.Average)/1000 * 100) / 100).toLocaleString()+ "K"; 
+                document.getElementById("averageDonation").innerHTML ="₹" +(Math.round(parseFloat(data.Average)/1000 * 100) / 100).toLocaleString()+ "K"; 
             }
             else
             {
-                document.getElementById("averageDonation").innerHTML = (Math.round(data.Average * 100) / 100).toLocaleString();
+                document.getElementById("averageDonation").innerHTML = "₹" +(Math.round(data.Average * 100) / 100).toLocaleString();
             }
             
             document.getElementById("donationCount").innerHTML = data.DonationCount;
