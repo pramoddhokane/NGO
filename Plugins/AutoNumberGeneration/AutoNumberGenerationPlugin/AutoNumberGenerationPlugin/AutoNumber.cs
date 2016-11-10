@@ -19,8 +19,8 @@ namespace AutoNumberGenerationPlugin
             context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
             serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
             service = serviceFactory.CreateOrganizationService(context.UserId);
-    
-        }
+        }           
+
 
     }
 }
