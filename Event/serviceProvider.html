@@ -15,36 +15,37 @@
     <script src="https://angular-data-grid.github.io/dist/pagination.js"></script>
     <script src="https://cdn.jsdelivr.net/lodash/4.16.4/lodash.min.js"></script>
     <script src="https://angular-data-grid.github.io/dist/dataGrid.js"></script>
-    <script src="new_eventActivityVolunteer.js"></script>
+    <script src="new_eventActivityServiceProviders"></script>
 <meta></head>
 
-<body ng-app="app" ng-controller="EventController" ng-cloak="" style="word-wrap: break-word;">
-    <div layout="column" layout-fill="">
+<body ng-app="spApp" ng-controller="spEventController" ng-cloak="" style="word-wrap: break-word;">
+    <div layout="column" layout-fill="" style="font-family: undefined;">
         <md-content layout="row" layout-align="center">
             <div flex-gt-md="100" flex-md="100" flex-xs="100">
                 <div layout-gt-xs="row" layout-xs="column" layout-align="stretch center">
                     <div layout="row" layout-align="center start">
                         <md-input-container md-no-float="" md-is-error="false" class="md-block flex-gt-xs flex-xs">
-                            <input ng-model="new_name" class="md-input" ng-change="gridActions.filter()" id="order" placeholder="Search by Volunteer Name" filter-by="new_name" filter-type="text" aria-invalid="false">
+                            <input ng-model="new_name" class="md-input" ng-change="gridActions.filter()" id="order" placeholder="Search by Service Provider" filter-by="new_name" filter-type="text" aria-invalid="false">
                         </md-input-container>
                     </div>
                 </div>
                 <div grid-data="" id="test" grid-options="gridOptions" grid-actions="gridActions">
+
                     <div layout-gt-sm="row" layout-sm="column" layout-align="center">
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <span>{{filtered.length}} items total</span>
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch> All Approved Volunteers
+                            <md-switch ng-model="allApprovedProviders" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
+                            </md-switch> All Approved Service Providers
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch> Volunteers with same cause
+                            <md-switch ng-model="sameServices" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
+                            </md-switch> Providers with same Services
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="sameSkillVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch>Volunteers with same skills
+                            <md-switch ng-model="sameGoods" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
+                            </md-switch>Providers with same Goods
                         </div>
                         <div flex-gt-sm="75" flex-xs="100">
                             <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
@@ -65,17 +66,14 @@
                             <thead>
                                 <tr>
                                     <th sortable="new_name" class="sortable align">
-                                        <span>Volunteer Id</span>
+                                        <span>Service Provider Id</span>
                                     </th>
-                                    <th sortable="new_nameofvolunteer" class="sortable align">
-                                        <span>Volunteer Name</span>
+                                    <th sortable="new_serviceprovider1" class="sortable align">
+                                        <span>Service Provider Name</span>
                                     </th>
                                     <th sortable="new_city" class="sortable align">
                                         <span>City</span>
-                                    </th>
-                                    <th sortable="new_totalvolunteerhours" class="sortable align">
-                                        <span>Time Logged</span>
-                                    </th>
+                                    </th>                                   
                                     <th sortable="new_nameofvolunteer" class="sortable align">
                                         <span>Assign</span>
                                     </th>
@@ -88,13 +86,12 @@
                                 <tr grid-item="">
                                     <td ng-bind="item.new_name" class="align">
                                     </td>
-                                    <td ng-bind="item.new_nameofvolunteer" class="align"></td>
+                                    <td ng-bind="item.new_serviceprovider1" class="align"></td>
                                     <td ng-bind="item.new_city"></td>
-                                    <!--time Logged-->
-                                    <td ng-bind="item.new_totalvolunteerhours" class="align"></td>
+                                    <!--time Logged-->                                  
                                     <td>
-                                        <input ng-model="item.status" type="checkbox" class="align" ng-change="assignVolunteer(item.status,item)">
-                                        <span style="display:none" ng-bind="item.new_volunteerid"></span>
+                                        <input ng-model="item.status" type="checkbox" class="align" ng-change="assignServiceProviders(item.status,item)">
+                                        
                                     </td>
                                     <td style="display:none" ng-bind="item.new_volunteerid" class="align"></td>
                                 </tr>
@@ -116,7 +113,6 @@
             </div>
         </md-content>
     </div>
-
 
 
 </body></html>

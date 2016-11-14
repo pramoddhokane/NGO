@@ -49,8 +49,15 @@ function getTotalDonations() {
             for (var donation = 0; donation < donationsResult.length; donation++) {
                 donationAmount += donationsResult[donation].new_amount;
             }
-            donationAmount = donationAmount - 45000;
-            document.getElementById("TotalDonations").innerHTML = "₹" + donationAmount;
+           
+            //document.getElementById("TotalDonations").innerHTML = "₹" + donationAmount;
+              if(donationAmount>=1000){
+               document.getElementById("TotalDonations").innerHTML ="₹" +(Math.round(parseFloat(donationAmount)/1000 * 100) / 100).toLocaleString() + "K";               
+            }
+            else
+            {                
+               document.getElementById("TotalDonations").innerHTML = "₹" +(Math.round(donationAmount * 100) / 100).toLocaleString();               
+            }
             document.getElementById("donationmonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
             newConstituentsThisMonth();
         }

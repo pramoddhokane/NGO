@@ -13,7 +13,7 @@ a:focus {
 .mdl-data-table tr {
   transition: none !important; }
 
-th md-select {
+th md-select {  
   margin: 0; }
 
 .md-errors-spacer {
@@ -81,3 +81,6 @@ ul.pagination {
 
 .sortable.sort-descent span:after {
   display: none; }
+  .align{
+    text-align: left;
+  }
