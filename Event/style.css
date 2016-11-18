@@ -81,6 +81,6 @@ ul.pagination {
 
 .sortable.sort-descent span:after {
   display: none; }
-  .align{
-    text-align: left;
+.align{
+    text-align: left !important;
   }
