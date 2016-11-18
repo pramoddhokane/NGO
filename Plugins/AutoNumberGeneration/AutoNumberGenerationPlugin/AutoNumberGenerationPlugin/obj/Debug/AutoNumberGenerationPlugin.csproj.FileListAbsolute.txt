@@ -1,0 +1,12 @@
+D:\NGO WR\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\obj\Debug\AutoNumberGenerationPlugin.csprojResolveAssemblyReference.cache
+D:\NGO WR\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\bin\Debug\AutoNumberGenerationPlugin.dll
+D:\NGO WR\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\bin\Debug\AutoNumberGenerationPlugin.pdb
+D:\NGO WR\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\bin\Debug\Microsoft.Xrm.Sdk.dll
+D:\NGO WR\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\bin\Debug\Microsoft.Xrm.Sdk.xml
+D:\NGO WR\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\obj\Debug\AutoNumberGenerationPlugin.dll
+D:\NGO WR\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\obj\Debug\AutoNumberGenerationPlugin.pdb
+C:\Users\Krishna Shahapur\Desktop\Rushi\Pramod Git\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\bin\Debug\AutoNumberGenerationPlugin.dll
+C:\Users\Krishna Shahapur\Desktop\Rushi\Pramod Git\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\bin\Debug\AutoNumberGenerationPlugin.pdb
+C:\Users\Krishna Shahapur\Desktop\Rushi\Pramod Git\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\bin\Debug\Microsoft.Xrm.Sdk.xml
+C:\Users\Krishna Shahapur\Desktop\Rushi\Pramod Git\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\obj\Debug\AutoNumberGenerationPlugin.dll
+C:\Users\Krishna Shahapur\Desktop\Rushi\Pramod Git\NGO\Plugins\AutoNumberGeneration\AutoNumberGenerationPlugin\AutoNumberGenerationPlugin\obj\Debug\AutoNumberGenerationPlugin.pdb
