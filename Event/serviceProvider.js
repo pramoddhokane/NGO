@@ -8,7 +8,8 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
         $scope.allApprovedProviders = false;
         $scope.sameServices = false;
         $scope.sameGoods = false;
-        $scope.globalData = {}
+        $scope.globalData = {};
+        $scope.globalData.filteredData = [];
         $scope.gridOptions = {
             data: [],
             urlSync: false
@@ -65,12 +66,12 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 queryValues += '<value>{' + $scope.globalData.serviceProviders[vol] + '}</value>';
             }
             if (queryValues !== '') {
-                var queryString = CommonSPService.allserviceProviders(queryValues, 'not-in');
-                ngoSPEventService.getserviceProviders(queryString).then(function (nonServiceProvidersResponse) {
+                var queryString = CommonSPService.getserviceProviders(queryValues, 'not-in', '');
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (nonServiceProvidersResponse) {
                     var nonServiceProviders = nonServiceProvidersResponse.data.value;
                     $scope.globalData.nonServiceProviders = [];
                     for (var volunteer = 0; volunteer < nonServiceProviders.length; volunteer++) {
-                        $scope.globalData.nonServiceProviders.push(nonServiceProviders[volunteer]._new_serviceprovider_value);
+                        $scope.globalData.nonServiceProviders.push(nonServiceProviders[volunteer].new_serviceproviderid);
                     }
                     $scope.getNonGoodsProviders();
                 });
@@ -83,29 +84,14 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 queryValues += '<value>{' + $scope.globalData.goodsProviders[vol] + '}</value>';
             }
             if (queryValues !== '') {
-                var queryString = CommonSPService.allGoodsProviders(queryValues, 'not-in');
-                ngoSPEventService.getGoodsProviders(queryString).then(function (nonGoodsProvidersResponse) {
+                var queryString = CommonSPService.getserviceProviders(queryValues, 'not-in', '');
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (nonGoodsProvidersResponse) {
                     var nonGoodsProviders = nonGoodsProvidersResponse.data.value;
                     $scope.globalData.nonGoodsProviders = [];
                     for (var volunteer = 0; volunteer < nonGoodsProviders.length; volunteer++) {
-                        $scope.globalData.nonGoodsProviders.push(nonGoodsProviders[volunteer]._new_providername_value);
+                        $scope.globalData.nonGoodsProviders.push(nonGoodsProviders[volunteer].new_serviceproviderid);
                     }
                     $scope.preSelectedSP();
-                });
-            }
-        };
-
-        $scope.getFilteredProviders = function (array1, array2, operator, status) {
-            var filteredArray = _.union(array1, array2);
-            var queryValues = '';
-            for (var vol = 0; vol < filteredArray.length; vol++) {
-                queryValues += '<value>{' + filteredArray[vol] + '}</value>';
-            }
-            if (queryValues !== '') {
-                var queryString = CommonSPService.getserviceProviders(queryValues, operator, status);
-                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (nonMatchingResponse) {
-                    $scope.gridOptions.data = nonMatchingResponse.data.value;
-                    console.log($scope.globalData);
                 });
             }
         };
@@ -115,6 +101,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
         };
 
         $scope.validateProvidersDetails = function (approved, service, goods) {
+            $scope.gridOptions.data = [];
             if (approved === true && service === true && goods === true) {
                 $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
             }
@@ -127,7 +114,10 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
             else if (approved === true && service === false && goods === false) {
                 var queryString = '$filter=new_serviceproviderstatus eq 100000002';
                 ngoSPEventService.getserviceProvidersDetails(queryString).then(function (approvedProviders) {
-                    $scope.gridOptions.data = approvedProviders.data.value;
+                    $scope.globalData.filteredData = [];
+                    $scope.globalData.filteredData = approvedProviders.data.value;
+                    $scope.appendDataToTable();
+                    //    $scope.gridOptions.data = approvedProviders.data.value;
                 });
             }
             else if (approved === false && service === true && goods === false) {
@@ -137,7 +127,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000000);
             }
             else if (approved === false && service === true && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
+                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000000);
             }
             else if (approved === false && service === false && goods === false) {
                 $scope.preSelectedSP();
@@ -148,7 +138,7 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
             if (event) {
                 var spDetails = {
                     'new_providertype': serviceProvider.new_providertype,
-                    'new_name': serviceProvider['_new_associatedorganization_value@OData.Community.Display.V1.FormattedValue'],
+                    'new_name': serviceProvider.new_serviceprovider1,
                     'new_serviceproviderstatus': 2,
                     'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')',
                     'new_ServiceProviderid@odata.bind': '/new_serviceproviders(' + serviceProvider.new_serviceproviderid + ')'
@@ -168,8 +158,63 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 });
             }
         };
-    }])
-    .factory('ngoSPEventService', function ($http, CommonSPService) {
+
+        $scope.getFilteredProviders = function (array1, array2, operator, status) {
+            var filteredArray = _.union(array1, array2);
+            var queryValues = '';
+            for (var vol = 0; vol < filteredArray.length; vol++) {
+                queryValues += '<value>{' + filteredArray[vol] + '}</value>';
+            }
+            if (queryValues !== '') {
+                var queryString = CommonSPService.getserviceProviders(queryValues, operator, status);
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (SPDetails) {
+                    $scope.globalData.filteredData = [];
+                    $scope.globalData.filteredData = SPDetails.data.value;
+                    $scope.appendDataToTable();
+                });
+            }
+        };
+
+        $scope.appendDataToTable = function () {
+            var queryString = '$filter=_new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid + ' and new_serviceproviderstatus eq 2';
+            ngoSPEventService.getAssignserviceProviders(queryString).then(function (existingSp) {
+                var spDetails = existingSp.data.value;
+                $scope.globalData.existingSP = [];
+                var sp_table = [];
+                _.forEach($scope.globalData.filteredData, function (selectedProvider) {
+                    selectedProvider.toAdd = 1;
+                    _.forEach(spDetails, function (spDetails) {
+                        if (selectedProvider.new_serviceproviderid === spDetails._new_serviceproviderid_value) {
+                            selectedProvider.toAdd = 0;
+                            sp_table.push({
+                                'new_name': selectedProvider.new_name,
+                                'new_serviceprovider1': selectedProvider.new_serviceprovider1,
+                                'status': true,
+                                'new_city': selectedProvider.new_city,
+                                'new_serviceproviderid': selectedProvider.new_serviceproviderid,
+                                'new_providertype': selectedProvider.new_providertype
+                            });
+                        }
+                    });
+                });
+
+                _.forEach($scope.globalData.filteredData, function (selectedProvider) {
+                    if (selectedProvider.toAdd == 1) {
+                        sp_table.push({
+                            'new_name': selectedProvider.new_name,
+                            'new_serviceprovider1': selectedProvider.new_serviceprovider1,
+                            'status': false,
+                            'new_city': selectedProvider.new_city,
+                            'new_serviceproviderid': selectedProvider.new_serviceproviderid,
+                            'new_providertype': selectedProvider.new_providertype
+                        });
+                    }
+                });
+                console.log(sp_table)
+                $scope.gridOptions.data = sp_table;
+            });
+        };
+    }]).factory('ngoSPEventService', function ($http, CommonSPService) {
         return {
             getEventActivityDetails: function () {
                 return $http({
@@ -265,13 +310,16 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
         };
 
         this.getserviceProviders = function (queryValues, operator, status) {
+            var conditionAttr = '';
+            if (status !== '') {
+                conditionAttr = '<condition attribute="new_serviceproviderstatus" operator="eq" value="' + status + '" />';
+            }
             return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
                 '<entity name="new_serviceprovider">' +
                 '<order attribute="new_name" descending="false" />' +
                 '<filter type="and">' +
                 '<condition attribute="new_serviceproviderid" operator="' + operator + '">' + queryValues +
-                '</condition>' +
-                '<condition attribute="new_serviceproviderstatus" operator="eq" value="' + status + '" />' +
+                '</condition>' + conditionAttr +
                 '</filter>' +
                 '</entity>' +
                 '</fetch>';
