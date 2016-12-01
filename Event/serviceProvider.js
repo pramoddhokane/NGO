@@ -120,16 +120,32 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
 
         $scope.assignServiceProviders = function (event, serviceProvider) {
             if (event) {
-                var spDetails = {
-                    'new_providertype': serviceProvider.new_providertype,
-                    'new_name': serviceProvider.new_serviceprovider1,
-                    'new_serviceproviderstatus': 2,
-                    'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')',
-                    'new_ServiceProviderid@odata.bind': '/new_serviceproviders(' + serviceProvider.new_serviceproviderid + ')'
-                };
-                ngoSPEventService.assignserviceProviderstoEvent(spDetails).then(function (response) {
-                    console.log(response);
-                });
+                if (serviceProvider.toUpdate == 0) {
+                    var spDetails = {
+                        'new_providertype': serviceProvider.new_providertype,
+                        'new_name': serviceProvider.new_serviceprovider1,
+                        'new_serviceproviderstatus': 2,
+                        'new_Event@odata.bind': '/new_camps(' + $scope.globalData.event._new_usedforcamp_value + ')',
+                        'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')',
+                        'new_ServiceProviderid@odata.bind': '/new_serviceproviders(' + serviceProvider.new_serviceproviderid + ')'
+                    };
+                    ngoSPEventService.assignserviceProviderstoEvent(spDetails).then(function (response) {
+                        console.log(response);
+                    });
+                }
+                else if (serviceProvider.toUpdate == 1) {
+                    var queryString = '$filter=_new_serviceproviderid_value eq ' + serviceProvider.new_serviceproviderid + ' and _new_event_value eq ' + $scope.globalData.event._new_usedforcamp_value;
+                    ngoSPEventService.getAssignserviceProviders(queryString).then(function (spResponse) {
+                        var spDetails = spResponse.data.value;
+                        var recordId = spDetails[0].new_goodsandservicememberid;
+                        ngoSPEventService.updateCampActivitySP(recordId, {
+                            'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')'
+                        }).then(function (response) {
+                            console.log('Updated');
+                        });
+                    });
+                }
+
             }
             else {
                 var queryString = '$filter=_new_serviceproviderid_value eq ' + serviceProvider.new_serviceproviderid + ' and _new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid;
@@ -144,7 +160,8 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
         };
 
         $scope.appendDataToTable = function (filteredData) {
-            var queryString = '$filter=_new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid + ' and new_serviceproviderstatus eq 2';
+            //   var queryString = '$filter=_new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid + ' and new_serviceproviderstatus eq 2';
+            var queryString = '$filter=_new_event_value eq ' + $scope.globalData.event._new_usedforcamp_value;
             ngoSPEventService.getAssignserviceProviders(queryString).then(function (existingSp) {
                 var spDetails = existingSp.data.value;
                 $scope.globalData.existingSP = [];
@@ -153,15 +170,25 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                     selectedProvider.toAdd = 1;
                     _.forEach(spDetails, function (spDetails) {
                         if (selectedProvider.new_serviceproviderid === spDetails._new_serviceproviderid_value) {
-                            selectedProvider.toAdd = 0;
-                            sp_table.push({
+                            var spDetailsInfo = {
                                 'new_name': selectedProvider.new_name,
                                 'new_serviceprovider1': selectedProvider.new_serviceprovider1,
-                                'status': true,
                                 'new_city': selectedProvider.new_city,
                                 'new_serviceproviderid': selectedProvider.new_serviceproviderid,
                                 'new_providertype': selectedProvider.new_providertype
-                            });
+                            }
+                            selectedProvider.toAdd = 0;
+                            if ($scope.globalData.event.new_eventactivityid === spDetails._new_campactivityname_value) {
+                                spDetailsInfo.toUpdate = 0;
+                                spDetailsInfo.status = true;
+                                sp_table.push(spDetailsInfo);
+                            }
+                            else {
+                                spDetailsInfo.status = false;
+                                spDetailsInfo.toUpdate = 1;
+                                sp_table.push(spDetailsInfo);
+                            }
+
                         }
                     });
                 });
@@ -174,11 +201,11 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                             'status': false,
                             'new_city': selectedProvider.new_city,
                             'new_serviceproviderid': selectedProvider.new_serviceproviderid,
-                            'new_providertype': selectedProvider.new_providertype
+                            'new_providertype': selectedProvider.new_providertype,
+                            'toUpdate': 0
                         });
                     }
                 });
-                //      console.log($scope.globalData)
                 if (sp_table.length !== 0) {
                     $scope.gridOptions.data = sp_table;
                 }
@@ -245,7 +272,6 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 return $http({
                     method: 'GET',
                     url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers?' + queryString
-
                 });
             },
             deleteAssignedServiceProviders: function (recordID) {
@@ -258,6 +284,13 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 return $http({
                     method: 'GET',
                     url: CommonSPService.serverURL + '/api/data/v8.0/new_goods_serviceses'
+                });
+            },
+            updateCampActivitySP: function (recordID, event) {
+                return $http({
+                    method: 'PATCH',
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers(' + recordID + ')',
+                    data: event
                 });
             },
         };
