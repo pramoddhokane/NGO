@@ -37,6 +37,7 @@ $scope.getImages = function(){
 };
 
 
+$scope.getImages();
 
 $scope.onLoad = function (e, reader, file, fileList, fileOjects, fileObj) {
     $scope.base64text = fileObj.base64;
@@ -45,12 +46,14 @@ $scope.onLoad = function (e, reader, file, fileList, fileOjects, fileObj) {
   
   
 $scope.uploadImages = function(){
-
+     
+     
      var annnotationdata = ({
                 'filename'  : $scope.imageFileName,
                 'documentbody' : $scope.base64text,
-                'objectid_contact@odata.bind' : '/contacts('+CommonService.recordId+')',
-                'mimetype' : 'image/png'
+                'objectid_new_beneficiary@odata.bind' : '/new_beneficiaries('+CommonService.recordId+')',
+                'mimetype' : 'image/png',
+                'notetext' : $scope.notetext
             });
 
      $http({

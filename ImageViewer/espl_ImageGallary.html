@@ -19,15 +19,18 @@
 </head>
 
 
-<body ng-controller="MainCtrl">
+
+<form name="myForm" ng-controller="MainCtrl">
+<body>
 <header>
 </header>
 
 <div class="input-group">
         <label for="file">Select File</label>
         <input type="file" ng-model="file" name="file" base-sixty-four-input required onload="onLoad" maxsize="500" accept="image/*">
+        <input type="text" name="notetext" ng-model="notetext" required>
 </div>
-<button ng-click="uploadImages()">Upload..</button>
+<button ng-click="uploadImages()" ng-disabled="myForm.file.$invalid || myForm.notetext.$invalid">Upload..</button>
 <!-- slider container -->
 <div class="container slider">
 <!-- enumerate all photos -->
@@ -42,5 +45,7 @@
 </li>
 </ul>
 </div>
+
 </body>
+</form>
 </html>
