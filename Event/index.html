@@ -36,12 +36,13 @@
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch> All Approved Volunteers
+                            </md-switch> Only Approved
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
                             </md-switch> Volunteers with same cause
                         </div>
+                        
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <md-switch ng-model="sameSkillVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
                             </md-switch>Volunteers with same skills
@@ -92,8 +93,8 @@
                                     <td ng-bind="item.new_city"></td>
                                     <!--time Logged-->
                                     <td ng-bind="item.new_totalvolunteerhours" class="align"></td>
-                                    <td>
-                                        <input ng-model="item.status" type="checkbox" class="align" ng-change="assignVolunteer(item.status,item)">
+                                    <td class="align">
+                                        <input ng-model="item.status" type="checkbox"  ng-change="assignVolunteer(item.status,item)">
                                         <span style="display:none" ng-bind="item.new_volunteerid"></span>
                                     </td>
                                     <td style="display:none" ng-bind="item.new_volunteerid" class="align"></td>

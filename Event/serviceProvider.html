@@ -16,7 +16,8 @@
     <script src="https://cdn.jsdelivr.net/lodash/4.16.4/lodash.min.js"></script>
     <script src="https://angular-data-grid.github.io/dist/dataGrid.js"></script>
     <script src="new_eventActivityServiceProviders"></script>
-<meta></head>
+    <meta>
+<meta><meta></head>
 
 <body ng-app="spApp" ng-controller="spEventController" ng-cloak="" style="word-wrap: break-word;">
     <div layout="column" layout-fill="" style="font-family: undefined;">
@@ -36,18 +37,28 @@
                             <span>{{filtered.length}} items total</span>
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="allApprovedProviders" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
-                            </md-switch> All Approved Service Providers
+                            <md-switch ng-model="allApprovedProviders" aria-label="Switch 1" ng-change="displayApproved(allApprovedProviders,sameServices,sameGoods)">
+                            </md-switch> Only Approved
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="sameServices" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
-                            </md-switch> Providers with same Services
+                            <md-switch ng-model="sameServices" aria-label="Switch 1" ng-change="hideGoods(sameGoods)">
+                            </md-switch> Service Providers
+                        </div>
+                        <div layout="column" layout-align="center center">
+                            <md-select placeholder="Select Services" ng-if="sameServices" ng-model="allServices" style="min-width: 200px;" ng-change="getSelectedSProviders(allServices,allApprovedProviders)">
+                                <md-option ng-value="services.new_goods_servicesid" ng-repeat="services in globalData.goodsServicesDetails | filter:{new_producttype: 100000000}">{{services.new_name}}</md-option>
+                            </md-select>
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                            <md-switch ng-model="sameGoods" aria-label="Switch 1" ng-change="validateProvidersDetails(allApprovedProviders,sameServices,sameGoods)">
-                            </md-switch>Providers with same Goods
+                            <md-switch ng-model="sameGoods" aria-label="Switch 1" ng-change="hideServices(sameServices)">
+                            </md-switch>Goods Providers
                         </div>
-                        <div flex-gt-sm="75" flex-xs="100">
+                        <div layout="column" layout-align="center center">
+                            <md-select placeholder="Select Goods" ng-if="sameGoods" ng-model="allGoods" style="min-width: 200px;" ng-change="getSelectedGProviders(allGoods,allApprovedProviders)">
+                                <md-option ng-value="goods.new_goods_servicesid" ng-repeat="goods in  globalData.goodsServicesDetails |filter:{new_producttype: 100000001}">{{goods.new_name}}</md-option>
+                            </md-select>
+                        </div>
+                        <div flex-gt-sm="25" flex-xs="100">
                             <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
                                 <grid-pagination max-size="5" boundary-links="true" class="pagination mdl-shadow--2dp" ng-if="paginationOptions.totalItems  > paginationOptions.itemsPerPage" total-items="paginationOptions.totalItems" ng-model="paginationOptions.currentPage" ng-change="reloadGrid()" items-per-page="paginationOptions.itemsPerPage"></grid-pagination>
                                 <md-input-container flex-offset-gt-xs="5" class="items-per-page">
@@ -73,7 +84,7 @@
                                     </th>
                                     <th sortable="new_city" class="sortable align">
                                         <span>City</span>
-                                    </th>                                   
+                                    </th>
                                     <th sortable="new_nameofvolunteer" class="sortable align">
                                         <span>Assign</span>
                                     </th>
@@ -88,12 +99,12 @@
                                     </td>
                                     <td ng-bind="item.new_serviceprovider1" class="align"></td>
                                     <td ng-bind="item.new_city"></td>
-                                    <!--time Logged-->                                  
-                                    <td>
-                                        <input ng-model="item.status" type="checkbox" class="align" ng-change="assignServiceProviders(item.status,item)">
-                                        
+                                    <!--time Logged-->
+                                    <td class="align">
+                                        <input ng-model="item.status" type="checkbox" ng-change="assignServiceProviders(item.status,item)">
+
                                     </td>
-                                    <td style="display:none" ng-bind="item.new_volunteerid" class="align"></td>
+                                    <td style="display:none" ng-bind="item.new_serviceproviderid" class="align"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -113,6 +124,8 @@
             </div>
         </md-content>
     </div>
+
+
 
 
 </body></html>

@@ -5,157 +5,147 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
         var querystring;
         var nonEmptyVoluteers = [];
 
-        $scope.allApprovedProviders = false;
-        $scope.sameServices = false;
-        $scope.sameGoods = false;
-        $scope.globalData = {}
+        $scope.allApprovedProviders;
+        $scope.sameServices;
+        $scope.sameGoods;
+        $scope.allServices;
+        $scope.allGoods;
+        $scope.globalData = {};
+        $scope.globalData.filteredData = [];
         $scope.gridOptions = {
             data: [],
             urlSync: false
         };
 
         ngoSPEventService.getEventActivityDetails().then(function (response) {
+            $scope.sameServices = false;
+            $scope.sameGoods = false;
             eventActivityDetails = response.data;
             $scope.globalData.event = eventActivityDetails;
-            ngoSPEventService.getGoodsandServices().then(function (goodsServiceResponse) {
-                $scope.globalData.goodsServices = goodsServiceResponse.data.value;
-                $scope.getGoodsProviders();
+            ngoSPEventService.getGoodsAndServiceDetails().then(function (goodsServiceResponse) {
+                $scope.globalData.GoodsAndServices = goodsServiceResponse.data.value;
+                ngoSPEventService.getGoodsAndServiceDetails().then(function (goodsServices) {
+                    $scope.globalData.goodsServicesDetails = goodsServices.data.value;
+                })
+                $scope.getAllServiceProviders();
             });
         });
+        $scope.getAllServiceProviders = function () {
+            ngoSPEventService.getserviceProvidersDetails('').then(function (allserviceProviders) {
+                $scope.globalData.allserviceProviders = allserviceProviders.data.value;
+                $scope.allApprovedServiceProviders();
+            });
+        };
 
-        $scope.getGoodsProviders = function () {
-            var queryValues = '';
-            for (var vol = 0; vol < $scope.globalData.goodsServices.length; vol++) {
-                queryValues += '<value>{' + $scope.globalData.goodsServices[vol].new_goods_servicesid + '}</value>';
+        $scope.allApprovedServiceProviders = function () {
+            $scope.globalData.approvedServiceProviders = [];
+            _.forEach($scope.globalData.allserviceProviders, function (sp) {
+                if (sp.new_serviceproviderstatus == 100000002) {
+                    $scope.globalData.approvedServiceProviders.push(sp);
+                }
+            })
+            $scope.appendDataToTable($scope.globalData.allserviceProviders);
+        }
+
+        $scope.displayApproved = function (spStatus, isServices, isGoods) {
+            if (spStatus) {
+                if (isServices && isGoods === false) {
+                    $scope.getSelectedSProviders($scope.allServices, true);
+                }
+                else if (isServices === false && isGoods) {
+                    $scope.getSelectedSProviders($scope.allGoods, true);
+                }
+                else {
+                    $scope.appendDataToTable($scope.globalData.approvedServiceProviders);
+                }
             }
+            else {
+                if (isServices && isGoods === false) {
+                    $scope.getSelectedSProviders($scope.allServices, false);
+                }
+                else if (isServices === false && isGoods) {
+                    $scope.getSelectedSProviders($scope.allGoods, false);
+                }
+                else {
+                    $scope.appendDataToTable($scope.globalData.allserviceProviders);
+                }
+            }
+        };
+
+        $scope.getSelectedSProviders = function (gsid, approved) {
+            var fetch = '';
+            $scope.allServices = gsid;
+            if (gsid) {
+                fetch = '$filter=_new_nameofservice_value eq ' + gsid;
+            }
+            ngoSPEventService.getserviceProviders(fetch).then(function (res) {
+                var filteredArray = res.data.value;
+                var queryValues = '';
+                for (var vol = 0; vol < filteredArray.length; vol++) {
+                    queryValues += '<value>{' + filteredArray[vol]._new_serviceprovider_value + '}</value>';
+                }
+                $scope.getServiceProvidersinfo(queryValues, approved);
+            })
+        };
+
+        $scope.getSelectedGProviders = function (gsid, approved) {
+            $scope.allServices = gsid;
+            var queryString = '';
+            if (gsid) {
+                queryString = '$filter=_new_nameofgoodscommodity_value eq ' + gsid;
+            }
+            ngoSPEventService.getGoodsProviders(queryString).then(function (res) {
+                var filteredArray = res.data.value;
+                var queryValues = '';
+                for (var vol = 0; vol < filteredArray.length; vol++) {
+                    queryValues += '<value>{' + filteredArray[vol]._new_providername_value + '}</value>';
+                }
+                $scope.getServiceProvidersinfo(queryValues, approved)
+            })
+        };
+
+        $scope.getServiceProvidersinfo = function (queryValues, approved) {
             if (queryValues !== '') {
-                var queryString = CommonSPService.allGoodsProviders(queryValues, 'in');
-                ngoSPEventService.getGoodsProviders(queryString).then(function (goodsProvidersResponse) {
-                    var goodsProviders = goodsProvidersResponse.data.value;
-                    $scope.globalData.goodsProviders = [];
-                    for (var volunteer = 0; volunteer < goodsProviders.length; volunteer++) {
-                        $scope.globalData.goodsProviders.push(goodsProviders[volunteer]._new_providername_value);
-                    }
-                    $scope.getserviceProviders();
+                var queryString = CommonSPService.getserviceProviders(queryValues, 'in', '');
+                if (approved) {
+                    queryString = CommonSPService.getserviceProviders(queryValues, 'in', 100000002);
+                }
+                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (SPDetails) {
+                    $scope.globalData.filteredData = [];
+                    $scope.globalData.filteredData = SPDetails.data.value;
+                    $scope.appendDataToTable($scope.globalData.filteredData);
                 });
             }
-        };
-
-        $scope.getserviceProviders = function () {
-            var queryValues = '';
-            for (var vol = 0; vol < $scope.globalData.goodsServices.length; vol++) {
-                queryValues += '<value>{' + $scope.globalData.goodsServices[vol].new_goods_servicesid + '}</value>';
-            }
-            if (queryValues !== '') {
-                var queryString = CommonSPService.allserviceProviders(queryValues, 'in');
-                ngoSPEventService.getserviceProviders(queryString).then(function (serviceProvidersResponse) {
-                    var serviceProviders = serviceProvidersResponse.data.value;
-                    $scope.globalData.serviceProviders = [];
-                    for (var volunteer = 0; volunteer < serviceProviders.length; volunteer++) {
-                        $scope.globalData.serviceProviders.push(serviceProviders[volunteer]._new_serviceprovider_value);
-                    }
-                    $scope.getNonserviceProviders();
-                });
-            }
-        };
-
-        $scope.getNonserviceProviders = function () {
-            var queryValues = '';
-            for (var vol = 0; vol < $scope.globalData.serviceProviders.length; vol++) {
-                queryValues += '<value>{' + $scope.globalData.serviceProviders[vol] + '}</value>';
-            }
-            if (queryValues !== '') {
-                var queryString = CommonSPService.allserviceProviders(queryValues, 'not-in');
-                ngoSPEventService.getserviceProviders(queryString).then(function (nonServiceProvidersResponse) {
-                    var nonServiceProviders = nonServiceProvidersResponse.data.value;
-                    $scope.globalData.nonServiceProviders = [];
-                    for (var volunteer = 0; volunteer < nonServiceProviders.length; volunteer++) {
-                        $scope.globalData.nonServiceProviders.push(nonServiceProviders[volunteer]._new_serviceprovider_value);
-                    }
-                    $scope.getNonGoodsProviders();
-                });
-            }
-        };
-
-        $scope.getNonGoodsProviders = function () {
-            var queryValues = '';
-            for (var vol = 0; vol < $scope.globalData.goodsProviders.length; vol++) {
-                queryValues += '<value>{' + $scope.globalData.goodsProviders[vol] + '}</value>';
-            }
-            if (queryValues !== '') {
-                var queryString = CommonSPService.allGoodsProviders(queryValues, 'not-in');
-                ngoSPEventService.getGoodsProviders(queryString).then(function (nonGoodsProvidersResponse) {
-                    var nonGoodsProviders = nonGoodsProvidersResponse.data.value;
-                    $scope.globalData.nonGoodsProviders = [];
-                    for (var volunteer = 0; volunteer < nonGoodsProviders.length; volunteer++) {
-                        $scope.globalData.nonGoodsProviders.push(nonGoodsProviders[volunteer]._new_providername_value);
-                    }
-                    $scope.preSelectedSP();
-                });
-            }
-        };
-
-        $scope.getFilteredProviders = function (array1, array2, operator, status) {
-            var filteredArray = _.union(array1, array2);
-            var queryValues = '';
-            for (var vol = 0; vol < filteredArray.length; vol++) {
-                queryValues += '<value>{' + filteredArray[vol] + '}</value>';
-            }
-            if (queryValues !== '') {
-                var queryString = CommonSPService.getserviceProviders(queryValues, operator, status);
-                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (nonMatchingResponse) {
-                    $scope.gridOptions.data = nonMatchingResponse.data.value;
-                    console.log($scope.globalData);
-                });
-            }
-        };
-
-        $scope.preSelectedSP = function () {
-            $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.nonServiceProviders, 'in', 100000000)
-        };
-
-        $scope.validateProvidersDetails = function (approved, service, goods) {
-            if (approved === true && service === true && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
-            }
-            else if (approved === true && service === true && goods === false) {
-                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
-            }
-            else if (approved === true && service === false && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000002);
-            }
-            else if (approved === true && service === false && goods === false) {
-                var queryString = '$filter=new_serviceproviderstatus eq 100000002';
-                ngoSPEventService.getserviceProvidersDetails(queryString).then(function (approvedProviders) {
-                    $scope.gridOptions.data = approvedProviders.data.value;
-                });
-            }
-            else if (approved === false && service === true && goods === false) {
-                $scope.getFilteredProviders($scope.globalData.nonGoodsProviders, $scope.globalData.serviceProviders, 'in', 100000000);
-            }
-            else if (approved === false && service === false && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.nonServiceProviders, $scope.globalData.goodsProviders, 'in', 100000000);
-            }
-            else if (approved === false && service === true && goods === true) {
-                $scope.getFilteredProviders($scope.globalData.goodsProviders, $scope.globalData.serviceProviders, 'in', 100000002);
-            }
-            else if (approved === false && service === false && goods === false) {
-                $scope.preSelectedSP();
-            }
-        };
+        }
 
         $scope.assignServiceProviders = function (event, serviceProvider) {
             if (event) {
-                var spDetails = {
-                    'new_providertype': serviceProvider.new_providertype,
-                    'new_name': serviceProvider['_new_associatedorganization_value@OData.Community.Display.V1.FormattedValue'],
-                    'new_serviceproviderstatus': 2,
-                    'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')',
-                    'new_ServiceProviderid@odata.bind': '/new_serviceproviders(' + serviceProvider.new_serviceproviderid + ')'
-                };
-                ngoSPEventService.assignserviceProviderstoEvent(spDetails).then(function (response) {
-                    console.log(response);
-                });
+                if (serviceProvider.toUpdate == 0) {
+                    var spDetails = {
+                        'new_providertype': serviceProvider.new_providertype,
+                        'new_name': serviceProvider.new_serviceprovider1,
+                        'new_serviceproviderstatus': 2,
+                        'new_Event@odata.bind': '/new_camps(' + $scope.globalData.event._new_usedforcamp_value + ')',
+                        'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')',
+                        'new_ServiceProviderid@odata.bind': '/new_serviceproviders(' + serviceProvider.new_serviceproviderid + ')'
+                    };
+                    ngoSPEventService.assignserviceProviderstoEvent(spDetails).then(function (response) {
+                        console.log(response);
+                    });
+                }
+                else if (serviceProvider.toUpdate == 1) {
+                    var queryString = '$filter=_new_serviceproviderid_value eq ' + serviceProvider.new_serviceproviderid + ' and _new_event_value eq ' + $scope.globalData.event._new_usedforcamp_value;
+                    ngoSPEventService.getAssignserviceProviders(queryString).then(function (spResponse) {
+                        var spDetails = spResponse.data.value;
+                        var recordId = spDetails[0].new_goodsandservicememberid;
+                        ngoSPEventService.updateCampActivitySP(recordId, {
+                            'new_CampActivityName@odata.bind': '/new_eventactivities(' + $scope.globalData.event.new_eventactivityid + ')'
+                        }).then(function (response) {
+                            console.log('Updated');
+                        });
+                    });
+                }
+
             }
             else {
                 var queryString = '$filter=_new_serviceproviderid_value eq ' + serviceProvider.new_serviceproviderid + ' and _new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid;
@@ -168,8 +158,78 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 });
             }
         };
-    }])
-    .factory('ngoSPEventService', function ($http, CommonSPService) {
+
+        $scope.appendDataToTable = function (filteredData) {
+            //   var queryString = '$filter=_new_campactivityname_value eq ' + $scope.globalData.event.new_eventactivityid + ' and new_serviceproviderstatus eq 2';
+            var queryString = '$filter=_new_event_value eq ' + $scope.globalData.event._new_usedforcamp_value;
+            ngoSPEventService.getAssignserviceProviders(queryString).then(function (existingSp) {
+                var spDetails = existingSp.data.value;
+                $scope.globalData.existingSP = [];
+                var sp_table = [];
+                _.forEach(filteredData, function (selectedProvider) {
+                    selectedProvider.toAdd = 1;
+                    _.forEach(spDetails, function (spDetails) {
+                        if (selectedProvider.new_serviceproviderid === spDetails._new_serviceproviderid_value) {
+                            var spDetailsInfo = {
+                                'new_name': selectedProvider.new_name,
+                                'new_serviceprovider1': selectedProvider.new_serviceprovider1,
+                                'new_city': selectedProvider.new_city,
+                                'new_serviceproviderid': selectedProvider.new_serviceproviderid,
+                                'new_providertype': selectedProvider.new_providertype
+                            }
+                            selectedProvider.toAdd = 0;
+                            if ($scope.globalData.event.new_eventactivityid === spDetails._new_campactivityname_value) {
+                                spDetailsInfo.toUpdate = 0;
+                                spDetailsInfo.status = true;
+                                sp_table.push(spDetailsInfo);
+                            }
+                            else {
+                                spDetailsInfo.status = false;
+                                spDetailsInfo.toUpdate = 1;
+                                sp_table.push(spDetailsInfo);
+                            }
+
+                        }
+                    });
+                });
+
+                _.forEach(filteredData, function (selectedProvider) {
+                    if (selectedProvider.toAdd == 1) {
+                        sp_table.push({
+                            'new_name': selectedProvider.new_name,
+                            'new_serviceprovider1': selectedProvider.new_serviceprovider1,
+                            'status': false,
+                            'new_city': selectedProvider.new_city,
+                            'new_serviceproviderid': selectedProvider.new_serviceproviderid,
+                            'new_providertype': selectedProvider.new_providertype,
+                            'toUpdate': 0
+                        });
+                    }
+                });
+                if (sp_table.length !== 0) {
+                    $scope.gridOptions.data = sp_table;
+                }
+                else {
+                    this._gridOptions.data = [];
+                }
+            });
+        };
+
+        $scope.hideGoods = function (event) {
+            if (event) {
+                this.sameGoods = false;
+                this.allGoods = null;
+            }
+        };
+
+        $scope.hideServices = function (event) {
+            if (event) {
+                this.sameServices = false;
+                this.allServices = null;
+            }
+        };
+
+    }]).factory('ngoSPEventService', function ($http, CommonSPService) {
         return {
             getEventActivityDetails: function () {
                 return $http({
@@ -212,7 +272,6 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                 return $http({
                     method: 'GET',
                     url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers?' + queryString
-
                 });
             },
             deleteAssignedServiceProviders: function (recordID) {
@@ -220,7 +279,20 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
                     method: 'DELETE',
                     url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers(' + recordID + ')'
                 });
-            }
+            },
+            getGoodsAndServiceDetails: function () {
+                return $http({
+                    method: 'GET',
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_goods_serviceses'
+                });
+            },
+            updateCampActivitySP: function (recordID, event) {
+                return $http({
+                    method: 'PATCH',
+                    url: CommonSPService.serverURL + '/api/data/v8.0/new_goodsandservicemembers(' + recordID + ')',
+                    data: event
+                });
+            },
         };
     }).factory('httpRequestInterceptor', function () {
         return {
@@ -265,13 +337,27 @@ angular.module('spApp', ['dataGrid', 'pagination', 'ngMaterial'])
         };
 
         this.getserviceProviders = function (queryValues, operator, status) {
+            var conditionAttr = '';
+            if (status !== '') {
+                conditionAttr = '<condition attribute="new_serviceproviderstatus" operator="eq" value="' + status + '" />';
+            }
             return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
                 '<entity name="new_serviceprovider">' +
                 '<order attribute="new_name" descending="false" />' +
                 '<filter type="and">' +
                 '<condition attribute="new_serviceproviderid" operator="' + operator + '">' + queryValues +
+                '</condition>' + conditionAttr +
+                '</filter>' +
+                '</entity>' +
+                '</fetch>';
+        };
+        this.getGoodsServiceDetails = function (queryValues) {
+            return 'fetchXml=<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">' +
+                '<entity name="new_goods_services">' +
+                '<order attribute="new_name" descending="false" />' +
+                '<filter type="and">' +
+                '<condition attribute="new_goods_servicesid" operator="in">' + queryValues +
                 '</condition>' +
-                '<condition attribute="new_serviceproviderstatus" operator="eq" value="' + status + '" />' +
                 '</filter>' +
                 '</entity>' +
                 '</fetch>';
