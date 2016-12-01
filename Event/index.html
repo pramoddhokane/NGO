@@ -36,12 +36,13 @@
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <md-switch ng-model="allApproved" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
-                            </md-switch> All Approved Volunteers
+                            </md-switch> Only Approved
                         </div>
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <md-switch ng-model="sameCauseVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
                             </md-switch> Volunteers with same cause
                         </div>
+                        
                         <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
                             <md-switch ng-model="sameSkillVol" aria-label="Switch 1" ng-change="validateVolunteersDetails(allApproved,sameCauseVol,sameSkillVol)">
                             </md-switch>Volunteers with same skills
