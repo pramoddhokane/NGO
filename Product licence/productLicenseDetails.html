@@ -1,0 +1,103 @@
+<html>
+
+<head>
+	<!-- title and meta -->
+	<meta charset="utf-8">
+	<meta content="width=device-width,initial-scale=1.0, user-scalable=no" name="viewport">
+	<link rel='shortcut icon' href='fav.ico' type='image/x-icon' />
+	<title>Eternus Solutions - Go Karma</title>
+	<!-- css -->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Montserrat">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,600,700,800,900">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nunito">
+	<link rel="stylesheet" href="new_bootstrapCSS">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="new_productlicensingcss">
+
+	<script src="new_JQuery_1.11.3"></script>
+	<script src="new_bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="new_ProductLicensingJS"></script>
+</head>
+
+<body ng-app="plApp" ng-controller="ngoProductLicesnseController as vm">
+	<!-- Top section  -->
+	<section class="top-section">
+		GO Karma - By Eternus Solutions Pvt. Ltd.
+	</section>
+	<!-- Top section Ends -->
+
+	<!--************************************ Main Content ********************************************************************-->
+	<div class="container">
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+				<div class="main-form-box">
+					<div class="row">
+						<div class="col-md-1"></div>
+						<div class="col-md-10">
+							<!-- Main form -->
+							<div class="row form-row">
+								<div class="col-md-4 label-box">
+									<label class="form-label">Product Key:</label>
+								</div>
+								<div class="col-md-8">
+									<input type="text" ng-model="vm.productKey" class="form-control form-text" />
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-4 label-box">
+									<label class="form-label">Licensing Information:</label>
+								</div>
+								<div class="col-md-6">
+									<ul class="license-info-list">
+										<li>
+											Number of purchased user license: <b>13</b>
+											<!--<input type="number" class="number-field" /> -->
+										</li>
+										<li>
+											Start Date : <b>07/12/2016</b>
+										</li>
+										<li>
+											End Date : <b>07/12/2016</b>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
+									<hr class="separator" />
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12 btn-box">
+									<button type="button" class="top-btns" ng-click="vm.saveLicenseDetails()">{{vm.buttonCaption}}</button>
+									<button type="button" class="top-btns">Cancel</button>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12 support-link">
+									* To get help send email to <a href="mailto:support@eternussolutions.com" target="_top">support@eternussolutions.com</a>
+								</div>
+							</div>
+
+							<!-- Main form Ends -->
+						</div>
+						<div class="col-md-1"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+	</div>
+	<!--********************************************************************************************************-->
+
+
+</body>
+
+</html>
