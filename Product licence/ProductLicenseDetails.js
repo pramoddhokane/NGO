@@ -1,25 +1,38 @@
 "use strict";
 angular.module('plApp', [])
-    .controller('ngoProductLicesnseController', ['ngoPLService', 'commonPLService', function (ngoPLService, commonPLService) {
+    .controller('ngoProductLicesnseController', ['ngoPLService', 'commonPLService', '$filter', function (ngoPLService, commonPLService, $filter) {
         var vm = this;
         vm.isRegistered = false;
         vm.productKey = null;
         vm.buttonCaption = 'Save';
+        var secretKey = 'espl@123';
         var licenseDetails = {};
 
         ngoPLService.getLicenseDetails().then(function (res) {
             licenseDetails = res.data.value;
             if (licenseDetails.length != 0) {
                 vm.buttonCaption = 'Update';
-                vm.productKey = licenseDetails[0].new_name
+                var licensedKey = CryptoJS.AES.decrypt(licenseDetails[0].new_name, secretKey);
+                vm.productDecKey = licensedKey.toString(CryptoJS.enc.Utf8);
+                var licDetails = vm.productDecKey.split('|')
+                if (licDetails.length == 5) {
+                    vm.productKey = licDetails[0];
+                    vm.startDate = licDetails[1];
+                    vm.endDate = licDetails[2];
+                    vm.gracePeriod = licDetails[3];
+                    vm.licenses = licDetails[4];
+                }
                 vm.isRegistered = true;
             }
         });
 
         vm.saveLicenseDetails = function () {
             if (vm.productKey !== null) {
+                //ProductKey/Start Date / End Date / Grace Period/ License
+                vm.productEncKey = vm.productKey + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + '25' + '|32';
+                var encrypted = CryptoJS.AES.encrypt(vm.productEncKey, secretKey).toString();
                 var productLicense = {
-                    new_name: vm.productKey,
+                    new_name: encrypted,
                 }
                 if (vm.isRegistered) {
                     ngoPLService.updateLicenseDetails(licenseDetails[0].new_productlicenseid, productLicense).then(function (res) {

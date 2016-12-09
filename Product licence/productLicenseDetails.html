@@ -18,6 +18,7 @@
 	<script src="new_JQuery_1.11.3"></script>
 	<script src="new_bootstrap.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="new_espl_CryptoJS.js"></script>
 	<script src="new_ProductLicensingJS"></script>
 </head>
 
@@ -54,14 +55,14 @@
 								<div class="col-md-6">
 									<ul class="license-info-list">
 										<li>
-											Number of purchased user license: <b>13</b>
+											Number of purchased user license: <b>{{vm.licenses}}</b>
 											<!--<input type="number" class="number-field" /> -->
 										</li>
 										<li>
-											Start Date : <b>07/12/2016</b>
+											Start Date : <b>{{vm.startDate}}</b>
 										</li>
 										<li>
-											End Date : <b>07/12/2016</b>
+											End Date : <b>{{vm.endDate}}</b>
 										</li>
 									</ul>
 								</div>
