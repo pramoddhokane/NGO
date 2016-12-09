@@ -2,11 +2,13 @@
 angular.module('plApp', [])
     .controller('ngoProductLicesnseController', ['ngoPLService', 'commonPLService', '$filter', function (ngoPLService, commonPLService, $filter) {
         var vm = this;
+        var secretKey = 'espl@123';
+        var licenseDetails = {};
+        var gracePeriod = 25;
+        var licenses = 32;
         vm.isRegistered = false;
         vm.productKey = null;
         vm.buttonCaption = 'Save';
-        var secretKey = 'espl@123';
-        var licenseDetails = {};
 
         ngoPLService.getLicenseDetails().then(function (res) {
             licenseDetails = res.data.value;
@@ -27,13 +29,18 @@ angular.module('plApp', [])
         });
 
         vm.saveLicenseDetails = function () {
-            if (vm.productKey !== null) {
+            if (vm.productKey !== null && vm.productKey !== undefined) {
                 //ProductKey/Start Date / End Date / Grace Period/ License
-                vm.productEncKey = vm.productKey + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + '25' + '|32';
+                vm.productEncKey = vm.productKey + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + gracePeriod + '|' + licenses;
                 var encrypted = CryptoJS.AES.encrypt(vm.productEncKey, secretKey).toString();
                 var productLicense = {
                     new_name: encrypted,
-                }
+                    new_productkey: vm.productKey,
+                    new_userlicenses: licenses,
+                    new_startdate: new Date(),
+                    new_enddate: new Date(),
+                    new_graceperiod: gracePeriod
+                };
                 if (vm.isRegistered) {
                     ngoPLService.updateLicenseDetails(licenseDetails[0].new_productlicenseid, productLicense).then(function (res) {
                         console.log('Record Updated');
