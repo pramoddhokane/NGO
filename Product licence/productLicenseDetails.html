@@ -38,14 +38,19 @@
 					<div class="row">
 						<div class="col-md-1"></div>
 						<div class="col-md-10">
-							<!-- Main form -->
+							<div class="row">
+								<!-- Main form -->
+								<div class="alert alert-danger" ng-if="vm.show_Err">
+									<strong>Invalid License Key. Please Contact our Support Team</strong>
+								</div>
+							</div>
 							<div class="row form-row">
 								<div class="col-md-4 label-box">
 									<label class="form-label">Product Key:</label>
 								</div>
 								<div class="col-md-8">
 									<form name="productLic">
-										<input type="text" ng-model="vm.productKey" class="form-control form-text" required />										
+										<input type="password" ng-model="vm.productKey" class="form-control form-text" required ng-keypress="vm.removeMessage()" />
 									</form>
 								</div>
 							</div>
@@ -61,10 +66,10 @@
 											<!--<input type="number" class="number-field" /> -->
 										</li>
 										<li>
-											Start Date : <b>{{vm.startDate}}</b>
+											Start Date : <b>{{vm.startDate  | date : mediumDate}}</b>
 										</li>
 										<li>
-											End Date : <b>{{vm.endDate}}</b>
+											End Date : <b>{{vm.endDate  | date : mediumDate}}</b>
 										</li>
 									</ul>
 								</div>
