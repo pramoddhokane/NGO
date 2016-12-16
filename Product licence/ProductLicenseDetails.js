@@ -57,8 +57,13 @@ angular.module('plApp', [])
                         })
                     }
                     else {
+                        productLicense.new_assignedusers = 0;
                         ngoPLService.createLicenseDetails(productLicense).then(function (res) {
+                            vm.licenses = productLicense.new_userlicenses;
+                            vm.startDate = productLicense.new_startdate;
+                            vm.endDate = productLicense.new_enddate;
                             vm.show_Err = false;
+                            vm.isRegistered = true;
                             console.log('Record Created');
                         })
                     }
