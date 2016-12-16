@@ -1,7 +1,7 @@
 'use strict';
 var secretKey = 'espl@123';
 var startDate;
-var endDate
+var endDate;
 $(function () {
     $('input[name="daterange"]').daterangepicker({
         startDate: new Date(),

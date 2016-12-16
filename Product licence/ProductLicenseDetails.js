@@ -34,12 +34,12 @@ angular.module('plApp', [])
             if (vm.productKey !== null && vm.productKey !== undefined) {
                 //ProductKey/Start Date / End Date / Grace Period/ License
                 //Date Format (yy,mm,dd)
-                //   vm.productEncKey = vm.productKey + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + gracePeriod + '|' + licenses;
+                //vm.productEncKey = vm.productKey + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + $filter('date')(new Date(), 'dd/MM/yyyy') + '|' + gracePeriod + '|' + licenses;
                 // var encrypted = CryptoJS.AES.encrypt(vm.productEncKey, secretKey).toString();
                 var licensedKey = CryptoJS.AES.decrypt(vm.productKey, secretKey);
                 vm.productDecKey = licensedKey.toString(CryptoJS.enc.Utf8);
                 if (vm.productDecKey !== '') {
-                    var licDetails = vm.productDecKey.split('|')
+                    var licDetails = vm.productDecKey.split('|');
                     productLicense = {
                         new_name: vm.productKey,
                         new_productkey: licDetails[0],
@@ -64,8 +64,11 @@ angular.module('plApp', [])
                             vm.endDate = productLicense.new_enddate;
                             vm.show_Err = false;
                             vm.isRegistered = true;
-                            console.log('Record Created');
-                        })
+                            var userId = window.parent.Xrm.Page.context.getUserId().replace('{', '').replace('}', '');
+                            ngoPLService.updateUserDetails(userId, { new_isngoassigned: true }).then(function (res) {
+                                console.log(res.data.value);
+                            });
+                        });
                     }
                 }
                 else {
@@ -96,6 +99,13 @@ angular.module('plApp', [])
                     method: 'PATCH',
                     url: commonPLService.serverURL + '/api/data/v8.0/new_productlicenses(' + recordID + ')',
                     data: licenseKey
+                });
+            },
+            updateUserDetails: function (recordID, assignToNgo) {
+                return $http({
+                    method: 'PATCH',
+                    url: commonPLService.serverURL + '/api/data/v8.0/systemusers(' + recordID + ')',
+                    data: assignToNgo
                 });
             }
         };
