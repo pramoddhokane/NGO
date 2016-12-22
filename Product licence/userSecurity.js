@@ -34,7 +34,9 @@ function upadteAssignedLicenses() {
         }
     }
     else {
-        assignUser.new_assignedusers = totalAssignedUsers - 1;
+        if (!Xrm.Page.getControl('new_isngoassigned').getDisabled()) {
+            assignUser.new_assignedusers = totalAssignedUsers - 1;
+        }
     }
     if (assignUser) {
         req.open("PATCH", Xrm.Page.context.getClientUrl() + '/api/data/v8.0/new_productlicenses(' + userDetails.new_productlicenseid + ')', true);

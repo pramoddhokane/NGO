@@ -24,5 +24,4 @@ function GenerateKey() {
         var encrypted = CryptoJS.AES.encrypt(userKey, secretKey).toString();
         $('#productKey').text(encrypted);
     }
-
 }

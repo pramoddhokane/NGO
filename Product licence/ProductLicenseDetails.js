@@ -10,6 +10,7 @@ angular.module('plApp', [])
         vm.isRegistered = false;
         vm.productKey = null;
         vm.show_Err = false;
+        vm.show_Success = false;
         vm.buttonCaption = 'Save';
 
         ngoPLService.getLicenseDetails().then(function (res) {
@@ -49,21 +50,26 @@ angular.module('plApp', [])
                         new_graceperiod: licDetails[3]
                     };
                     if (vm.isRegistered) {
-                        ngoPLService.updateLicenseDetails(licenseDetails[0].new_productlicenseid, productLicense).then(function (res) {
-                            vm.licenses = productLicense.new_userlicenses;
-                            vm.startDate = productLicense.new_startdate;
-                            vm.endDate = productLicense.new_enddate;
-                            vm.show_Err = false;
+                        ngoPLService.getLicenseDetails().then(function (res) {
+                            ngoPLService.updateLicenseDetails(res.data.value[0].new_productlicenseid, productLicense).then(function (res) {
+                                vm.licenses = productLicense.new_userlicenses;
+                                vm.startDate = productLicense.new_startdate;
+                                vm.endDate = productLicense.new_enddate;
+                                vm.show_Err = false;
+                                vm.show_Success = true;
+                            })
                         })
+
                     }
                     else {
-                        productLicense.new_assignedusers = 0;
+                        productLicense.new_assignedusers = 1;
                         ngoPLService.createLicenseDetails(productLicense).then(function (res) {
                             vm.licenses = productLicense.new_userlicenses;
                             vm.startDate = productLicense.new_startdate;
                             vm.endDate = productLicense.new_enddate;
                             vm.show_Err = false;
                             vm.isRegistered = true;
+                            vm.show_Success = true;
                             var userId = window.parent.Xrm.Page.context.getUserId().replace('{', '').replace('}', '');
                             ngoPLService.updateUserDetails(userId, { new_isngoassigned: true }).then(function (res) {
                                 console.log(res.data.value);

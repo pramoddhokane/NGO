@@ -9,7 +9,8 @@ function redirectto() {
     req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
     req.setRequestHeader("Prefer", "odata.include-annotations=\"*\"");
     req.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {           
+        if (this.readyState === 4 && this.status === 200) {
+            debugger;
             result = JSON.parse(this.response).value;
             if (result.length !== 0) {
                 var licenseDetails = result["new_name"];
@@ -45,13 +46,18 @@ function verifyUserDetails() {
                     window.open('https://ngoproduct.crm8.dynamics.com//WebResources/espl_invalidpage.html', '_self');
                 }
                 else {
-                    var startDate = new Date(result[0].new_startdate)
-                    var endDate = new Date(result[0].new_enddate)
-                    var gracePeriod = result[0].new_graceperiod;
-                    endDate.setDate(endDate.getDate() + gracePeriod);
-                    var currentDate = new Date();
-                    if (!(currentDate >= startDate) || !(currentDate < endDate)) {
+                    if (userDetails[0].new_isngoassigned >= userDetails[0].new_userlicenses) {
                         window.open('https://ngoproduct.crm8.dynamics.com//WebResources/espl_invalidpage.html', '_self');
+                    }
+                    else {
+                        var startDate = new Date(result[0].new_startdate)
+                        var endDate = new Date(result[0].new_enddate)
+                        var gracePeriod = result[0].new_graceperiod;
+                        endDate.setDate(endDate.getDate() + gracePeriod);
+                        var currentDate = new Date();
+                        if (!(currentDate >= startDate) || !(currentDate < endDate)) {
+                            window.open('https://ngoproduct.crm8.dynamics.com//WebResources/espl_invalidpage.html', '_self');
+                        }
                     }
                 }
             }
