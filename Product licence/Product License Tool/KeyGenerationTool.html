@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/daterangepicker.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/aes.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/daterangepicker.js"></script>
+    <script src="KeyGenerationTool.js"></script>  
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Key Generation Tool</h2>
+        <form>
+             <div class="form-group">
+                <label for="clientName">Client Name</label>
+                <input type="text" name="clientName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="daterange">Date Range</label>
+                <input type="text" name="daterange" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="gracePeriod">Grace Period(Days)</label>
+                <input type="text" class="form-control" id="gracePeriod" placeholder="Grace Period">
+            </div>
+            <div class="form-group">
+                <label for="userLicenses">User Licenses:</label>
+                <input type="text" class="form-control" id="userLicenses" placeholder="User Licenses">
+            </div>
+            <div class="form-group">
+                <label for="secretKey">Eternus Solutions Secret Key </label>
+                <input type="password" class="form-control" id="secretKey" placeholder="User Licenses">
+            </div>
+
+            <button type="button" class="btn btn-default" onclick="GenerateKey()">Submit</button>
+            <h3>Product Key:</h3>
+            <strong><p id="productKey"></p></strong>
+
+        </form>
+    </div>
+
+</body>
+
+</html>
