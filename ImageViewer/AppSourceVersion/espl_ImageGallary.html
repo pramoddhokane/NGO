@@ -51,6 +51,7 @@
                      <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
                      <span ng-switch-default="">{{file.size / 1024 | number:2}} kB</span>
                      </span>)
+                     <span ng-click="deleteThis(file)" style="color:red; cursor: pointer;">Remove</span>
                   </div>
                </div>
                <input type="button" ng-click="uploadFile()" value="Upload"><span> {{files.length}} Files Selected</span>

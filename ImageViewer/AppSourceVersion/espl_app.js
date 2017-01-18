@@ -43,6 +43,13 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		//$scope.result = "No";
 		return false;
 	};
+	
+	$scope.deleteThis = function (file)
+	{
+		var files = $scope.files;
+		files.splice(files.indexOf(file), 1);
+	}
+	
 	$scope.deleteImage = function ()
 	{
 		if ($scope.showconfirmbox())
@@ -59,7 +66,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 
 			function (response)
 			{
-				console.log("Image deleted successfully");
+				alert("Image deleted successfully");
 				//$scope.getImages();
 				$scope.photos.splice(currentIndex, 1);
 				if ($scope.photos.length === currentIndex)
@@ -190,6 +197,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 					$scope.files = [];
 					uploadedCount = 0;
 					$scope.progressVisible = false;
+					alert('Files Uploaded Successfully');
 					$scope.getImages();
 				}
 			})
@@ -210,7 +218,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			$scope.dropClass = ''
 		})
 	}
-	var dropbox ; 
+	var dropbox;
 	dropbox = document.getElementById("dropbox");
 	dropbox.addEventListener("dragenter", dragEnterLeave, false)
 	dropbox.addEventListener("dragleave", dragEnterLeave, false)
@@ -243,8 +251,6 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			}
 		}
 	}, false)
-
-	
 	dropbox.addEventListener("drop", function (evt)
 	{
 		console.log('drop evt:', JSON.parse(JSON.stringify(evt.dataTransfer)))
@@ -261,7 +267,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		{
 			$scope.$apply(function ()
 			{
-				$scope.files = [];
+				//$scope.files = [];
 				var nonImageFiles = 0;
 				for (var i = 0; i < files.length; i++)
 				{
@@ -271,9 +277,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				if (nonImageFiles > 0) alert("Only image files are accepted")
 			})
 		}
-	}, false)
-	
-	}]).factory('httpRequestInterceptor', function ()
+	}, false)}]).factory('httpRequestInterceptor', function ()
 {
 	return {
 		request: function (config)
