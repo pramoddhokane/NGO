@@ -54,8 +54,8 @@
                      <span ng-click="deleteThis(file)" style="color:red; cursor: pointer;">Remove</span>
                   </div>
                </div>
-               <input type="button" ng-click="uploadFile()" value="Upload"><span> {{files.length}} Files Selected</span>
-               <div ng-show="progressVisible">
+               <input type="button" ng-click="uploadFile()" value="Upload"><input type="button" ng-click="removeAll()" value="Remove All"><span> {{files.length}} Files Selected</span>
+             <div ng-show="progressVisible">
                   <div class="percent">{{progress}}%</div>
                   <div class="progressBar">
                      <div class="uploaded" ng-style="{'width': progress+'%'}"></div>

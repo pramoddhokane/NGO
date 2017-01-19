@@ -156,6 +156,10 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		}
 	};
 
+	$scope.removeAll = function()
+	{
+	  $scope.files=[];
+	}
 	function getBase64(file)
 	{
 		var r = new FileReader();
