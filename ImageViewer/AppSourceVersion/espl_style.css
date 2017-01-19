@@ -56,13 +56,13 @@ border: 5px solid #333030;
 .nav li img {
 width: 100%;
 }
-.slider {
+/*.slider {
 border: 15px solid #FFFFFF;
 border-radius: 5px;
 height: 500px;
 margin: 0px;
 position: relative;
-/*width: 800px;*/
+
 -webkit-perspective: 1000px;
 -moz-perspective: 1000px;
 -ms-perspective: 1000px;
@@ -73,7 +73,7 @@ perspective: 1000px;
 -ms-transform-style: preserve-3d;
 -o-transform-style: preserve-3d;
 transform-style: preserve-3d;
-}
+}*/
 .slide {
 position: absolute;
 top: 0;
@@ -208,7 +208,7 @@ table { border-collapse: collapse; }
    
     border-image: initial !important;
 }
-.dropbox {
+/*.dropbox {
     width: 100% !important;
     height:  100% !important; 
     border: 2px solid #DDD !important;
@@ -218,7 +218,7 @@ table { border-collapse: collapse; }
     color: #BBB !important;
     font-size: 2em !important;
     font-family: Arial, sans-serif;
-}
+}*/
 .dropbox span {
     margin-top: 0.9em !important;
     display: block !important;
@@ -237,4 +237,43 @@ ul {
     list-style-type: none !important;
     white-space: nowrap;
     overflow-x: auto;
+}
+
+.slider {
+    width: 70% !important;
+    border: 2px solid #DDD !important;
+    background-color: #FEFFEC !important;
+    text-align: center !important;
+    color: #BBB !important;
+    font-size: 2em !important;
+    font-family: Arial, sans-serif;
+    float: left;
+    height: 576px;
+    top: 50;
+    position: relative;
+   
+       
+    -webkit-perspective: 1000px;
+    -moz-perspective: 1000px;
+    -ms-perspective: 1000px;
+    -o-perspective: 1000px;
+    perspective: 1000px;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.dropbox {
+    border: 2px solid #DDD !important;
+    top: 75;
+    background-color: #FEFFEC !important;
+    text-align: center !important;
+    color: #BBB !important;
+    font-size: 2em !important;
+    font-family: Arial, sans-serif;
+    height: 576px;
+    width: 30% !important;
+    float: left;
 }

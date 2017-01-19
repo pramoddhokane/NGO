@@ -1,75 +1,82 @@
 <html>
-   <head>
-      <meta charset="utf-8">
-      <meta name="author" content="Script Tutorials">
-      <title>Photo Gallery For Entity Attachment</title>
-      <meta name="description" content="Photo Gallery with AngularJS and CSS3">
-      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-      <!-- add styles -->
-      <link href="espl_style.css" rel="stylesheet" type="text/css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-      <!-- add javascripts -->
-      <script src="https://code.angularjs.org/1.5.0/angular.min.js"></script>
-      <script src="https://code.angularjs.org/1.5.0/angular-animate.min.js"></script>
-      <script src="https://code.angularjs.org/1.5.0/angular-touch.min.js"></script>
-      <script src="https://cdn.rawgit.com/adonespitogo/angular-base64-upload/master/src/angular-base64-upload.js"></script>
-      <script src="espl_app.js"></script>
-      <meta>
-      <meta>
-      <meta>
-      <meta>
-      <meta>
-      <meta>
-   </head>
-   <body style="word-wrap: break-word;" ng-app="APP">
-      <form name="form" ng-controller="MainCtrl">
-         <header>
-         </header>
-         
-         <!-- slider container -->
-         <div class="container slider">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Script Tutorials">
+    <title>Photo Gallery For Entity Attachment</title>
+    <meta name="description" content="Photo Gallery with AngularJS and CSS3">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- add styles -->
+    <link href="espl_style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- add javascripts -->
+    <script src="https://code.angularjs.org/1.5.0/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.5.0/angular-animate.min.js"></script>
+    <script src="https://code.angularjs.org/1.5.0/angular-touch.min.js"></script>
+    <script src="https://cdn.rawgit.com/adonespitogo/angular-base64-upload/master/src/angular-base64-upload.js"></script>
+    <script src="espl_app.js"></script>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+</head>
+<body style="word-wrap: break-word;" ng-app="APP">
+<form name="form" ng-controller="MainCtrl">
+    <header>
+    </header>
+
+    <!-- slider container -->
+    <div class="container">
+        <div class=""
+        <div class="slider">
             <!-- enumerate all photos -->
-            <img class="slide" ng-src="data:image/png;base64,{{photo.documentbody}}" ng-show="isActive($index)" ng-swipe-left="showNext()" ng-swipe-right="showPrev()" ng-repeat="photo in photos" id="{{photo.annotationid}}">
+            <img class="slide" ng-src="data:image/png;base64,{{photo.documentbody}}" ng-show="isActive($index)" ng-swipe-left="showNext()"
+                ng-swipe-right="showPrev()" ng-repeat="photo in photos" id="{{photo.annotationid}}">
             <!--<a href="#" class="del_photo" ng-click="deleteImage()" ng-show="photos.length>0" >X</a>-->
             <!-- prev / next controls -->
             <a class="arrow prev" href="#" ng-click="showPrev()"></a>
             <a class="arrow next" href="#" ng-click="showNext()"></a>
             <span class="ms-crm-CommandBar-Button ms-crm-Menu-Label del_photo" style="max-width:200px">
-               <a class="ms-crm-Menu-Label" ng-click="deleteImage()" ng-show="photos.length>0">
-                  <i class="fa fa-trash"></i>                  
-                  <span class="ms-crm-CommandBar-Menu" style="max-width:150px"> Delete </span>
-               </a>
-            </span>
-           <div id="dropbox" class="dropbox" ng-class="dropClass"></div>
-           <div ng-show="files.length">
-             <div class="fileNames">
-                  <div ng-repeat="file in files.slice(0)">
-                     <span>{{file.webkitRelativePath || file.name}}</span> (
-                     <span ng-switch="file.size > 1024*1024">
+<a class="ms-crm-Menu-Label" ng-click="deleteImage()" ng-show="photos.length>0">
+    <i class="fa fa-trash"></i>
+    <span class="ms-crm-CommandBar-Menu" style="max-width:150px"> Delete </span>
+</a>
+</span>
+
+<!-- extra navigation controls -->
+<ul class="nav">
+    <li ng-repeat="photo in photos" ng-class="{'active':isActive($index)}">
+        <img title="{{photo.filename}}" alt="{{photo.filename}}" ng-click="showPhoto($index);" ng-src="data:image/png;base64,{{photo.documentbody}}">
+    </li>
+</ul>
+</div>
+<div id="dropbox" class="dropbox" ng-class="dropClass"></div>
+<div ng-show="files.length">
+    <div class="fileNames">
+        <div ng-repeat="file in files.slice(0)">
+            <span>{{file.webkitRelativePath || file.name}}</span> (
+            <span ng-switch="file.size > 1024*1024">
                      <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
-                     <span ng-switch-default="">{{file.size / 1024 | number:2}} kB</span>
-                     </span>)
-                     <span ng-click="deleteThis(file)" style="color:red; cursor: pointer;">Remove</span>
-                  </div>
-               </div>
-               <input type="button" ng-click="uploadFile()" value="Upload"><input type="button" ng-click="removeAll()" value="Remove All"><span> {{files.length}} Files Selected</span>
-             <div ng-show="progressVisible">
-                  <div class="percent">{{progress}}%</div>
-                  <div class="progressBar">
-                     <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
-                  </div>
-               </div>
-            </div>
-            <!-- extra navigation controls -->
-            <ul class="nav">
-               <li ng-repeat="photo in photos" ng-class="{'active':isActive($index)}">
-                  <img title="{{photo.filename}}" alt="{{photo.filename}}" ng-click="showPhoto($index);" ng-src="data:image/png;base64,{{photo.documentbody}}">
-               </li>
-            </ul>
-         </div>
-       
-      </form>
-   </body>
+            <span ng-switch-default="">{{file.size / 1024 | number:2}} kB</span>
+            </span>)
+            <span ng-click="deleteThis(file)" style="color:red; cursor: pointer;">Remove</span>
+</div>
+</div>
+<input type="button" ng-click="uploadFile()" value="Upload"><input type="button" ng-click="removeAll()" value="Remove All"><span> {{files.length}} Files Selected</span>
+<div ng-show="progressVisible">
+    <div class="percent">{{progress}}%</div>
+    <div class="progressBar">
+        <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+    </div>
+</div>
+</div>
+</div>
+
+</form>
+</body>
+
 </html>
