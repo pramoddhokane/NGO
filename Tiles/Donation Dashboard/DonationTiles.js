@@ -44,7 +44,7 @@ function getPaidDonationDetails() {
     var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth()+1), 1));
     var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
     var lastDay1 = lastDay.split('T')[0];
-    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=statuscode eq 100000001 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationdate',";
+   var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000001 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
     odataSelect += 'PropertyValues=["' + firstDay + '","' + lastDay1 + 'T23:59:59Z"])';
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
