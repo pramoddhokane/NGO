@@ -49,21 +49,20 @@ function getTotalDonations() {
             for (var donation = 0; donation < donationsResult.length; donation++) {
                 donationAmount += donationsResult[donation].new_amount;
             }
-
-            if (donationAmount >= 1000 && donationAmount < 99999) {
+            if (donationAmount < 1000) {
+                document.getElementById("TotalDonations").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) * 100) / 100).toLocaleString();
+            }
+          else  if (donationAmount >= 1000 && donationAmount < 99999) {
                 document.getElementById("TotalDonations").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 1000 * 100) / 100).toLocaleString() + " " + "K";
-
             }
-            if (donationAmount >= 100000 && donationAmount < 999999) {
+            else if (donationAmount >= 100000 && donationAmount < 9999999) {
                 document.getElementById("TotalDonations").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 100000 * 100) / 100).toLocaleString() + " " + "L";
-
             }
-            if (donationAmount >= 10000000) {
+        else    if (donationAmount >= 10000000) {
                 document.getElementById("TotalDonations").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
-
             }
 
-            document.getElementById("donationmonth").innerHTML = "Total Donations Till" +"-"+ date.getFullYear();
+            document.getElementById("donationmonth").innerHTML = "Total Donations Till" + "-" + date.getFullYear();
             newConstituentsThisMonth();
         }
     };

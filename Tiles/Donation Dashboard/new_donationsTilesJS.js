@@ -108,16 +108,20 @@ function getTotalDonations() {
                 donationAmount += donationsResult[donation].new_amount;
             }
             document.getElementById("DonationThisyear").innerHTML = date.getFullYear();
-            if (donationAmount >= 1000 && donationAmount < 99999) {
+            if (donationAmount < 1000) {
+                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) * 100) / 100).toLocaleString();
+                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
+            }
+            else if (donationAmount >= 1000 && donationAmount < 99999) {
                 document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 1000 * 100) / 100).toLocaleString() + " " + "K";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            else if (donationAmount >= 100000 && donationAmount < 999999) {
+            else if (donationAmount >= 100000 && donationAmount < 9999999) {
                 document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 100000 * 100) / 100).toLocaleString() + " " + "L";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
             else if (donationAmount >= 10000000) {
-                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 100000 * 100) / 100).toLocaleString() + " " + "Cr";
+                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
 
@@ -143,44 +147,50 @@ function totalDonors(data) {
     retrieveReq.setRequestHeader("OData-Version", "4.0");
     retrieveReq.onreadystatechange = function () {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
+            debugger;
             data.totalDonors = JSON.parse(this.responseText).value.length;
-            if (data.PaidDonation >= 1000) {
-                document.getElementById("receiveddonation").innerHTML = (Math.round(parseFloat(data.PaidDonation) / 1000 * 100) / 100).toLocaleString() + "K";
+            if (data.PaidDonation < 1000) {
+                document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) * 100) / 100).toLocaleString();
             }
 
-            if (data.PaidDonation >= 1000 && data.PaidDonation < 99999) {
+            else if (data.PaidDonation >= 1000 && data.PaidDonation < 99999) {
                 document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) / 1000 * 100) / 100).toLocaleString() + " " + "K";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.PaidDonation >= 100000 && data.PaidDonation < 999999) {
+            else if (data.PaidDonation >= 100000 && data.PaidDonation < 9999999) {
                 document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) / 100000 * 100) / 100).toLocaleString() + " " + "L";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.PaidDonation >= 10000000) {
+            else if (data.PaidDonation >= 10000000) {
                 document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-
-            if (data.plannedDonation >= 1000 && data.plannedDonation < 99999) {
+            /******************************************************************************************** */
+            if (data.plannedDonation < 1000) {
+                document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) * 100) / 100).toLocaleString();
+            }
+            else if (data.plannedDonation >= 1000 && data.plannedDonation < 99999) {
                 document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) / 1000 * 100) / 100).toLocaleString() + " " + "K";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.plannedDonation >= 100000 && data.plannedDonation < 999999) {
+            else if (data.plannedDonation >= 100000 && data.plannedDonation < 9999999) {
                 document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) / 100000 * 100) / 100).toLocaleString() + " " + "L";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.plannedDonation >= 10000000) {
+            else if (data.plannedDonation >= 10000000) {
                 document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
 
-
-
-            if (data.Average >= 1000 && data.Average < 99999) {
+            /***************************************************************************************** */
+            if (data.Average < 1000) {
+                document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) * 100) / 100).toLocaleString();
+            }
+            else if (data.Average >= 1000 && data.Average < 99999) {
                 document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 1000 * 100) / 100).toLocaleString() + " " + "K";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.Average >= 100000 && data.Average < 999999) {
+            if (data.Average >= 100000 && data.Average < 9999999) {
                 document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 100000 * 100) / 100).toLocaleString() + " " + "L";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
@@ -188,7 +198,7 @@ function totalDonors(data) {
                 document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
                 // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-
+            /************************************************************************************************ */
             document.getElementById("donationCount").innerHTML = data.DonationCount;
             document.getElementById("donationCountthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
             document.getElementById("totalDonors").innerHTML = data.totalDonors;
