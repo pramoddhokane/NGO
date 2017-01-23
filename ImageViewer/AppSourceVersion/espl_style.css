@@ -1,25 +1,18 @@
-.arrow {
-cursor: pointer;
-display: block;
-height: 64px;
-margin-top: -35px;
-outline: medium none;
-position: absolute;
-top: 50%;
-width: 64px;
-z-index: 5;
-}
 .arrow.prev {
-background-image: url("espl_prev.png");
-left: 5%;
-opacity: 0.2;
-transition: all 0.2s linear 0s;
+    left: 5%;
+    opacity: 0.2;
+    transition: all 0.2s linear 0s;
 }
 .arrow.next {
-background-image: url("espl_next.png");
-opacity: 0.2;
-right: 5%;
-transition: all 0.2s linear 0s;
+    opacity: 0.2;
+    right: 5%;
+    transition: all 0.2s linear 0s;
+}
+.arrow {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    font-size: 36px;
 }
 .arrow.prev:hover{
 opacity:1;
@@ -28,30 +21,29 @@ opacity:1;
 opacity:1;
 }
 .nav {
-    /* bottom: -30%; */
-    /* display: block; */
-    /* height: 48px; */
+    bottom: 0;
+    display: block;   
     left: 0;
     margin: 0 auto;
-   /* padding: 1em 0 0.8em;*/
+/*    padding: 1em 0 0.8em;*/
     position: absolute;
     right: 0;
     text-align: center;
     width: 100%;
     z-index: 5;
+    padding: 5px 5px 8px;
 }
-.nav li {   
-    border: 2px solid #FFEB3B;
-    border-radius: 5px;
+.nav li {
+    border: 1px solid rgba(0,0,0,.075);
     cursor: pointer;
     display: inline-flex !important;
-    height: 30px;
-    margin: 20px 7px;
-    position: relative;
-    width: 50px;
+    margin: 5px 7px;
+    position: relative !important;
+    width: 150px;
+    height: 80px;
 }
 .nav li.active {
-border: 5px solid #333030;
+border: 2px solid #ccc;
 }
 .nav li img {
 width: 100%;
@@ -81,7 +73,7 @@ left: 0;
 }
 .slide.ng-hide-add {
 opacity:1;
--webkit-transition:1s linear all;
+/*-webkit-transition:1s linear all;
 -moz-transition:1s linear all;
 -o-transition:1s linear all;
 transition:1s linear all;
@@ -94,24 +86,23 @@ transform: rotateX(50deg) rotateY(30deg);
 -moz-transform-origin: right top 0;
 -ms-transform-origin: right top 0;
 -o-transform-origin: right top 0;
-transform-origin: right top 0;
+transform-origin: right top 0;*/
 }
 .slide.ng-hide-add.ng-hide-add-active {
 opacity:0;
 }
 .slide.ng-hide-remove {
--webkit-transition:1s linear all;
+/*-webkit-transition:1s linear all;
 -moz-transition:1s linear all;
 -o-transition:1s linear all;
-transition:1s linear all;
+transition:1s linear all;*/
 display:block!important;
 opacity:0;
 }
 
-.slide, .slide.ng-hide-remove.ng-hide-remove-active {
+/*.slide, .slide.ng-hide-remove.ng-hide-remove-active {
     opacity: 1;
-    /* width: 85%; */
-    /* height: 100%; */
+  
     max-width: 100%;
     max-height: 81%;
     position: absolute;
@@ -121,7 +112,7 @@ opacity:0;
     right: 0;
     bottom: 0;
 }
-
+*/
 
 
 .del_photo {
@@ -220,8 +211,8 @@ table { border-collapse: collapse; }
     font-family: Arial, sans-serif;
 }*/
 .dropbox span {
-    margin-top: 0.9em !important;
-    display: block !important;
+/*    margin-top: 0.9em !important;
+    display: block !important;*/
 }
 .dropbox.not-available {
     background-color: #F88 !important;
@@ -230,8 +221,8 @@ table { border-collapse: collapse; }
     background-color: #bfb !important;
 }
 .fileNames {
-    height: 8%;
-    overflow-y: auto;
+
+    color: #080808 !important;
 }
 ul {
     list-style-type: none !important;
@@ -240,18 +231,19 @@ ul {
 }
 
 .slider {
-    width: 70% !important;
-    border: 2px solid #DDD !important;
-    background-color: #FEFFEC !important;
+    width: 80% !important;
+/*    border: 2px solid #DDD !important;*/
+/*    background-color: #FEFFEC !important;*/
     text-align: center !important;
     color: #BBB !important;
     font-size: 2em !important;
     font-family: Arial, sans-serif;
     float: left;
-    height: 576px;
-    top: 50;
+    height: 506px;
+    top: 40px;
     position: relative;
-   
+    box-shadow: 0 0 1.3rem rgba(0, 0, 0, 0.18);   
+    border-right-style: none;
        
     -webkit-perspective: 1000px;
     -moz-perspective: 1000px;
@@ -265,15 +257,79 @@ ul {
     transform-style: preserve-3d;
 }
 
+
+
 .dropbox {
-    border: 2px solid #DDD !important;
-    top: 75;
-    background-color: #FEFFEC !important;
-    text-align: center !important;
-    color: #BBB !important;
-    font-size: 2em !important;
-    font-family: Arial, sans-serif;
-    height: 576px;
-    width: 30% !important;
+  width: 20% !important;
+    color: #BBB;
     float: left;
+    height: 506px;
+    top: 40px;
+    position: relative;
+    vertical-align: middle;
+    border-style: dashed;
+}
+.dropText {
+    vertical-align: middle;
+    margin-top: 100% !important;
+    display: block !important;
+    font-size: 19px;
+    font-weight: bold;
+    color: #333;
+    text-align: center !important;
+}
+
+.imgSlider{
+display: flex;
+    height: 400px;
+    position: relative;
+}
+
+
+.slide, .slide.ng-hide-remove.ng-hide-remove-active {
+    max-width: 100%;
+    max-height: 80%;
+    position: relative;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.navImages {
+    display: flex;
+    height: 100px;
+}
+span.fileName {
+    font-size: 13px;
+    font-weight: bolder;
+  
+}
+
+span.fileSize {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.btn{
+   margin: 0 5px;
+    border-radius: 0px !important;
+    }
+    
+    .descContainer{
+    top: 40px;
+    position: relative;}
+    
+    label {
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-top: 5px;
+    color: #080808 !important;
+    font-size: 12px;
+    
+}
+
+.form-group {   
+    margin: 5px;
 }

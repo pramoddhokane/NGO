@@ -6,10 +6,16 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	$scope.photos = [];
 	// initial image index
 	$scope._Index = 0;
+	$scope.selectedFileName = null;
+	$scope.selectedFilesize = null;
+	$scope.selectedFileDesc = null;
 	// if a current image is the same as requested image
 	$scope.files = [];
 	$scope.file = {};
+	$scope.isEditMode = false;
+	
 	var uploadedCount = 0;
+	
 	$scope.isActive = function (index)
 	{
 		return $scope._Index === index;
@@ -18,16 +24,29 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	$scope.showPrev = function ()
 	{
 		$scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+		$scope.isEditMode = false;
+		$scope.selectedFileName = $scope.photos[$scope._Index].filename;
+		$scope.selectedFilesize = $scope.photos[$scope._Index].filesize;
+		$scope.selectedFileDesc = $scope.photos[$scope._Index].notetext;
+		
 	};
 	// show next image
 	$scope.showNext = function ()
 	{
 		$scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+		$scope.isEditMode = false;
+		$scope.selectedFileName = $scope.photos[$scope._Index].filename;
+		$scope.selectedFilesize = $scope.photos[$scope._Index].filesize;
+		$scope.selectedFileDesc = $scope.photos[$scope._Index].notetext;
 	};
 	// show a certain image
 	$scope.showPhoto = function (index)
 	{
 		$scope._Index = index;
+		$scope.isEditMode = false;
+		$scope.selectedFileName = $scope.photos[index].filename;
+		$scope.selectedFilesize = $scope.photos[index].filesize;
+		$scope.selectedFileDesc = $scope.photos[index].notetext;
 	};
 	$scope.onChange = function (e, fileList)
 	{
@@ -43,11 +62,15 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		//$scope.result = "No";
 		return false;
 	};
-	
 	$scope.deleteThis = function (file)
 	{
 		var files = $scope.files;
 		files.splice(files.indexOf(file), 1);
+	}
+	
+	$scope.editDetails = function ()
+	{
+		$scope.isEditMode = true;
 	}
 	
 	$scope.deleteImage = function ()
@@ -137,6 +160,9 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			}).then(function (response)
 			{
 				$scope.photos = response.data.value;
+				$scope.selectedFileName = $scope.photos[0].filename;
+				$scope.selectedFilesize = $scope.photos[0].filesize;
+				$scope.selectedFileDesc = $scope.photos[0].notetext;
 			});
 		}
 	};
@@ -155,11 +181,11 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			getBase64(file);
 		}
 	};
-
-	$scope.removeAll = function()
+	$scope.removeAll = function ()
 	{
-	  $scope.files=[];
+		$scope.files = [];
 	}
+
 	function getBase64(file)
 	{
 		var r = new FileReader();
@@ -219,7 +245,8 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		evt.preventDefault();
 		$scope.$apply(function ()
 		{
-			$scope.dropClass = ''
+			$scope.dropClass = '';
+			$scope.isEditMode = false;
 		})
 	}
 	var dropbox;
@@ -230,6 +257,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	{
 		evt.stopPropagation();
 		evt.preventDefault();
+		$scope.isEditMode = false;
 		var ok = evt.dataTransfer && evt.dataTransfer.types //evt.dataTransfer.types.indexOf('Files') >= 0
 		var DragDataType = evt.dataTransfer.types;
 		if (ok)
@@ -241,7 +269,8 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 					$scope.$apply(function ()
 					{
 						//$scope.dropText = ok ? 'Drop files here...' : 'Only files are allowed!'
-						$scope.dropClass = ok ? 'over' : 'not-available'
+						$scope.dropClass = ok ? 'over' : 'not-available';
+						
 					})
 				}
 			}
@@ -250,11 +279,13 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				$scope.$apply(function ()
 				{
 					//$scope.dropText = ok ? 'Drop files here...' : 'Only files are allowed!'
-					$scope.dropClass = ok ? 'over' : 'not-available'
+					$scope.dropClass = ok ? 'over' : 'not-available';
+					$scope.isEditMode = false;
 				})
 			}
 		}
 	}, false)
+	
 	dropbox.addEventListener("drop", function (evt)
 	{
 		console.log('drop evt:', JSON.parse(JSON.stringify(evt.dataTransfer)))
@@ -263,7 +294,8 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		$scope.$apply(function ()
 		{
 			//$scope.dropText = 'Drop files here...'
-			$scope.dropClass = ''
+			$scope.dropClass = '';
+			$scope.isEditMode = false;
 		})
 		var files = evt.dataTransfer.files;
 		console.log(files);
