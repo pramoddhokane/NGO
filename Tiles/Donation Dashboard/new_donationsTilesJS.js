@@ -9,16 +9,14 @@ var retrieveReq = new XMLHttpRequest();
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var date = new Date();
 
-//Tile 1 Of Donation  Dashboard.
+//Tile 1 Donation Received for this month.
 function getPaidDonationDetails() {
     var date = new Date();
     var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
     var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
     var lastDay1 = lastDay.split('T')[0];
-    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and new_donationtype eq 100000000 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
-    odataSelect += 'PropertyValues=["' + firstDay + '","' + lastDay1 + 'T23:59:59Z"])';
-    //  var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=statuscode eq 100000001 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationdate',";
-    // odataSelect += 'PropertyValues=["' + firstDay + '","' + lastDay1 + 'T23:59:59Z"])';
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and  Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
+    odataSelect += 'PropertyValues=["'+ firstDay + 'T00:00:00Z","'+ lastDay1 + 'T23:59:59Z"])';
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
     retrieveReq.setRequestHeader("Content-Type", "application/json");
@@ -34,7 +32,7 @@ function getPaidDonationDetails() {
     retrieveReq.send();
 }
 
-//tile 2 of Donation dashboard
+//tile 2 Expected Donation for this month.
 function getPlannedDonationDetails() {
     var date = new Date();
     var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
@@ -57,7 +55,7 @@ function getPlannedDonationDetails() {
     retrieveReq.send();
 }
 
-//Tile 3 of donation Details. Get average donations.
+//Tile 3 Average Donation for this month.
 function totalDonation(data) {
 
     var currentDate = new Date();
@@ -75,7 +73,6 @@ function totalDonation(data) {
             var response = JSON.parse(this.responseText).value;
             for (var don = 0; don < response.length; don++) {
                 if (response[don].new_donationtype = 100000000) {
-                    //  donationAmount += Math.round(response[don].new_amount);
                     donationAmountForAverage += response[don].new_amount;
                 }
             }
@@ -88,7 +85,33 @@ function totalDonation(data) {
     retrieveReq.send();
 }
 
+// Tile 4 Donation Count
+function getTotalnumberOfDonationsCurrentMonth() {
+   var date = new Date();
+    var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
+    var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+    var lastDay1 = lastDay.split('T')[0];
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
+    odataSelect += 'PropertyValues=["' + firstDay + 'T00:00:00Z","' + lastDay1 + 'T23:59:59Z"])';
+    retrieveReq.open("GET", odataSelect, true);
+    retrieveReq.setRequestHeader("Accept", "application/json");
+    retrieveReq.setRequestHeader("Content-Type", "application/json");
+    retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
+    retrieveReq.setRequestHeader("Prefer", 'odata.include-annotations="*"');
+    retrieveReq.setRequestHeader("OData-Version", "4.0");
+    retrieveReq.onreadystatechange = function () {
+        if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
+            donationsResult = JSON.parse(this.response).value;
+            DonationCount=donationsResult.length;
+            document.getElementById("DonationThisyear").innerHTML = date.getFullYear();
+             document.getElementById("donationCountthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+              document.getElementById("donationCount").innerHTML = DonationCount;
+        }
+    };
+    retrieveReq.send();
+}
 
+// Tile 6 Total Donations for the current Year
 function getTotalDonations() {
     var length;
     var currentDate = new Date();
@@ -108,33 +131,33 @@ function getTotalDonations() {
                 donationAmount += donationsResult[donation].new_amount;
             }
             document.getElementById("DonationThisyear").innerHTML = date.getFullYear();
-            if (donationAmount >= 1000 && donationAmount < 99999) {
-                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 1000 * 100) / 100).toLocaleString() + " " + "K";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
+            if (donationAmount < 1000) {
+                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) * 100) / 100).toLocaleString();
             }
-            else if (donationAmount >= 100000 && donationAmount < 999999) {
+            else if (donationAmount >= 1000 && donationAmount < 99999) {
+                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 1000 * 100) / 100).toLocaleString() + " " + "K";
+            }
+            else if (donationAmount >= 100000 && donationAmount < 9999999) {
                 document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 100000 * 100) / 100).toLocaleString() + " " + "L";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
             else if (donationAmount >= 10000000) {
-                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 100000 * 100) / 100).toLocaleString() + " " + "Cr";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
+                document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
             }
-
+           getTotalnumberOfDonationsCurrentMonth();
         }
     };
     retrieveReq.send();
 }
 
+// Tile  5 Total Donors for the current month
 function totalDonors(data) {
 
     var date = new Date();
     var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
     var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
     var lastDay1 = lastDay.split('T')[0];
-    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/accounts?$filter=new_donor eq true and Microsoft.Dynamics.CRM.Between(PropertyName='createdon',";
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/accounts?$filter=new_donor eq true and Microsoft.Dynamics.CRM.Between(PropertyName='new_registrationdate',";
     odataSelect += 'PropertyValues=["' + firstDay + 'T00:00:00Z","' + lastDay1 + 'T23:59:59Z"])';
-    // var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/accounts?$filter=new_donor eq true";
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
     retrieveReq.setRequestHeader("Content-Type", "application/json");
@@ -144,53 +167,49 @@ function totalDonors(data) {
     retrieveReq.onreadystatechange = function () {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
             data.totalDonors = JSON.parse(this.responseText).value.length;
-            if (data.PaidDonation >= 1000) {
-                document.getElementById("receiveddonation").innerHTML = (Math.round(parseFloat(data.PaidDonation) / 1000 * 100) / 100).toLocaleString() + "K";
+            if (data.PaidDonation < 1000) {
+                document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) * 100) / 100).toLocaleString();
             }
 
-            if (data.PaidDonation >= 1000 && data.PaidDonation < 99999) {
+            else if (data.PaidDonation >= 1000 && data.PaidDonation < 99999) {
                 document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) / 1000 * 100) / 100).toLocaleString() + " " + "K";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.PaidDonation >= 100000 && data.PaidDonation < 999999) {
+            else if (data.PaidDonation >= 100000 && data.PaidDonation < 9999999) {
                 document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) / 100000 * 100) / 100).toLocaleString() + " " + "L";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.PaidDonation >= 10000000) {
+            else if (data.PaidDonation >= 10000000) {
                 document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-
-            if (data.plannedDonation >= 1000 && data.plannedDonation < 99999) {
+            /******************************************************************************************** */
+            if (data.plannedDonation < 1000) {
+                document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) * 100) / 100).toLocaleString();
+            }
+            else if (data.plannedDonation >= 1000 && data.plannedDonation < 99999) {
                 document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) / 1000 * 100) / 100).toLocaleString() + " " + "K";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.plannedDonation >= 100000 && data.plannedDonation < 999999) {
+            else if (data.plannedDonation >= 100000 && data.plannedDonation < 9999999) {
                 document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) / 100000 * 100) / 100).toLocaleString() + " " + "L";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.plannedDonation >= 10000000) {
+            else if (data.plannedDonation >= 10000000) {
                 document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
 
-
-
-            if (data.Average >= 1000 && data.Average < 99999) {
+            /***************************************************************************************** */
+            if (data.Average < 1000) {
+                document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) * 100) / 100).toLocaleString();
+            }
+            else if (data.Average >= 1000 && data.Average < 99999) {
                 document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 1000 * 100) / 100).toLocaleString() + " " + "K";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-            if (data.Average >= 100000 && data.Average < 999999) {
+            if (data.Average >= 100000 && data.Average < 9999999) {
                 document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 100000 * 100) / 100).toLocaleString() + " " + "L";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
             if (data.Average >= 10000000) {
                 document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
-                // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
             }
-
-            document.getElementById("donationCount").innerHTML = data.DonationCount;
-            document.getElementById("donationCountthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            /************************************************************************************************ */
+        
+           
             document.getElementById("totalDonors").innerHTML = data.totalDonors;
             document.getElementById("totalDonorsthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
             getTotalDonations();
