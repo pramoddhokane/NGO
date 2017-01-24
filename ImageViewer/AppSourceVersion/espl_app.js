@@ -7,6 +7,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	// initial image index
 	$scope._Index = 0;
 	$scope.currentNote = null;
+//	$scope.showDefault=true;
 	//	$scope.selectedFileName = null;
 	//	$scope.selectedFilesize = null;
 	//	$scope.selectedFileDesc = null;
@@ -24,6 +25,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	// show prev image
 	$scope.showPrev = function ()
 	{
+		$scope.clearZoomContainer();
 		if ($scope.isEditMode)
 		{
 			if ($scope.showconfirmbox())
@@ -47,11 +49,11 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			$scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
 			$scope.currentNote = $scope.photos[$scope._Index];
 		}
-		//console.log($scope.currentNote);
 	};
 	// show next image
 	$scope.showNext = function ()
 	{
+		$scope.clearZoomContainer();
 		if ($scope.isEditMode)
 		{
 			if ($scope.showconfirmbox())
@@ -75,11 +77,11 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			$scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
 			$scope.currentNote = $scope.photos[$scope._Index];
 		}
-		//console.log($scope.currentNote);
 	};
 	// show a certain image
 	$scope.showPhoto = function (index)
 	{
+		$scope.clearZoomContainer();
 		if ($scope.isEditMode)
 		{
 			if ($scope.showconfirmbox())
@@ -103,13 +105,12 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			$scope._Index = index;
 			$scope.currentNote = $scope.photos[index];
 		}
-		//console.log($scope.currentNote);
 	};
 	$scope.onChange = function (e, fileList)
 	{
 		$scope.isDragdrop = false;
-		alert('this is on-change handler!');
-		console.log(fileList);
+		//alert('this is on-change handler!');
+		//console.log(fileList);
 	};
 	$scope.showconfirmbox = function ()
 	{
@@ -254,7 +255,11 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			}).then(function (response)
 			{
 				$scope.photos = response.data.value;
-				$scope.currentNote = $scope.photos[0];
+				if ($scope.photos.length > 0)
+				{
+					$scope.currentNote = $scope.photos[0];
+//					$scope.showDefault=false;
+				}
 				console.log($scope.currentNote);
 			});
 		}
@@ -279,6 +284,23 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	{
 		$scope.files = [];
 	}
+	$scope.clearZoomContainer = function ()
+	{
+		var myEl = angular.element(document.getElementsByClassName('zoomContainer')); //document.querySelector('.zoomContainer')
+		if (myEl) myEl.remove();
+	};
+	$scope.onMouseOver = function ()
+	{
+		
+		var id = '#' + $scope.currentNote.annotationid;
+		$(id).elevateZoom(
+		{
+			zoomType: "inner",
+			cursor: "crosshair",
+			zoomWindowFadeIn: 500,
+			zoomWindowFadeOut: 750
+		});
+	};
 
 	function getBase64(file)
 	{
@@ -316,7 +338,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				var annnotationdata = (
 				{
 					'filename': file.filename,
-					'documentbody': file.base64.text,
+					'documentbody': file.base64,
 					'mimetype': file.filetype,
 				});
 			}

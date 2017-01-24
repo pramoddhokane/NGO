@@ -15,6 +15,9 @@
       <script src="https://code.angularjs.org/1.5.0/angular-animate.min.js"></script>
       <script src="https://code.angularjs.org/1.5.0/angular-touch.min.js"></script>
       <script src="https://cdn.rawgit.com/adonespitogo/angular-base64-upload/master/src/angular-base64-upload.js"></script>
+      <script src="espl_Jquery.min.js"></script>
+<!--       <script src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"></script>-->
+       <script src="espl_jquery.elevatezoom.js"></script>
       <script src="espl_app.js"></script>
       <meta>
       <meta>
@@ -30,7 +33,7 @@
          <!-- slider container -->
          <div class="container">
             <div class="descContainer">
-               <div class="input-group">
+               <div class="input-group" ng-show="photos.length">
                   <span class="fileName" image1="" style="font-size: 24px;font-weight: bolder;">{{currentNote.filename}}</span>
                   <!--<span style="font-size: 12px;font-weight: bolder;">{{selectedFilesize}}</span>-->
                   <input class="btn btn-secondary" type="button" style="padding: 2px;" value="Edit Details" ng-click="editDetails()">
@@ -39,20 +42,16 @@
             </div>
             <div class="slider">
                <!-- enumerate all photos -->
-               <div class="imgSlider">
+               <div class="imgSlider"> 
+                 
                   <img class="slide" ng-src="data:image/png;base64,{{photo.documentbody}}" ng-show="isActive($index)" ng-swipe-left="showNext()"
-                     ng-swipe-right="showPrev()" ng-repeat="photo in photos" id="{{photo.annotationid}}">
-                  <!--<a href="#" class="del_photo" ng-click="deleteImage()" ng-show="photos.length>0" >X</a>-->
+                     ng-swipe-right="showPrev()" ng-repeat="photo in photos" id="{{photo.annotationid}}" data-zoom-image="data:image/png;base64,{{photo.documentbody}}" ng-mouseover="onMouseOver()" >
+                  <div ng-hide="photos.length"><img class="default"  width="400" height="300"></div>
+                 <!--<a href="#" class="del_photo" ng-click="deleteImage()" ng-show="photos.length>0" >X</a>-->
                   <!-- prev / next controls -->
-                  <a class="arrow prev" href="#" ng-click="showPrev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
-                  <a class="arrow next" href="#" ng-click="showNext()"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                  <span class="ms-crm-CommandBar-Button ms-crm-Menu-Label del_photo" style="max-width:200px">
-                     <!--<a class="ms-crm-Menu-Label" ng-click="deleteImage()" ng-show="photos.length>0">
-                        <i class="fa fa-trash"></i>
-                        <span class="ms-crm-CommandBar-Menu" style="max-width:150px"> Delete </span>
-                        </a>-->
-                  </span>
-               </div>
+                 <div ng-show="photos.length"> <a class="arrow prev" href="#" ng-click="showPrev()"><span class="glyphicon glyphicon-chevron-left"></span></a></div>
+                    <div ng-show="photos.length"> <a class="arrow next" href="#" ng-click="showNext()"><span class="glyphicon glyphicon-chevron-right"></span></a>  </div>               
+               </div> 
                <!-- extra navigation controls -->
                <div class="navImages">
                   <ul class="nav">
@@ -65,9 +64,9 @@
             <div id="dropbox" class="dropbox" ng-class="dropClass">
                <span ng-hide="files.length || isEditMode" class="dropText">Drag and drop your images here</span>
              <div ng-hide="files.length || isEditMode" ><!--  class="input-group"-->
-                  <label for="file" style="vertical-align: middle;display: block !important;font-size: 19px;font-weight: bold;text-align: center !important;">Or</label>
-                  <input type="file" ng-model="files"  class="inputfile" name="files" base-sixty-four-input multiple accept="image/*, .zip" minsize="500" required minnum="2" on-change="onChange">
-                  <label for="file">Choose file</label>
+                  <label  style="vertical-align: middle;display: block !important;font-size: 19px;font-weight: bold;text-align: center !important;">Or</label>
+                  <label class="btn btn-primary fileInputlbl" for="my-file-selector">Choose file<input id="my-file-selector" type="file" ng-model="files"  class="inputfile" name="files" base-sixty-four-input multiple accept="image/*, .zip" minsize="500" required minnum="2" on-change="onChange" style="display:none;">
+                  </label>
                </div>
                <div ng-show="files.length">
                   <div class="fileNames table-responsive">
