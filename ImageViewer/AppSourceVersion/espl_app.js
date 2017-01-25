@@ -7,11 +7,6 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	// initial image index
 	$scope._Index = 0;
 	$scope.currentNote = null;
-//	$scope.showDefault=true;
-	//	$scope.selectedFileName = null;
-	//	$scope.selectedFilesize = null;
-	//	$scope.selectedFileDesc = null;
-	// if a current image is the same as requested image
 	$scope.files = [];
 	$scope.file = {};
 	$scope.master = {};
@@ -157,8 +152,10 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		function (response)
 		{
 			alert("Note Updated Successfully");
+			$scope.clearZoomContainer();
 			$scope.getImages();
 			$scope.isEditMode = false;
+			//$scope.showNext();
 		},
 
 		function (response)
@@ -166,6 +163,36 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			console.log("Note is not updated ");
 		});
 		//		}
+	}
+	$scope.showDescription = function ()
+	{
+		if ($scope.photos.length > 0)
+		{
+			if ($scope.currentNote) return $scope.currentNote.notetext !== null
+		}
+		return true
+	}
+	$scope.getFile = function ()
+	{
+		$scope.currentNote
+		var DocumentBody = $scope.currentNote.documentbody;
+		var FileName = $scope.currentNote.filename;
+		$scope.dataURItoBlob(DocumentBody, FileName);
+	}
+	$scope.dataURItoBlob = function (dataURI, filename)
+	{
+		// convert base64 to raw binary data held in a string
+		var byteString = atob(dataURI);
+		// write the bytes of the string to an ArrayBuffer
+		var ab = new ArrayBuffer(byteString.length);
+		var ia = new Uint8Array(ab);
+		for (var i = 0; i < byteString.length; i++)
+		{
+			ia[i] = byteString.charCodeAt(i);
+		}
+		// write the ArrayBuffer to a blob, and you're done
+		var bb = new Blob([ab]);
+		saveAs(bb, filename); //pass blob and file name
 	}
 	$scope.deleteImage = function ()
 	{
@@ -186,11 +213,13 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				alert("Image deleted successfully");
 				//$scope.getImages();
 				$scope.photos.splice(currentIndex, 1);
-				if ($scope.photos.length === currentIndex)
-				{
-					$scope.isEditMode = false;
-					$scope.showNext();
-				}
+				$scope.isEditMode = false;
+				$scope.clearZoomContainer();
+				$scope.showNext();
+				//				if ($scope.photos.length === currentIndex)
+				//				{
+				//					$scope.showNext();
+				//				}
 			},
 
 			function (response)
@@ -258,7 +287,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				if ($scope.photos.length > 0)
 				{
 					$scope.currentNote = $scope.photos[0];
-//					$scope.showDefault=false;
+					//					$scope.showDefault=false;
 				}
 				console.log($scope.currentNote);
 			});
@@ -291,14 +320,12 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	};
 	$scope.onMouseOver = function ()
 	{
-		
 		var id = '#' + $scope.currentNote.annotationid;
 		$(id).elevateZoom(
 		{
-			zoomType: "inner",
-			cursor: "crosshair",
-			zoomWindowFadeIn: 500,
-			zoomWindowFadeOut: 750
+			zoomWindowPosition: 1,
+			zoomWindowHeight: 400,
+			zoomWindowWidth: 500
 		});
 	};
 
@@ -343,11 +370,31 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				});
 			}
 			annnotationdata[objectId] = '/' + $scope.entitySetName + '(' + $scope.entityId + ')';
-			$http.post($scope.clientURL + '/api/data/v8.1/annotations', annnotationdata)
-				.success(function (res)
+			$http(
+			{
+				url: $scope.clientURL + '/api/data/v8.1/annotations',
+				method: 'POST',
+				data: annnotationdata,
+				uploadEventHandlers: {
+					progress: function (e)
+					{
+						//						$scope.$apply(function ()
+						//						{
+						if (e.lengthComputable)
+						{
+							$scope.progress = Math.round(e.loaded * 100 / e.total)
+						}
+						else
+						{
+							$scope.progress = 'unable to compute'
+						}
+						//						})
+					}
+				}
+			}).success(function (res)
 			{
 				uploadedCount++;
-				$scope.progress = Math.round(uploadedCount * 100 / $scope.files.length);
+				//$scope.progress = Math.round(uploadedCount * 100 / $scope.files.length);
 				if (uploadedCount == $scope.files.length)
 				{
 					//	$window.alert('View uploaded files?');
@@ -364,6 +411,21 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				console.error('Repos error', status, data);
 			});
 		}
+	}
+
+	function uploadProgress(evt)
+	{
+		$scope.$apply(function ()
+		{
+			if (evt.lengthComputable)
+			{
+				$scope.progress = Math.round(evt.loaded * 100 / evt.total)
+			}
+			else
+			{
+				$scope.progress = 'unable to compute'
+			}
+		})
 	}
 
 	function dragEnterLeave(evt)

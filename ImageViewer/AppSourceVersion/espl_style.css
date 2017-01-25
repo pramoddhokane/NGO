@@ -69,16 +69,16 @@
     opacity: 0;
 }
 .del_photo {
-    margin: 5px 5px 0 0;
-    top: 0;
+  margin: 5px 5px 0 0;
+    top: 9px;
     cursor: pointer;
-    height: 5%;
+    height: 7%;
     outline: medium none;
     position: absolute;
     bottom: 10px;
     width: 64px;
     z-index: 5;
-    left: 43%;
+    /* left: 0; */
     background: white;
     padding-left: 2px;
     padding-right: 2px;
@@ -86,6 +86,7 @@
     overflow-y: hidden;
     color: black;
     display: inline-block;
+    right: 0;
 }
 A.ms-crm-Menu-Label, A.ms-crm-Menu-Label-Flyout {
     outline-width: 0px;
@@ -110,7 +111,7 @@ table {
 }
 .percent {
     position: absolute !important;
-    width: 300px !important;
+    width: 100%;
     height: 14px !important;
     z-index: 1 !important;
     text-align: center !important;
@@ -118,7 +119,8 @@ table {
     color: white !important;
 }
 .progressBar {
-    width: 300px;
+/*    width: 300px;*/
+    margin-top: 10px;
     height: 14px !important;
     border-radius: 10px !important;
     border: 1px solid #CCC !important;
@@ -185,6 +187,8 @@ ul {
     position: relative;
     vertical-align: middle;
     border-style: dashed;
+    max-height: 506px;
+    overflow-y: scroll;
 }
 .dropText {
     vertical-align: middle;
@@ -225,6 +229,7 @@ span.fileSize {
 .btn {
     margin: 0 5px;
     border-radius: 0px !important;
+    font-weight: bold!important;
 }
  .descContainer {
     top: 40px;
@@ -260,4 +265,19 @@ span.fileSize {
     border: 4px solid rgba(11, 32, 42, 0.38);
     width: 155px;
     height: 80px;
+}
+.description {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 700px;
+}
+i:hover {
+    color: #337ab7;
+}
+.table-responsive {
+    min-height: .01%;
+    overflow-x: auto;
+    max-height: 390px !important;
+    overflow-y: scroll;
 }

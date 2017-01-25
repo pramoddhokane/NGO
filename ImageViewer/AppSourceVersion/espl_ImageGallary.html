@@ -11,13 +11,13 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
       <!-- add javascripts -->
-      <script src="https://code.angularjs.org/1.5.0/angular.min.js"></script>
+      <script src="https://code.angularjs.org/1.5.7/angular.min.js"></script>
       <script src="https://code.angularjs.org/1.5.0/angular-animate.min.js"></script>
       <script src="https://code.angularjs.org/1.5.0/angular-touch.min.js"></script>
       <script src="https://cdn.rawgit.com/adonespitogo/angular-base64-upload/master/src/angular-base64-upload.js"></script>
       <script src="espl_Jquery.min.js"></script>
-<!--       <script src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"></script>-->
-       <script src="espl_jquery.elevatezoom.js"></script>
+      <script src="espl_fileSaverjs"></script>
+      <script src="espl_jquery.elevatezoom.js"></script>
       <script src="espl_app.js"></script>
       <meta>
       <meta>
@@ -36,9 +36,11 @@
                <div class="input-group" ng-show="photos.length">
                   <span class="fileName" image1="" style="font-size: 24px;font-weight: bolder;">{{currentNote.filename}}</span>
                   <!--<span style="font-size: 12px;font-weight: bolder;">{{selectedFilesize}}</span>-->
-                  <input class="btn btn-secondary" type="button" style="padding: 2px;" value="Edit Details" ng-click="editDetails()">
+<!--                  <input class="btn btn-secondary" type="button" style="padding: 2px;" value="Edit Details" ng-click="editDetails()">-->
+                 <a href="#" style="font-size: 26px; color: black; margin-left: 9px;text-align: center;vertical-align: middle;"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Edit Note Details" ng-click="editDetails()"></i></a>
                </div>
                <div class="description">{{currentNote.notetext}}</div>
+               <div class="description" ng-hide="showDescription()">Click on Edit button to add note text</div>
             </div>
             <div class="slider">
                <!-- enumerate all photos -->
@@ -48,6 +50,7 @@
                      ng-swipe-right="showPrev()" ng-repeat="photo in photos" id="{{photo.annotationid}}" data-zoom-image="data:image/png;base64,{{photo.documentbody}}" ng-mouseover="onMouseOver()" >
                   <div ng-hide="photos.length"><img class="default"  width="400" height="300"></div>
                  <!--<a href="#" class="del_photo" ng-click="deleteImage()" ng-show="photos.length>0" >X</a>-->
+                 <a href=# class="del_photo" ng-show="photos.length" ng-click="getFile()"><i class="fa fa-download" title="Download"></i></a>
                   <!-- prev / next controls -->
                  <div ng-show="photos.length"> <a class="arrow prev" href="#" ng-click="showPrev()"><span class="glyphicon glyphicon-chevron-left"></span></a></div>
                     <div ng-show="photos.length"> <a class="arrow next" href="#" ng-click="showNext()"><span class="glyphicon glyphicon-chevron-right"></span></a>  </div>               
@@ -98,7 +101,7 @@
                   <hr style=" margin: 7px;">
                   <div class="form-group">
                      <label>Enter Name</label>
-                     <input type="text" class="form-control" placeholder="Enter name" ng-model="currentNote.filename">
+                     <input type="text" class="form-control" placeholder="Enter name" ng-model="currentNote.filename" ng-maxlength="30">
                      <label>Enter description</label>
                      <textarea class="form-control"  rows="3" ng-model="currentNote.notetext"></textarea>
                   </div>
