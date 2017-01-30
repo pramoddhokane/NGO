@@ -104,8 +104,6 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	$scope.onChange = function (e, fileList)
 	{
 		$scope.isDragdrop = false;
-		//alert('this is on-change handler!');
-		//console.log(fileList);
 	};
 	$scope.showconfirmbox = function ()
 	{
@@ -132,16 +130,12 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	}
 	$scope.save = function (currentNote)
 	{
-		//		if ($scope.showconfirmbox())
-		//		{
 		var UpdateNote = {
 			filename: currentNote.filename,
 			notetext: currentNote.notetext,
 		}
-		//var index = $scope.photos.indexOf(item);     	 			
 		var currentIndex = $scope._Index;
 		var annotationID = $scope.photos[currentIndex].annotationid;
-		//console.log("annotationID : "+ annotationID);
 		$http(
 		{
 			method: 'PATCH',
@@ -153,7 +147,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		{
 			alert("Note Updated Successfully");
 			$scope.clearZoomContainer();
-			$scope.getImages();
+			//$scope.getImages();
 			$scope.isEditMode = false;
 			//$scope.showNext();
 		},
@@ -162,7 +156,6 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		{
 			console.log("Note is not updated ");
 		});
-		//		}
 	}
 	$scope.showDescription = function ()
 	{
@@ -181,16 +174,13 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	}
 	$scope.dataURItoBlob = function (dataURI, filename)
 	{
-		// convert base64 to raw binary data held in a string
 		var byteString = atob(dataURI);
-		// write the bytes of the string to an ArrayBuffer
 		var ab = new ArrayBuffer(byteString.length);
-		var ia = new Uint8Array(ab);
-		for (var i = 0; i < byteString.length; i++)
-		{
-			ia[i] = byteString.charCodeAt(i);
-		}
-		// write the ArrayBuffer to a blob, and you're done
+		//		var ia = new Uint8Array(ab);
+		//		for (var i = 0; i < byteString.length; i++)
+		//		{
+		//			ia[i] = byteString.charCodeAt(i);
+		//		}
 		var bb = new Blob([ab]);
 		saveAs(bb, filename); //pass blob and file name
 	}
@@ -323,9 +313,15 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		var id = '#' + $scope.currentNote.annotationid;
 		$(id).elevateZoom(
 		{
-			zoomWindowPosition: 1,
-			zoomWindowHeight: 400,
-			zoomWindowWidth: 500
+			//			zoomWindowPosition: 1,
+			//			zoomWindowHeight: 500,
+			//			zoomWindowWidth: 500,
+			//			cursor: 'pointer',
+			scrollZoom: true,
+			zoomType: "inner",
+			cursor: "crosshair",
+//			zoomType: "lens",			
+//			lensSize: 100
 		});
 	};
 

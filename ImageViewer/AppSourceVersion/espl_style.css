@@ -49,7 +49,7 @@
     background-repeat: no-repeat;
     /* background-attachment: fixed; */
     background-position: center;
-    background-size: 500px 500px;
+    background-size: 250px 250px;
     height: 506px;
     width: 912px;
 }
@@ -188,7 +188,7 @@ ul {
     vertical-align: middle;
     border-style: dashed;
     max-height: 506px;
-    overflow-y: scroll;
+/*    overflow-y: scroll;*/
 }
 .dropText {
     vertical-align: middle;
@@ -206,6 +206,7 @@ ul {
 }
 .slide, .slide.ng-hide-remove.ng-hide-remove-active {
     max-width: 100%;
+/*    max-width: 35%;*/
     max-height: 80%;
     position: relative;
     margin: auto;
@@ -234,6 +235,7 @@ span.fileSize {
  .descContainer {
     top: 40px;
     position: relative;
+    height: 58px;
 }
  label {
     margin-bottom: 5px;
@@ -271,6 +273,7 @@ span.fileSize {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 700px;
+   
 }
 i:hover {
     color: #337ab7;
