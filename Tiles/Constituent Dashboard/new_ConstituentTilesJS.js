@@ -88,7 +88,7 @@ function totalDonation(data) {
 // Tile 4 Donation Count
 function getTotalnumberOfDonationsCurrentMonth() {
    var date = new Date();
-    var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
+    var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() +1), 1));
     var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
     var lastDay1 = lastDay.split('T')[0];
     var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
