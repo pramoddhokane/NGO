@@ -9,7 +9,7 @@
     <script src="new_JQuery_1.11.3"></script>
     <script src="new_jquery.easing.js"></script>
     <script src="new_Loadash.js"></script>   
-    <script src="new_ConstituentTilesJS.js"></script>
+    <script src="new_Camp_EventTilesJS.js"></script>
     <style>
         
         [class*="fontawesome-"]:before {
@@ -70,18 +70,15 @@
     </script>
 <meta><meta></head>
 
-<body style="word-wrap: break-word;width:98%" onload="getCurrentMonthAccountDetails()">
+<body style="word-wrap: break-word;width:98%" onload="getCurrentFiscalYear()">
     <div class="row">
 
          <div class="col-md-2">
                 <div class="tile" style="background-color: #e91e63">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Beneficiaries</div>
+                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Campaign Cost</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="beneficiaryThisMonth"></div> 
-                    
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile1" ></div>
-
-                    <div style="text-align: left; font-size: 23px;" id="beneficiaryThisYear"></div>                     
+                    <div style="text-align: left; font-size: 30px;" id="campaignCostThisYear"></div>                  
+                                  
                
                     <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile1" ></div>                    
 
@@ -90,26 +87,21 @@
 
             <div class="col-md-2">
                 <div class="tile" style="background-color: #6f1578">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Volunteers</div>
+                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Event Cost</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="volunteersThisMonth"></div> 
-                    
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile2" ></div>
-
-                    <div style="text-align: left; font-size: 23px;" id="volunteersThisYear"></div>                     
+                    <div style="text-align: left; font-size: 30px;" id="eventCostThisYear"></div>                   
+                              
                
                     <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile2" ></div>                     
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="tile" style="background-color: #728087"> 
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Donors</div>
+                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Beneficiaires Registered</div>
 
-                     <div style="text-align: left; font-size: 30px;" id="donorsThisMonth"></div> 
-                    
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile3" ></div>
-
-                    <div style="text-align: left; font-size: 23px;" id="donorsThisYear"></div>                     
+                     <div style="text-align: left; font-size: 30px;" id="beneficiariesThisYear"></div> 
+                 
+                                 
                
                     <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile3" ></div>  
                 </div>
@@ -117,40 +109,35 @@
           
           <div class="col-md-2">
                 <div class="tile" style="background-color: #4caf50">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Service Providers</div>
+                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Volunteers Registered</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="serviceProvidersThisMonth"></div> 
+                    <div style="text-align: left; font-size: 30px;" id="volunteersThisYear"></div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile5" ></div>
-
-                    <div style="text-align: left; font-size: 23px;" id="serviceProvidersThisYear"></div>                     
+                                    
                
                     <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile5" ></div>  
                 </div>
             </div>
               <div class="col-md-2">
                 <div class="tile" style="background-color: #0073c9">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Memberships</div>
+                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Donors Registered</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="membershipsThisMonth"></div> 
+                    <div style="text-align: left; font-size: 30px;" id="donorsThisYear"></div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile4" ></div>
-
-                    <div style="text-align: left; font-size: 23px;" id="membershipsThisYear"></div>                     
-               
+                 
                     <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile4" ></div>  
                 </div>
             </div>
         
             <div class="col-md-2">
                 <div class="tile" style="background-color: #fe7128">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Membership Renewals</div>
-
-                    <div style="text-align: left; font-size: 30px;" id="membershipRenewalsThisMonth">13</div> 
+                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Total Donations</div>
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile6" >Jan 2017</div>
-
-                    <div style="text-align: left; font-size: 23px;" id="membershipRenewalsThisYear"></div>                     
+                    <div style="text-align: left; font-size: 23px;" id="CampaignDonationThisYear"></div> 
+ 				    <div  style="text-align: left;font-size: initial;" >Campaigns</div>  
+ 				    
+                    <div style="text-align: left; font-size: 23px;" id="EventDonationThisYear"></div> 
+                    <div  style="text-align: left;font-size: initial;" >Events</div>                                           
                
                     <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile6" ></div>  
                 </div>
