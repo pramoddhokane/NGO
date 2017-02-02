@@ -1,10 +1,26 @@
 var allStudents;
-var donationAmountForAverage = 0;
+var differedDonationAmount = 0;
+var canceledDonationsAmount=0;
 var donationAmount = 0;
 var donationCount = 0;
+var UnpaidDonationAmount = 0;
 var plannedDonation = 0;
 var PaidDonation = 0;
 var data = {};
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd;
+} 
+if(mm<10){
+    mm='0'+mm;
+} 
+var today = dd+'/'+mm+'/'+yyyy;
+data.GrandTotal = 0;
+data.DifferedPercentage=0;
+data.canceledPercentage=0;
 var retrieveReq = new XMLHttpRequest();
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var date = new Date();
@@ -16,7 +32,7 @@ function getPaidDonationDetails() {
     var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
     var lastDay1 = lastDay.split('T')[0];
     var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and  Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
-    odataSelect += 'PropertyValues=["'+ firstDay + 'T00:00:00Z","'+ lastDay1 + 'T23:59:59Z"])';
+    odataSelect += 'PropertyValues=["' + firstDay + 'T00:00:00Z","' + lastDay1 + 'T23:59:59Z"])';
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
     retrieveReq.setRequestHeader("Content-Type", "application/json");
@@ -38,7 +54,7 @@ function getPlannedDonationDetails() {
     var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
     var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
     var lastDay1 = lastDay.split('T')[0];
-    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=statuscode eq 1 and new_donationtype eq 100000000 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationdate',";
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=statuscode eq 1 and new_donationtype eq 100000000 and Microsoft.Dynamics.CRM.Between(PropertyName='new_duedate',";
     odataSelect += 'PropertyValues=["' + firstDay + '","' + lastDay1 + 'T23:59:59Z"])';
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
@@ -55,13 +71,15 @@ function getPlannedDonationDetails() {
     retrieveReq.send();
 }
 
-//Tile 3 Average Donation for this month.
-function totalDonation(data) {
+//Tile 4 differedDonation .
+function differedDonations() {
 
-    var currentDate = new Date();
-    var currentYear = currentDate.getFullYear();
-    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and new_donationtype eq 100000000 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
-    odataSelect += 'PropertyValues=["' + currentYear + '-01-01T00:00:00Z","' + currentYear + '-12-31T23:59:59Z"])';
+    var date = new Date();
+    var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
+    var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+    var lastDay1 = lastDay.split('T')[0];
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=statuscode eq 2 and Microsoft.Dynamics.CRM.Between(PropertyName='new_duedate',";
+    odataSelect += 'PropertyValues=["' + firstDay + 'T00:00:00Z","' + lastDay1 + 'T23:59:59Z"])';
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
     retrieveReq.setRequestHeader("Content-Type", "application/json");
@@ -73,25 +91,27 @@ function totalDonation(data) {
             var response = JSON.parse(this.responseText).value;
             for (var don = 0; don < response.length; don++) {
                 if (response[don].new_donationtype = 100000000) {
-                    donationAmountForAverage += response[don].new_amount;
+                    differedDonationAmount += response[don].new_amount;
                 }
             }
-            var Average = donationAmountForAverage / 12;
-            data.Average = Average;
-            totalDonors(data)
-            document.getElementById("AverageDonationthisyear").innerHTML = date.getFullYear();
+            var Differed = differedDonationAmount;
+            data.Differed = Differed;
+            data.GrandTotal += Differed;
+            canceledDonations();
+            document.getElementById("differedDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
         }
     };
     retrieveReq.send();
 }
 
-// Tile 4 Donation Count
-function getTotalnumberOfDonationsCurrentMonth() {
-   var date = new Date();
+//Tile 5 CanceledDonations.
+function canceledDonations() {
+
+    var date = new Date();
     var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
     var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
     var lastDay1 = lastDay.split('T')[0];
-    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=statuscode eq 100000002 and Microsoft.Dynamics.CRM.Between(PropertyName='new_duedate',";
     odataSelect += 'PropertyValues=["' + firstDay + 'T00:00:00Z","' + lastDay1 + 'T23:59:59Z"])';
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
@@ -101,11 +121,18 @@ function getTotalnumberOfDonationsCurrentMonth() {
     retrieveReq.setRequestHeader("OData-Version", "4.0");
     retrieveReq.onreadystatechange = function () {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
-            donationsResult = JSON.parse(this.response).value;
-            DonationCount=donationsResult.length;
-            document.getElementById("DonationThisyear").innerHTML = date.getFullYear();
-             document.getElementById("donationCountthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
-              document.getElementById("donationCount").innerHTML = DonationCount;
+            var response = JSON.parse(this.responseText).value;
+            for (var don = 0; don < response.length; don++) {
+                if (response[don].new_donationtype = 100000000) {
+                    canceledDonationsAmount += response[don].new_amount;
+                }
+            }
+            var canceled = canceledDonationsAmount;
+            data.canceled = canceled;
+            data.GrandTotal += canceled;
+            unpaidDonations();
+
+            document.getElementById("canceledDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
         }
     };
     retrieveReq.send();
@@ -123,8 +150,7 @@ function getTotalDonations() {
     retrieveReq.setRequestHeader("Content-Type", "application/json");
     retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
     retrieveReq.setRequestHeader("Prefer", 'odata.include-annotations="*"');
-    retrieveReq.setRequestHeader("OData-Version", "4.0");
-    retrieveReq.onreadystatechange = function () {
+    retrieveReq.setRequestHeader("OData-Version", "4.0");    retrieveReq.onreadystatechange = function () {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
             donationsResult = JSON.parse(this.response).value;
             for (var donation = 0; donation < donationsResult.length; donation++) {
@@ -143,11 +169,43 @@ function getTotalDonations() {
             else if (donationAmount >= 10000000) {
                 document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
             }
-           getTotalnumberOfDonationsCurrentMonth();
+            getTotalnumberOfDonationsCurrentMonth();
         }
     };
     retrieveReq.send();
 }
+
+function unpaidDonations() {
+
+    var date = new Date();
+    var firstDay = getODataUTCDateFilter(new Date(date.getFullYear(), (date.getUTCMonth() + 1), 1));
+    var lastDay = getODataUTCDateFilter(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+    var lastDay1 = lastDay.split('T')[0];
+    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donors?$filter=statuscode eq 1 and Microsoft.Dynamics.CRM.Between(PropertyName='new_duedate',";
+    odataSelect += 'PropertyValues=["' + firstDay + 'T00:00:00Z","' + lastDay1 + 'T23:59:59Z"])';
+    retrieveReq.open("GET", odataSelect, true);
+    retrieveReq.setRequestHeader("Accept", "application/json");
+    retrieveReq.setRequestHeader("Content-Type", "application/json");
+    retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
+    retrieveReq.setRequestHeader("Prefer", 'odata.include-annotations="*"');
+    retrieveReq.setRequestHeader("OData-Version", "4.0");
+    retrieveReq.onreadystatechange = function () {
+        if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
+            var response = JSON.parse(this.responseText).value;
+            for (var don = 0; don < response.length; don++) {
+                if (response[don].new_donationtype = 100000000 && response[don]['new_duedate@OData.Community.Display.V1.FormattedValue']<=today) {
+                    UnpaidDonationAmount += response[don].new_amount;
+                }
+            }
+            var Unpaid = UnpaidDonationAmount;
+            data.Unpaid = Unpaid;
+            totalDonors(data)
+             document.getElementById("UnpaidDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+        }
+    };
+    retrieveReq.send();
+}
+
 
 // Tile  5 Total Donors for the current month
 function totalDonors(data) {
@@ -195,24 +253,33 @@ function totalDonors(data) {
             }
 
             /***************************************************************************************** */
-            if (data.Average < 1000) {
-                document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) * 100) / 100).toLocaleString();
+            data.DifferedPercentage = (data.Differed * 100) / data.GrandTotal;
+            document.getElementById("differedDonation").innerHTML = (Math.round(parseFloat(data.DifferedPercentage) * 100) / 100).toLocaleString() + "%";
+
+            /***************************************************************************************** */
+           data.canceledPercentage=(data.canceled * 100)/data.GrandTotal;
+                document.getElementById("canceledDonations").innerHTML = (Math.round(parseFloat( data.canceledPercentage) * 100) / 100).toLocaleString()+"%";
+          
+            /************************************************************************************************ */
+            if (data.Unpaid < 1000) {
+                document.getElementById("UnpaidDonationAmount").innerHTML = "₹" + (Math.round(parseFloat(data.Unpaid) * 100) / 100).toLocaleString();
             }
-            else if (data.Average >= 1000 && data.Average < 99999) {
-                document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 1000 * 100) / 100).toLocaleString() + " " + "K";
+            else if (data.Unpaid >= 1000 && data.Unpaid < 99999) {
+                document.getElementById("UnpaidDonationAmount").innerHTML = "₹" + (Math.round(parseFloat(data.Unpaid) / 1000 * 100) / 100).toLocaleString() + " " + "K";
             }
-            if (data.Average >= 100000 && data.Average < 9999999) {
-                document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 100000 * 100) / 100).toLocaleString() + " " + "L";
+            if (data.Unpaid >= 100000 && data.Unpaid < 9999999) {
+                document.getElementById("UnpaidDonationAmount").innerHTML = "₹" + (Math.round(parseFloat(data.Unpaid) / 100000 * 100) / 100).toLocaleString() + " " + "L";
             }
-            if (data.Average >= 10000000) {
-                document.getElementById("averageDonation").innerHTML = "₹" + (Math.round(parseFloat(data.Average) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
+            if (data.Unpaid >= 10000000) {
+                document.getElementById("UnpaidDonationAmount").innerHTML = "₹" + (Math.round(parseFloat(data.Unpaid) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
             }
             /************************************************************************************************ */
-        
-           
-            document.getElementById("totalDonors").innerHTML = data.totalDonors;
-            document.getElementById("totalDonorsthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+
+
+            // document.getElementById("totalDonors").innerHTML = data.totalDonors;
+            //  document.getElementById("totalDonorsthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
             getTotalDonations();
+
             console.log(data);
         }
     };
@@ -228,6 +295,7 @@ function calculateDonation(res) {
             }
         }
     }
+    data.GrandTotal += PaidDonation;
     data.PaidDonation = PaidDonation;
     data.DonationCount = res.length;
     getPlannedDonationDetails(data);
@@ -265,6 +333,60 @@ function calculatePlannedDonation(res) {
         }
     }
     data.plannedDonation = plannedDonation;
-    totalDonation(data);
+    data.GrandTotal += plannedDonation;
+    differedDonations();
 
+}
+
+function getCurrentFiscalYear() {
+    var req = new XMLHttpRequest();
+    req.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/organizations()?$select=fiscalcalendarstart", true);
+    req.setRequestHeader("OData-MaxVersion", "4.0");
+    req.setRequestHeader("OData-Version", "4.0");
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    req.setRequestHeader("Prefer", "odata.include-annotations=\"*\"");
+    req.onreadystatechange = function () {
+        if (this.readyState === 4) {
+            req.onreadystatechange = null;
+            if (this.status === 200) {
+                var result = JSON.parse(this.responseText).value;
+                fiscalcalendarstart = new Date(result[0]["fiscalcalendarstart"]);
+
+                var fiscalcalendarend = new Date(new Date().setFullYear(fiscalcalendarstart.getFullYear() + 1, fiscalcalendarstart.getMonth(), fiscalcalendarstart.getDate()));
+                console.log("lastday" + fiscalcalendarend);
+
+                getCurrentYearAccountDetails(fiscalcalendarstart, fiscalcalendarend);
+
+            }
+            else {
+                Xrm.Utility.alertDialog(this.statusText);
+            }
+        }
+    };
+    req.send();
+}
+
+function getODataUTCDateFilter(date) {
+    var monthString;
+    var rawMonth = (date.getUTCMonth() + 1).toString();
+    if (rawMonth.length == 1) {
+        monthString = "0" + rawMonth;
+    }
+    else {
+        monthString = rawMonth;
+    }
+    var dateString;
+    var rawDate = date.getDate().toString();
+    if (rawDate.length == 1) {
+        dateString = "0" + rawDate;
+    }
+    else {
+        dateString = rawDate;
+    }
+    var DateFilter = '';
+    DateFilter += date.getUTCFullYear() + "-";
+    DateFilter += monthString + "-";
+    DateFilter += dateString;
+    return DateFilter;
 }

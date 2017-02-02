@@ -43,6 +43,44 @@
         .col-half-offset {
             margin-left: 6.166667%
         }
+
+        .tile-header{
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;    
+			font-family: Segoe\000020UI,Tahoma,Arial;	
+			margin-bottom: 3px;
+        }
+		.amount-count{
+			text-align: left;
+            font-size: 32px;
+            font-weight: 300;    
+			font-family: Segoe\000020UI,Tahoma,Arial;	
+			letter-spacing: 1px;
+		}
+		.month-span{
+			text-align: left;
+			font-size: 16px;
+			font-weight: 500;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			letter-spacing: 0;
+			margin-top: 16px;
+			font-style: italic;
+			position: absolute;
+			bottom: 8px;
+		}
+		.sub-amount-count1{
+			font-size: 22px;
+			margin-bottom: 10px;
+		}
+		.sub-amount-count2{
+			font-size: 22px;
+		}
+		.tile{
+			-webkit-box-shadow: -1px 0px 13px 0px rgba(158,156,158,1)!important;
+			-moz-box-shadow: -1px 0px 13px 0px rgba(158,156,158,1)!important;
+			box-shadow: -1px 0px 13px 0px rgba(158,156,158,1)!important;
+		}
     </style>
     <meta>
     <meta>
@@ -72,79 +110,69 @@
   }
 })
     </script>
-<meta><meta></head>
+<meta><meta><meta><meta></head>
 
 <body style="word-wrap: break-word;width:98%" onload="getPaidDonationDetails()">
     <div class="row">
 
-       
+         <div class="col-md-2">
+                <div class="tile" style="background-color: #2196F3">
+                    <div class="tile-header">Donations Received (YTD) </div>
+
+                    <div class="amount-count" id="TotalDonationsThisYear"></div> 
+
+                    <div id="DonationThisyear" class="month-span"></div> 
+                </div>
+            </div>        
+
             <div class="col-md-2">
-                <div class="tile" style="background-color: #6f1578">
-                    <div style="text-align: left;font-size: initial;">Donation Received</div>
-<<<<<<< HEAD
-                    <div style="text-align: left;font-size: 30px;margin-bottom: 50px;" id="receiveddonation"></div>
-=======
-                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="receiveddonation"></div>
->>>>>>> 3c3e5516657410beff8c9197d80800d07d84e5f1
-                    <div id="receiveddonationthismonth" style="text-align: left;font-size: initial;"></div>                     
+                <div class="tile" style="background-color: #ed5a4f">
+                    <div class="tile-header">Donation Received (MTD)</div>
+
+                    <div class="amount-count" id="receiveddonation"></div>
+
+                    <div id="receiveddonationthismonth" class="month-span"></div>                     
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="tile" style="background-color: #728087"> 
-                    <div style="text-align: left;font-size: initial;">Expected Donation</div>
-<<<<<<< HEAD
-                    <div style="text-align: left;font-size: 30px;margin-bottom: 50px;" id="expectedDonation"></div>
-=======
-                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="expectedDonation"></div>
->>>>>>> 3c3e5516657410beff8c9197d80800d07d84e5f1
-                   <div id="ExpectedDonationthismonth" style="text-align: left;font-size: initial;"></div>    
+                <div class="tile" style="background-color: #00BCD4"> 
+                    <div class="tile-header">Expected Donation (MTD)</div>
+
+                    <div class="amount-count" id="expectedDonation"></div>
+
+                   <div id="ExpectedDonationthismonth" class="month-span"></div>    
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="tile" style="background-color: #0073c9">
-                    <div style="text-align: left;font-size: initial;"> Average Donation</div>
-<<<<<<< HEAD
-                    <div style="text-align: left;font-size: 30px;margin-bottom: 50px;" id="averageDonation"></div>  
-=======
-                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="averageDonation"></div>  
->>>>>>> 3c3e5516657410beff8c9197d80800d07d84e5f1
-                     <div id="AverageDonationthisyear" style="text-align: left;font-size: initial;"></div>  
+                <div class="tile" style="background-color: #009688">
+                    <div class="tile-header">Differed Donations (MTD)</div>
+
+                    <div class="amount-count sub-amount-count1" id="differedDonation"></div> 
+                
+                    <div id="differedDonationsthisyear" class="month-span">Year</div> 
+                  
                 </div>
             </div>
         
             <div class="col-md-2">
-                <div class="tile" style="background-color: #fe7128">
-                    <div style="text-align: left;font-size: initial;"> Donation Count</div>
-<<<<<<< HEAD
-                    <div style="text-align: left;font-size: 30px;margin-bottom: 50px;" id="donationCount"></div> 
-=======
-                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="donationCount"></div> 
->>>>>>> 3c3e5516657410beff8c9197d80800d07d84e5f1
-                    <div id="donationCountthismonth" style="text-align: left;font-size: initial;">Year</div>  
+                <div class="tile" style="background-color: #BA68C8">
+                     <div class="tile-header">Canceled Donations (MTD)</div>
+
+                    <div class="amount-count sub-amount-count2" id="canceledDonations"></div>  
+
+                     <div id="canceledDonationsthisyear" class="month-span">Year</div>  
                 </div>
             </div>          
 
             <div class="col-md-2">
-                <div class="tile" style="background-color: #4caf50">
-                    <div style="text-align: left;font-size: initial;">Total Donors</div>
-<<<<<<< HEAD
-                    <div style="text-align: left;font-size: 30px;margin-bottom: 50px;" id="totalDonors"></div>
-=======
-                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="totalDonors"></div>
->>>>>>> 3c3e5516657410beff8c9197d80800d07d84e5f1
-                    <div id="totalDonorsthismonth" style="text-align: left;font-size: initial;">Year</div>  
+                <div class="tile" style="background-color: #7153BE">
+                    <div class="tile-header">Unpaid Donations (MTD)</div>
+
+                    <div class="amount-count" id="UnpaidDonationAmount"></div>
+
+                    <div id="UnpaidDonationsthisyear" class="month-span">Year</div>  
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="tile" style="background-color: #e91e63">
-                    <div style="text-align: left;font-size: initial;">Total Donations </div>
-<<<<<<< HEAD
-                    <div style="text-align: left; font-size: 30px; margin-bottom: 50px;" id="TotalDonationsThisYear"></div> 
-=======
-                    <div style="text-align: left; font-size: 23px; margin-bottom: 70px;" id="TotalDonationsThisYear"></div> 
->>>>>>> 3c3e5516657410beff8c9197d80800d07d84e5f1
-                    <div id="DonationThisyear" style="text-align: left;font-size: initial;"></div> 
-                </div>
-            </div>        
+          
     </div>
 </body></html>
