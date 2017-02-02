@@ -43,6 +43,71 @@
         .col-half-offset {
             margin-left: 6.166667%
         }
+
+        .tile-header{
+            text-align: left;
+			font-size: 15px;
+			font-weight: 600;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			margin-bottom: 3px;
+        }
+		.amount-count{
+			text-align: left;
+            font-size: 32px;
+            font-weight: 300;    
+			font-family: Segoe\000020UI,Tahoma,Arial;	
+			letter-spacing: 1px;
+		}
+		.month-span{
+			text-align: left;
+			font-size: 14px;
+			font-weight: 500;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			letter-spacing: 0;
+			margin-top: 16px;
+			font-style: italic;
+			bottom: 8px;
+		}
+		.sub-amount-count1{
+			font-size: 22px;
+			margin-bottom: 10px;
+		}
+		.sub-amount-count2{
+			font-size: 22px;
+		}
+		.tile{
+			-webkit-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			-moz-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			padding-top: 6%!important;
+		}
+        
+        
+        .data {
+			text-align: left;
+			font-size: 22px;
+			font-weight: bold;
+		}
+
+		.month {
+			text-align: left;
+			font-size: 16px;
+			<!--    font-weight: 600;-->
+		}
+
+		.headline {
+			text-align: left;
+			font-size: 22px;
+			font-weight: 200;
+		}
+		.amount-month-box{
+			margin-bottom: 15px;
+			margin-top: 6px;
+		}
+		.amount-month-box .amount-count{
+			font-size: 22px;
+			margin-bottom: -19px!important;
+		}
     </style>
     <meta>
     <meta>
@@ -68,91 +133,115 @@
   }
 })
     </script>
-<meta><meta></head>
+<meta><meta><meta></head>
 
-<body style="word-wrap: break-word;width:98%" onload="getCurrentMonthAccountDetails()">
+<body style="word-wrap: break-word;width:98%" onload="getCurrentFiscalYear()">
     <div class="row">
 
          <div class="col-md-2">
-                <div class="tile" style="background-color: #e91e63">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Beneficiaries</div>
+                <div class="tile" style="background-color: rgb(33, 150, 243); top: 0px; left: 0px; opacity: 1;">
+                    <div class="tile-header">Beneficiaries</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="beneficiaryThisMonth"></div> 
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="beneficiaryThisMonth"></div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile1" ></div>
+						<div class="month-span" id="currentMonthTile1"></div>
+					</div>
 
-                    <div style="text-align: left; font-size: 23px;" id="beneficiaryThisYear"></div>                     
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="beneficiaryThisYear"></div>                     
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile1" ></div>                    
+						<div class="month-span" id="forFinancialYearTile1"></div> 
+					</div>	
 
                 </div>
             </div>        
 
             <div class="col-md-2">
-                <div class="tile" style="background-color: #6f1578">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Volunteers</div>
-
-                    <div style="text-align: left; font-size: 30px;" id="volunteersThisMonth"></div> 
+               <div class="tile" style="background-color: rgb(237, 90, 79); top: 0px; left: 0px; opacity: 1;">
+                    <div class="tile-header">Volunteers</div>
+					
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="volunteersThisMonth"></div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile2" ></div>
+						<div class="month-span" id="currentMonthTile2"></div>
+					</div>
 
-                    <div style="text-align: left; font-size: 23px;" id="volunteersThisYear"></div>                     
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="volunteersThisYear"></div>                     
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile2" ></div>                     
+						<div class="month-span" id="forFinancialYearTile2"></div>     
+					</div>	
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="tile" style="background-color: #728087"> 
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Donors</div>
-
-                     <div style="text-align: left; font-size: 30px;" id="donorsThisMonth"></div> 
+              <div class="tile" style="background-color: rgb(0, 188, 212); top: 0px; left: 0px; opacity: 1;"> 
+                    <div class="tile-header">Donors</div>
+					
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="donorsThisMonth"></div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile3" ></div>
+						<div class="month-span" id="currentMonthTile3"></div>
+					</div>
 
-                    <div style="text-align: left; font-size: 23px;" id="donorsThisYear"></div>                     
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="donorsThisYear"></div>                     
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile3" ></div>  
+						<div class="month-span" id="forFinancialYearTile3"></div>  
+					</div>
                 </div>
             </div>
           
           <div class="col-md-2">
-                <div class="tile" style="background-color: #4caf50">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Service Providers</div>
+              <div class="tile" style="background-color: rgb(0, 150, 136); top: 0px; left: 0px; opacity: 1;"> 
+                    <div class="tile-header">Service Providers</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="serviceProvidersThisMonth"></div> 
+					<div class="amount-month-box">	
+						<div class="amount-count sub-amount-count1" id="serviceProvidersThisMonth"></div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile5" ></div>
+						<div class="month-span" id="currentMonthTile5"></div>
+					</div>
 
-                    <div style="text-align: left; font-size: 23px;" id="serviceProvidersThisYear"></div>                     
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="serviceProvidersThisYear"></div>                     
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile5" ></div>  
+						<div class="month-span" id="forFinancialYearTile5"></div> 
+					</div>	
                 </div>
             </div>
               <div class="col-md-2">
-                <div class="tile" style="background-color: #0073c9">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Memberships</div>
+              <div class="tile" style="background-color: rgb(186, 104, 200); top: 0px; left: 0px; opacity: 1;"> 
+                    <div class="tile-header">Memberships</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="membershipsThisMonth"></div> 
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="membershipsThisMonth"></div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile4" ></div>
+						<div class="month-span" id="currentMonthTile4"></div>
+					</div>
 
-                    <div style="text-align: left; font-size: 23px;" id="membershipsThisYear"></div>                     
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="membershipsThisYear"></div>                     
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile4" ></div>  
+						<div class="month-span" id="forFinancialYearTile4"></div>  
+					</div>
                 </div>
             </div>
         
             <div class="col-md-2">
-                <div class="tile" style="background-color: #fe7128">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Membership Renewals</div>
+               <div class="tile" style="background-color: rgb(113, 83, 190); top: 0px; left: 0px; opacity: 1;"> 
+                    <div class="tile-header">Membership Renewals</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="membershipRenewalsThisMonth">13</div> 
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="membershipRenewalsThisMonth">13</div> 
                     
-                    <div  style="text-align: left;font-size: initial;" id="currentMonthTile6" >Jan 2017</div>
+						<div class="month-span" id="currentMonthTile6">Jan 2017</div>
+					</div>
 
-                    <div style="text-align: left; font-size: 23px;" id="membershipRenewalsThisYear"></div>                     
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="membershipRenewalsThisYear"></div>                     
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile6" ></div>  
+						<div class="month-span" id="forFinancialYearTile6"></div>  
+					</div>
                 </div>
             </div>          
 

@@ -29,7 +29,7 @@
             height: 100%;
            /* background: #A26FF9;
             margin: 0 10px 10px 0;*/
-            padding-top: 10%;
+            padding-top: 6%;
             padding-left: 10px;
             opacity: 0;
             text-align: center;
@@ -38,11 +38,56 @@
             cursor: pointer;
             /*border-style:groove;
             border-radius:6%*/
+			-webkit-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			-moz-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
         }
         
         .col-half-offset {
             margin-left: 6.166667%
         }
+		
+		.tile-header{
+            text-align: left;
+			font-size: 15px;
+			font-weight: 600;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			margin-bottom: 3px;
+        }
+		.amount-count{
+			text-align: left;
+            font-size: 32px;
+            font-weight: 300;    
+			font-family: Segoe\000020UI,Tahoma,Arial;	
+			letter-spacing: 1px;
+		}
+		.month-span{
+			text-align: left;
+			font-size: 14px;
+			font-weight: 500;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			letter-spacing: 0;
+			margin-top: 16px;
+			font-style: italic;
+			bottom: 8px;
+			position: absolute;
+		}
+		.amount-month-box {
+			margin-bottom: 7px;
+			margin-top: 5px;
+		}
+		.amount-month-box .amount-count {
+			font-size: 20px;
+			margin-bottom: -17px!important;
+		}
+		.event-name{
+			text-align: left;
+			font-size: 14px;
+			font-weight: 400;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			letter-spacing: 0;
+			margin-top: 12px;
+		}
     </style>
     <meta>
     <meta>
@@ -68,82 +113,86 @@
   }
 })
     </script>
-<meta><meta></head>
+<meta><meta><meta><meta></head>
 
 <body style="word-wrap: break-word;width:98%" onload="getCurrentFiscalYear()">
     <div class="row">
 
          <div class="col-md-2">
-                <div class="tile" style="background-color: #e91e63">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Campaign Cost</div>
+                <div class="tile" style="background-color: rgb(33, 150, 243); top: 0px; left: 0px; opacity: 1;">
+                    <div class="tile-header">Campaign Cost (YTD)</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="campaignCostThisYear"></div>                  
+                    <div class="amount-count" id="campaignCostThisYear"></div>                  
                                   
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile1" ></div>                    
+                    <div class="month-span" id="forFinancialYearTile1"></div>                    
 
                 </div>
             </div>        
 
             <div class="col-md-2">
-                <div class="tile" style="background-color: #6f1578">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Event Cost</div>
+                <div class="tile" style="background-color: rgb(237, 90, 79); top: 0px; left: 0px; opacity: 1;">
+                    <div class="tile-header">Event Cost (YTD)</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="eventCostThisYear"></div>                   
+                    <div class="amount-count" id="eventCostThisYear"></div>                   
                               
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile2" ></div>                     
+                    <div class="month-span" id="forFinancialYearTile2"></div>                     
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="tile" style="background-color: #728087"> 
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Beneficiaires Registered</div>
+                <div class="tile" style="background-color: rgb(0, 188, 212); top: 0px; left: 0px; opacity: 1;"> 
+                    <div class="tile-header">Beneficiaires Registered (YTD)</div>
 
-                     <div style="text-align: left; font-size: 30px;" id="beneficiariesThisYear"></div> 
+                     <div class="amount-count" id="beneficiariesThisYear"></div> 
                  
                                  
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile3" ></div>  
+                    <div class="month-span" id="forFinancialYearTile3"></div>  
                 </div>
             </div>
           
           <div class="col-md-2">
-                <div class="tile" style="background-color: #4caf50">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Volunteers Registered</div>
+                <div class="tile" style="background-color: rgb(0, 150, 136); top: 0px; left: 0px; opacity: 1;">
+                    <div class="tile-header">Volunteers Registered (YTD)</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="volunteersThisYear"></div> 
+                    <div class="amount-count" id="volunteersThisYear"></div> 
                     
                                     
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile5" ></div>  
+                    <div class="month-span" id="forFinancialYearTile5"></div>  
                 </div>
             </div>
               <div class="col-md-2">
-                <div class="tile" style="background-color: #0073c9">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Donors Registered</div>
+                <div class="tile" style="background-color: rgb(186, 104, 200); top: 0px; left: 0px; opacity: 1;">
+                    <div class="tile-header">Donors Registered (YTD)</div>
 
-                    <div style="text-align: left; font-size: 30px;" id="donorsThisYear"></div> 
+                    <div class="amount-count" id="donorsThisYear"></div> 
                     
                  
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile4" ></div>  
+                    <div class="month-span" id="forFinancialYearTile4"></div>  
                 </div>
             </div>
         
             <div class="col-md-2">
-                <div class="tile" style="background-color: #fe7128">
-                    <div style="text-align: left;font-size: 19px;font-weight: 200;">Total Donations</div>
+                <div class="tile" style="background-color: rgb(113, 83, 190); top: 0px; left: 0px; opacity: 1;">
+                    <div class="tile-header">Total Donations (YTD)</div>
                     
-                    <div style="text-align: left; font-size: 23px;" id="CampaignDonationThisYear"></div> 
- 				    <div  style="text-align: left;font-size: initial;" >Campaigns</div>  
+					<div class="amount-month-box">
+						<div class="amount-count" id="CampaignDonationThisYear"></div> 
+						<div class="event-name">Campaigns</div>  
+					</div>
  				    
-                    <div style="text-align: left; font-size: 23px;" id="EventDonationThisYear"></div> 
-                    <div  style="text-align: left;font-size: initial;" >Events</div>                                           
+					<div class="amount-month-box">
+						<div class="amount-count" id="EventDonationThisYear"></div> 
+						<div class="event-name">Events</div>    
+					<div>	
                
-                    <div  style="text-align: left;font-size: initial;" id="forFinancialYearTile6" ></div>  
+                    <div class="month-span" id="forFinancialYearTile6"></div>  
                 </div>
             </div>          
 
           
           
     </div>
-</body></html>
+</div></div></body></html>

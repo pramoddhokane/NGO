@@ -2,7 +2,42 @@ var data = {};
 var retrieveReq = new XMLHttpRequest();
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var date = new Date();
+// Get Current fiscal year details
 
+function getCurrentFiscalYear()
+{
+	getCurrentYearAccounts();
+	getCurrentYearCampaignEventDonations();	
+	getCurrentYearCampaignCost();
+	getCurrentYearEventCost();
+	var req = new XMLHttpRequest();
+	req.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/organizations()?$select=fiscalcalendarstart", true);
+	req.setRequestHeader("OData-MaxVersion", "4.0");
+	req.setRequestHeader("OData-Version", "4.0");
+	req.setRequestHeader("Accept", "application/json");
+	req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+	req.setRequestHeader("Prefer", "odata.include-annotations=\"*\"");
+	req.onreadystatechange = function ()
+	{
+		if (this.readyState === 4)
+		{
+			req.onreadystatechange = null;
+			if (this.status === 200)
+			{
+				var result = JSON.parse(this.responseText).value;
+				fiscalcalendarstart = new Date(result[0]["fiscalcalendarstart"]);
+				var fiscalcalendarend = new Date(new Date().setFullYear(fiscalcalendarstart.getFullYear() + 1, fiscalcalendarstart.getMonth(), fiscalcalendarstart.getDate()));
+				document.getElementById("forFinancialYearTile1").innerHTML = document.getElementById("forFinancialYearTile2").innerHTML = document.getElementById("forFinancialYearTile3").innerHTML = document.getElementById("forFinancialYearTile4").innerHTML = document.getElementById("forFinancialYearTile5").innerHTML = document.getElementById("forFinancialYearTile6").innerHTML = fiscalcalendarstart.getFullYear() + '-' + fiscalcalendarend.getFullYear();;
+			}
+			else
+			{
+				Xrm.Utility.alertDialog(this.statusText);
+			}
+		}
+	};
+	req.send();
+}
+// Get Current fiscal year account details - Constituent Entity
 
 function getCurrentYearAccounts()
 {
@@ -30,56 +65,20 @@ function getCurrentYearAccounts()
 			{
 				if (o.new_volunteer === true) return o
 			}).length;
-			document.getElementById("beneficiariesThisYear").innerHTML = beneficiaryCnt;
-			document.getElementById("volunteersThisYear").innerHTML = volunteerCnt;
-			document.getElementById("donorsThisYear").innerHTML = donorCnt;
+			document.getElementById("beneficiariesThisYear").innerHTML = "#" + beneficiaryCnt;
+			document.getElementById("volunteersThisYear").innerHTML = "#" + volunteerCnt;
+			document.getElementById("donorsThisYear").innerHTML = "#" + donorCnt;
 		}
 	};
 	retrieveReq.send();
 }
 
-function getCurrentFiscalYear()
-{
-	getCurrentYearAccounts();
-	getCurrentYearCampaignDonations();
-	getCurrentYearEventDonations();
-	getCurrentYearCampaignCost();
-	getCurrentYearEventCost();
-	
-	var req = new XMLHttpRequest();
-	req.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/organizations()?$select=fiscalcalendarstart", true);
-	req.setRequestHeader("OData-MaxVersion", "4.0");
-	req.setRequestHeader("OData-Version", "4.0");
-	req.setRequestHeader("Accept", "application/json");
-	req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-	req.setRequestHeader("Prefer", "odata.include-annotations=\"*\"");
-	req.onreadystatechange = function ()
-	{
-		if (this.readyState === 4)
-		{
-			req.onreadystatechange = null;
-			if (this.status === 200)
-			{
-				var result = JSON.parse(this.responseText).value;
-				fiscalcalendarstart = new Date(result[0]["fiscalcalendarstart"]);
-				var fiscalcalendarend = new Date(new Date().setFullYear(fiscalcalendarstart.getFullYear() + 1, fiscalcalendarstart.getMonth(), fiscalcalendarstart.getDate()));
-				console.log("lastday" + fiscalcalendarend);
-				document.getElementById("forFinancialYearTile1").innerHTML = document.getElementById("forFinancialYearTile2").innerHTML = document.getElementById("forFinancialYearTile3").innerHTML = document.getElementById("forFinancialYearTile4").innerHTML = document.getElementById("forFinancialYearTile5").innerHTML = document.getElementById("forFinancialYearTile6").innerHTML = lastYear + '-' + currentYear;
-				
-			}
-			else
-			{
-				Xrm.Utility.alertDialog(this.statusText);
-			}
-		}
-	};
-	req.send();
-}
+// Get Current fiscal year Donations to Campaign & Events 
 
-function getCurrentYearCampaignDonations()
+function getCurrentYearCampaignEventDonations()
 {
-	var retrieveReq = new XMLHttpRequest();
-	retrieveReq.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?fetchXml=%3Cfetch%20version%3D%221.0%22%20output-format%3D%22xml-platform%22%20mapping%3D%22logical%22%20distinct%3D%22false%22%3E%3Centity%20name%3D%22new_donationtransaction%22%3E%3Cattribute%20name%3D%22new_donationtransactionid%22%20%2F%3E%3Cattribute%20name%3D%22new_name%22%20%2F%3E%3Cattribute%20name%3D%22createdon%22%20%2F%3E%3Cattribute%20name%3D%22new_amount%22%20%2F%3E%3Cattribute%20name%3D%22new_donationreceiveddate%22%20%2F%3E%3Cattribute%20name%3D%22statuscode%22%20%2F%3E%3Corder%20attribute%3D%22new_name%22%20descending%3D%22false%22%20%2F%3E%3Cfilter%20type%3D%22and%22%3E%3Ccondition%20attribute%3D%22new_donationreceiveddate%22%20operator%3D%22this-fiscal-year%22%20%2F%3E%3Ccondition%20attribute%3D%22new_donationtype%22%20operator%3D%22eq%22%20value%3D%22100000000%22%20%2F%3E%3Ccondition%20attribute%3D%22new_campaign%22%20operator%3D%22not-null%22%20%2F%3E%3Ccondition%20attribute%3D%22statecode%22%20operator%3D%22eq%22%20value%3D%220%22%20%2F%3E%3Ccondition%20attribute%3D%22statuscode%22%20operator%3D%22eq%22%20value%3D%22100000003%22%20%2F%3E%3C%2Ffilter%3E%3C%2Fentity%3E%3C%2Ffetch%3E", true);
+	var retrieveReq = new XMLHttpRequest();	
+	retrieveReq.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?fetchXml=%3Cfetch%20version%3D%221.0%22%20output-format%3D%22xml-platform%22%20mapping%3D%22logical%22%20distinct%3D%22false%22%3E%3Centity%20name%3D%22new_donationtransaction%22%3E%3Cattribute%20name%3D%22new_donationtransactionid%22%20%2F%3E%3Cattribute%20name%3D%22new_name%22%20%2F%3E%3Cattribute%20name%3D%22createdon%22%20%2F%3E%3Cattribute%20name%3D%22new_amount%22%20%2F%3E%3Cattribute%20name%3D%22new_donationreceiveddate%22%20%2F%3E%3Cattribute%20name%3D%22new_campaign%22%20%2F%3E%3Cattribute%20name%3D%22new_donatetocampevent%22%20%2F%3E%3Corder%20attribute%3D%22new_name%22%20descending%3D%22false%22%20%2F%3E%3Cfilter%20type%3D%22and%22%3E%3Ccondition%20attribute%3D%22new_donationreceiveddate%22%20operator%3D%22this-fiscal-year%22%20%2F%3E%3Ccondition%20attribute%3D%22statecode%22%20operator%3D%22eq%22%20value%3D%220%22%20%2F%3E%3Ccondition%20attribute%3D%22statuscode%22%20operator%3D%22eq%22%20value%3D%22100000003%22%20%2F%3E%3Cfilter%20type%3D%22or%22%3E%3Ccondition%20attribute%3D%22new_campaign%22%20operator%3D%22not-null%22%20%2F%3E%3Ccondition%20attribute%3D%22new_donatetocampevent%22%20operator%3D%22not-null%22%20%2F%3E%3C%2Ffilter%3E%3Ccondition%20attribute%3D%22new_donationtype%22%20operator%3D%22eq%22%20value%3D%22100000000%22%20%2F%3E%3C%2Ffilter%3E%3C%2Fentity%3E%3C%2Ffetch%3E", true);
 	retrieveReq.setRequestHeader("Accept", "application/json");
 	retrieveReq.setRequestHeader("Content-Type", "application/json");
 	retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
@@ -89,85 +88,82 @@ function getCurrentYearCampaignDonations()
 	{
 		if (retrieveReq.readyState == 4 && retrieveReq.status == 200)
 		{
-			console.log(JSON.parse(this.responseText).value);
-			var sum = _.reduce(JSON.parse(this.responseText).value, function (sum, entry)
+			//Total Donations to campaign in current fiscal year
+			var campaignDonations = _.filter(JSON.parse(this.responseText).value, function (o)
 			{
-				if (entry.new_amount > 0) return sum + parseFloat(entry.new_amount);
-				else return sum;
+				if (o._new_campaign_value)
+				{
+					if (o._new_campaign_value != null) return o
+				}
+			});
+			console.log("campaignDonations" + campaignDonations);
+			var campaignCostTotal = _.reduce(campaignDonations, function (campaignCostTotal, entry)
+			{
+				if (entry.new_amount > 0) return campaignCostTotal + parseFloat(entry.new_amount);
+				else return campaignCostTotal;
 			}, 0);
-			if (sum < 1000)
+			console.log("campaignCostTotal" + campaignCostTotal);
+			if (campaignCostTotal < 1000)
 			{
-				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) * 100) / 100).toLocaleString();
+				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(campaignCostTotal) * 100) / 100).toLocaleString();
 			}
-			else if (sum >= 1000 && sum < 99999)
+			else if (campaignCostTotal >= 1000 && campaignCostTotal < 99999)
 			{
-				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) / 1000 * 100) / 100).toLocaleString() + " " + "K";
+				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(campaignCostTotal) / 1000 * 100) / 100).toLocaleString() + " " + "K";
 			}
-			else if (sum >= 100000 && sum < 9999999)
+			else if (campaignCostTotal >= 100000 && campaignCostTotal < 9999999)
 			{
-				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) / 100000 * 100) / 100).toLocaleString() + " " + "L";
+				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(campaignCostTotal) / 100000 * 100) / 100).toLocaleString() + " " + "L";
 			}
-			else if (sum >= 10000000)
+			else if (campaignCostTotal >= 10000000)
 			{
-				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
+				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(campaignCostTotal) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
+			}
+			
+			
+			//Total Donations to events in current fiscal year
+			var eventDonations = _.filter(JSON.parse(this.responseText).value, function (o)
+			{
+				if (o._new_donatetocampevent_value)
+				{
+					if (o._new_donatetocampevent_value != null) return o
+				}
+			});
+			console.log("eventDonations" + eventDonations);
+			
+			var eventDonationTotal = _.reduce(eventDonations, function (eventDonationTotal, entry)
+			{
+				if (entry.new_amount > 0) return eventDonationTotal + parseFloat(entry.new_amount);
+				else return eventDonationTotal;
+			}, 0);
+			console.log("eventDonationTotal" + eventDonationTotal);
+			if (eventDonationTotal < 1000)
+			{
+				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(eventDonationTotal) * 100) / 100).toLocaleString();
+			}
+			else if (eventDonationTotal >= 1000 && eventDonationTotal < 99999)
+			{
+				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(eventDonationTotal) / 1000 * 100) / 100).toLocaleString() + " " + "K";
+			}
+			else if (eventDonationTotal >= 100000 && eventDonationTotal < 9999999)
+			{
+				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(eventDonationTotal) / 100000 * 100) / 100).toLocaleString() + " " + "L";
+			}
+			else if (eventDonationTotal >= 10000000)
+			{
+				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(eventDonationTotal) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
 			}
 		}
 	};
 	retrieveReq.send();
 }
 
-function getCurrentYearEventDonations()
-{
-	var retrieveReq = new XMLHttpRequest();
-	retrieveReq.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?fetchXml=%3Cfetch%20version%3D%221.0%22%20output-format%3D%22xml-platform%22%20mapping%3D%22logical%22%20distinct%3D%22false%22%3E%3Centity%20name%3D%22new_donationtransaction%22%3E%3Cattribute%20name%3D%22new_donationtransactionid%22%20%2F%3E%3Cattribute%20name%3D%22new_name%22%20%2F%3E%3Cattribute%20name%3D%22createdon%22%20%2F%3E%3Cattribute%20name%3D%22new_amount%22%20%2F%3E%3Cattribute%20name%3D%22new_donationreceiveddate%22%20%2F%3E%3Cattribute%20name%3D%22statuscode%22%20%2F%3E%3Corder%20attribute%3D%22new_name%22%20descending%3D%22false%22%20%2F%3E%3Cfilter%20type%3D%22and%22%3E%3Ccondition%20attribute%3D%22new_donationreceiveddate%22%20operator%3D%22this-fiscal-year%22%20%2F%3E%3Ccondition%20attribute%3D%22new_donationtype%22%20operator%3D%22eq%22%20value%3D%22100000000%22%20%2F%3E%3Ccondition%20attribute%3D%22new_donatetocampevent%22%20operator%3D%22not-null%22%20%2F%3E%3Ccondition%20attribute%3D%22statecode%22%20operator%3D%22eq%22%20value%3D%220%22%20%2F%3E%3Ccondition%20attribute%3D%22statuscode%22%20operator%3D%22eq%22%20value%3D%22100000003%22%20%2F%3E%3C%2Ffilter%3E%3C%2Fentity%3E%3C%2Ffetch%3E", true);
-	retrieveReq.setRequestHeader("Accept", "application/json");
-	retrieveReq.setRequestHeader("Content-Type", "application/json");
-	retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
-	retrieveReq.setRequestHeader("Prefer", 'odata.include-annotations="*"');
-	retrieveReq.setRequestHeader("OData-Version", "4.0");
-	retrieveReq.onreadystatechange = function ()
-	{
-		if (retrieveReq.readyState == 4 && retrieveReq.status == 200)
-		{
-			console.log(JSON.parse(this.responseText).value);
-			var sum = _.reduce(JSON.parse(this.responseText).value, function (sum, entry)
-			{
-				if (entry.new_amount > 0) return sum + parseFloat(entry.new_amount);
-				else return sum;
-			}, 0);
-			if (sum < 1000)
-			{
-				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) * 100) / 100).toLocaleString();
-			}
-			else if (sum >= 1000 && sum < 99999)
-			{
-				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) / 1000 * 100) / 100).toLocaleString() + " " + "K";
-			}
-			else if (sum >= 100000 && sum < 9999999)
-			{
-				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) / 100000 * 100) / 100).toLocaleString() + " " + "L";
-			}
-			else if (sum >= 10000000)
-			{
-				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(sum) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
-			}
-		}
-	};
-	retrieveReq.send();
-}
+// Get Current fiscal year Total Campaign Cost 
 
 function getCurrentYearCampaignCost()
 {
-	//var length;
-	//	var currentDate = new Date();
-	//	var lastYear = firstDate.getFullYear();
-	//	var currentYear = lastDate.getFullYear();
 	var retrieveReq = new XMLHttpRequest();
-	//var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/campaigns?$filter=statecode eq 0 and  Microsoft.Dynamics.CRM.Between(PropertyName='new_actstart',";
-	//var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
-	//odataSelect += 'PropertyValues=["' + firstDate.toISOString() + '","' + lastDate.toISOString() + '"])';
 	retrieveReq.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/campaigns?fetchXml=%3Cfetch%20version%3D%221.0%22%20output-format%3D%22xml-platform%22%20mapping%3D%22logical%22%20distinct%3D%22false%22%3E%3Centity%20name%3D%22campaign%22%3E%3Cattribute%20name%3D%22name%22%20%2F%3E%3Cattribute%20name%3D%22istemplate%22%20%2F%3E%3Cattribute%20name%3D%22statuscode%22%20%2F%3E%3Cattribute%20name%3D%22campaignid%22%20%2F%3E%3Cattribute%20name%3D%22totalactualcost%22%20%2F%3E%3Corder%20attribute%3D%22name%22%20descending%3D%22true%22%20%2F%3E%3Cfilter%20type%3D%22and%22%3E%3Ccondition%20attribute%3D%22statecode%22%20operator%3D%22eq%22%20value%3D%220%22%20%2F%3E%3Ccondition%20attribute%3D%22new_actstart%22%20operator%3D%22this-fiscal-year%22%20%2F%3E%3C%2Ffilter%3E%3C%2Fentity%3E%3C%2Ffetch%3E", true);
-	//retrieveReq.open("GET", odataSelect, true);
 	retrieveReq.setRequestHeader("Accept", "application/json");
 	retrieveReq.setRequestHeader("Content-Type", "application/json");
 	retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
@@ -204,10 +200,10 @@ function getCurrentYearCampaignCost()
 	retrieveReq.send();
 }
 
+// Get Current fiscal year Total Event Cost
 function getCurrentYearEventCost()
 {
-	
-	var retrieveReq = new XMLHttpRequest();	
+	var retrieveReq = new XMLHttpRequest();
 	retrieveReq.open("GET", window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_camps?fetchXml=%3Cfetch%20version%3D%221.0%22%20output-format%3D%22xml-platform%22%20mapping%3D%22logical%22%20distinct%3D%22false%22%3E%3Centity%20name%3D%22new_camp%22%3E%3Cattribute%20name%3D%22new_name%22%20%2F%3E%3Cattribute%20name%3D%22new_totalcost%22%20%2F%3E%3Cattribute%20name%3D%22new_actstart%22%20%2F%3E%3Cattribute%20name%3D%22new_campid%22%20%2F%3E%3Corder%20attribute%3D%22new_name%22%20descending%3D%22false%22%20%2F%3E%3Cfilter%20type%3D%22and%22%3E%3Ccondition%20attribute%3D%22statecode%22%20operator%3D%22eq%22%20value%3D%220%22%20%2F%3E%3Ccondition%20attribute%3D%22new_actstart%22%20operator%3D%22this-fiscal-year%22%20%2F%3E%3C%2Ffilter%3E%3C%2Fentity%3E%3C%2Ffetch%3E", true);
 	retrieveReq.setRequestHeader("Accept", "application/json");
 	retrieveReq.setRequestHeader("Content-Type", "application/json");
@@ -245,6 +241,7 @@ function getCurrentYearEventCost()
 	retrieveReq.send();
 }
 
+//Date formatter
 function getODataUTCDateFilter(date)
 {
 	var monthString;
