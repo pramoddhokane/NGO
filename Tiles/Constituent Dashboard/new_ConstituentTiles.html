@@ -6,109 +6,14 @@
     <link href="new_Fontawesome.css" rel="stylesheet" type="text/css">
     <link href="new_Fontawesome.api.css" rel="stylesheet" type="text/css">
     <link href="new_bootstrap.min.css" rel="stylesheet">
+    <link href="new_loaderStyle" rel="stylesheet">
+     <link href="new_tilesCommonStyle.css" rel="stylesheet">
+    
     <script src="new_JQuery_1.11.3"></script>
     <script src="new_jquery.easing.js"></script>
     <script src="new_Loadash.js"></script>   
     <script src="new_ConstituentTilesJS.js"></script>
-    <style>
-        
-        [class*="fontawesome-"]:before {
-            font-family: 'FontAwesome', sans-serif;
-        }
-        
-        body {
-            background: #FFFFFF;
-            /*padding: 30px;*/
-            margin: 0;
-        }
-        
-        .tile {
-            position: relative;
-            float: left;
-            width: 100%;
-            height: 100%;
-           /* background: #A26FF9;
-            margin: 0 10px 10px 0;*/
-            padding-top: 10%;
-            padding-left: 10px;
-            opacity: 0;
-            text-align: center;
-            font-size: 1.5em;
-            color: white;
-            cursor: pointer;
-            /*border-style:groove;
-            border-radius:6%*/
-        }
-        
-        .col-half-offset {
-            margin-left: 6.166667%
-        }
-
-        .tile-header{
-            text-align: left;
-			font-size: 15px;
-			font-weight: 600;
-			font-family: Segoe\000020UI,Tahoma,Arial;
-			margin-bottom: 3px;
-        }
-		.amount-count{
-			text-align: left;
-            font-size: 32px;
-            font-weight: 300;    
-			font-family: Segoe\000020UI,Tahoma,Arial;	
-			letter-spacing: 1px;
-		}
-		.month-span{
-			text-align: left;
-			font-size: 14px;
-			font-weight: 500;
-			font-family: Segoe\000020UI,Tahoma,Arial;
-			letter-spacing: 0;
-			margin-top: 16px;
-			font-style: italic;
-			bottom: 8px;
-		}
-		.sub-amount-count1{
-			font-size: 22px;
-			margin-bottom: 10px;
-		}
-		.sub-amount-count2{
-			font-size: 22px;
-		}
-		.tile{
-			-webkit-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
-			-moz-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
-			box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
-			padding-top: 6%!important;
-		}
-        
-        
-        .data {
-			text-align: left;
-			font-size: 22px;
-			font-weight: bold;
-		}
-
-		.month {
-			text-align: left;
-			font-size: 16px;
-			<!--    font-weight: 600;-->
-		}
-
-		.headline {
-			text-align: left;
-			font-size: 22px;
-			font-weight: 200;
-		}
-		.amount-month-box{
-			margin-bottom: 15px;
-			margin-top: 6px;
-		}
-		.amount-month-box .amount-count{
-			font-size: 22px;
-			margin-bottom: -19px!important;
-		}
-    </style>
+  
     <meta>
     <meta>
     <script>
@@ -141,16 +46,14 @@
          <div class="col-md-2">
                 <div class="tile" style="background-color: rgb(33, 150, 243); top: 0px; left: 0px; opacity: 1;">
                     <div class="tile-header">Beneficiaries</div>
-
-					<div class="amount-month-box">
-						<div class="amount-count sub-amount-count1" id="beneficiaryThisMonth"></div> 
-                    
+					<div class="loader dataset1-Loader"></div>
+					<div class="amount-month-box dataset1" >
+						<div class="amount-count sub-amount-count1" id="beneficiaryThisMonth"></div>                     
 						<div class="month-span" id="currentMonthTile1"></div>
 					</div>
 
-					<div class="amount-month-box">
-						<div class="amount-count sub-amount-count1" id="beneficiaryThisYear"></div>                     
-               
+					<div class="amount-month-box beneficiaryTile">
+						<div class="amount-count sub-amount-count1" id="beneficiaryThisYear"></div> 
 						<div class="month-span" id="forFinancialYearTile1"></div> 
 					</div>	
 
@@ -160,14 +63,14 @@
             <div class="col-md-2">
                <div class="tile" style="background-color: rgb(237, 90, 79); top: 0px; left: 0px; opacity: 1;">
                     <div class="tile-header">Volunteers</div>
-					
-					<div class="amount-month-box">
+					<div class="loader dataset1-Loader"></div>
+					<div class="amount-month-box  dataset1" >
 						<div class="amount-count sub-amount-count1" id="volunteersThisMonth"></div> 
                     
 						<div class="month-span" id="currentMonthTile2"></div>
 					</div>
 
-					<div class="amount-month-box">
+					<div class="amount-month-box volunteerTile">
 						<div class="amount-count sub-amount-count1" id="volunteersThisYear"></div>                     
                
 						<div class="month-span" id="forFinancialYearTile2"></div>     
@@ -177,8 +80,8 @@
             <div class="col-md-2">
               <div class="tile" style="background-color: rgb(0, 188, 212); top: 0px; left: 0px; opacity: 1;"> 
                     <div class="tile-header">Donors</div>
-					
-					<div class="amount-month-box">
+					<div class="loader dataset1-Loader"></div>
+					<div class="amount-month-box dataset1">
 						<div class="amount-count sub-amount-count1" id="donorsThisMonth"></div> 
                     
 						<div class="month-span" id="currentMonthTile3"></div>
@@ -195,8 +98,8 @@
           <div class="col-md-2">
               <div class="tile" style="background-color: rgb(0, 150, 136); top: 0px; left: 0px; opacity: 1;"> 
                     <div class="tile-header">Service Providers</div>
-
-					<div class="amount-month-box">	
+					<div class="loader dataset1-Loader"></div>
+					<div class="amount-month-box dataset1">	
 						<div class="amount-count sub-amount-count1" id="serviceProvidersThisMonth"></div> 
                     
 						<div class="month-span" id="currentMonthTile5"></div>
@@ -212,8 +115,8 @@
               <div class="col-md-2">
               <div class="tile" style="background-color: rgb(186, 104, 200); top: 0px; left: 0px; opacity: 1;"> 
                     <div class="tile-header">Memberships</div>
-
-					<div class="amount-month-box">
+					<div class="loader dataset1-Loader"></div>
+					<div class="amount-month-box dataset1">
 						<div class="amount-count sub-amount-count1" id="membershipsThisMonth"></div> 
                     
 						<div class="month-span" id="currentMonthTile4"></div>
@@ -230,8 +133,8 @@
             <div class="col-md-2">
                <div class="tile" style="background-color: rgb(113, 83, 190); top: 0px; left: 0px; opacity: 1;"> 
                     <div class="tile-header">Membership Renewals</div>
-
-					<div class="amount-month-box">
+					<div class="loader dataset2-Loader"></div>
+					<div class="amount-month-box dataset2">
 						<div class="amount-count sub-amount-count1" id="membershipRenewalsThisMonth">13</div> 
                     
 						<div class="month-span" id="currentMonthTile6">Jan 2017</div>

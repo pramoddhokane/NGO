@@ -6,89 +6,14 @@
     <link href="new_Fontawesome.css" rel="stylesheet" type="text/css">
     <link href="new_Fontawesome.api.css" rel="stylesheet" type="text/css">
     <link href="new_bootstrap.min.css" rel="stylesheet">
+     <link href="new_loaderStyle" rel="stylesheet">
+     <link href="new_tilesCommonStyle.css" rel="stylesheet">
+    
     <script src="new_JQuery_1.11.3"></script>
     <script src="new_jquery.easing.js"></script>
     <script src="new_Loadash.js"></script>   
     <script src="new_Camp_EventTilesJS.js"></script>
-    <style>
-        
-        [class*="fontawesome-"]:before {
-            font-family: 'FontAwesome', sans-serif;
-        }
-        
-        body {
-            background: #FFFFFF;
-            /*padding: 30px;*/
-            margin: 0;
-        }
-        
-        .tile {
-            position: relative;
-            float: left;
-            width: 100%;
-            height: 100%;
-           /* background: #A26FF9;
-            margin: 0 10px 10px 0;*/
-            padding-top: 6%;
-            padding-left: 10px;
-            opacity: 0;
-            text-align: center;
-            font-size: 1.5em;
-            color: white;
-            cursor: pointer;
-            /*border-style:groove;
-            border-radius:6%*/
-			-webkit-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
-			-moz-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
-			box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
-        }
-        
-        .col-half-offset {
-            margin-left: 6.166667%
-        }
-		
-		.tile-header{
-            text-align: left;
-			font-size: 15px;
-			font-weight: 600;
-			font-family: Segoe\000020UI,Tahoma,Arial;
-			margin-bottom: 3px;
-        }
-		.amount-count{
-			text-align: left;
-            font-size: 32px;
-            font-weight: 300;    
-			font-family: Segoe\000020UI,Tahoma,Arial;	
-			letter-spacing: 1px;
-		}
-		.month-span{
-			text-align: left;
-			font-size: 14px;
-			font-weight: 500;
-			font-family: Segoe\000020UI,Tahoma,Arial;
-			letter-spacing: 0;
-			margin-top: 16px;
-			font-style: italic;
-			bottom: 8px;
-			position: absolute;
-		}
-		.amount-month-box {
-			margin-bottom: 7px;
-			margin-top: 5px;
-		}
-		.amount-month-box .amount-count {
-			font-size: 20px;
-			margin-bottom: -17px!important;
-		}
-		.event-name{
-			text-align: left;
-			font-size: 14px;
-			font-weight: 400;
-			font-family: Segoe\000020UI,Tahoma,Arial;
-			letter-spacing: 0;
-			margin-top: 12px;
-		}
-    </style>
+ 
     <meta>
     <meta>
     <script>
@@ -112,73 +37,104 @@
   })
   }
 })
-    </script>
+    </script> 
 <meta><meta><meta><meta></head>
 
 <body style="word-wrap: break-word;width:98%" onload="getCurrentFiscalYear()">
     <div class="row">
-
          <div class="col-md-2">
                 <div class="tile" style="background-color: rgb(33, 150, 243); top: 0px; left: 0px; opacity: 1;">
-                    <div class="tile-header">Campaign Cost (YTD)</div>
+                    <div class="tile-header">Campaign Cost</div>
+					<div class="loader dataset1-Loader"></div>
+					<div class="amount-month-box dataset1" >
+						<div class="amount-count sub-amount-count1" id="campaignCostThisMonth"></div>                     
+						<div class="month-span" id="currentMonthTile1"></div>
+					</div>
 
-                    <div class="amount-count" id="campaignCostThisYear"></div>                  
-                                  
-               
-                    <div class="month-span" id="forFinancialYearTile1"></div>                    
-
+					<div class="amount-month-box beneficiaryTile">
+						<div class="amount-count sub-amount-count1" id="campaignCostThisYear"></div> 
+						<div class="month-span" id="forFinancialYearTile1"></div> 
+					</div>	
                 </div>
             </div>        
 
             <div class="col-md-2">
                 <div class="tile" style="background-color: rgb(237, 90, 79); top: 0px; left: 0px; opacity: 1;">
-                    <div class="tile-header">Event Cost (YTD)</div>
+                    <div class="tile-header">Event Cost</div> 
+                    <div class="loader dataset2-Loader"></div>
+					<div class="amount-month-box dataset2" >
+						<div class="amount-count sub-amount-count1" id="eventCostThisMonth"></div>                     
+						<div class="month-span" id="currentMonthTile2"></div>
+					</div>
 
-                    <div class="amount-count" id="eventCostThisYear"></div>                   
-                              
-               
-                    <div class="month-span" id="forFinancialYearTile2"></div>                     
+					<div class="amount-month-box beneficiaryTile">
+						<div class="amount-count sub-amount-count1" id="eventCostThisYear"></div> 
+						<div class="month-span" id="forFinancialYearTile2"></div> 
+					</div>	
+					
+					
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="tile" style="background-color: rgb(0, 188, 212); top: 0px; left: 0px; opacity: 1;"> 
-                    <div class="tile-header">Beneficiaires Registered (YTD)</div>
+                    <div class="tile-header">Registered Beneficiaires</div>
+					<div class="loader dataset3-Loader"></div>
+                     <div class="amount-month-box dataset3" >
+						<div class="amount-count sub-amount-count1" id="beneficiaryThisMonth"></div>                     
+						<div class="month-span" id="currentMonthTile3"></div>
+					</div>
 
-                     <div class="amount-count" id="beneficiariesThisYear"></div> 
-                 
-                                 
-               
-                    <div class="month-span" id="forFinancialYearTile3"></div>  
+					<div class="amount-month-box beneficiaryTile">
+						<div class="amount-count sub-amount-count1" id="beneficiariesThisYear"></div> 
+						<div class="month-span" id="forFinancialYearTile3"></div> 
+					</div>	
+                     
                 </div>
             </div>
           
           <div class="col-md-2">
                 <div class="tile" style="background-color: rgb(0, 150, 136); top: 0px; left: 0px; opacity: 1;">
-                    <div class="tile-header">Volunteers Registered (YTD)</div>
-
-                    <div class="amount-count" id="volunteersThisYear"></div> 
+                    <div class="tile-header">Registered Volunteers</div>
+					<div class="loader dataset3-Loader"></div>
+                    <div class="amount-month-box  dataset3" >
+						<div class="amount-count sub-amount-count1" id="volunteersThisMonth"></div> 
                     
-                                    
+						<div class="month-span" id="currentMonthTile4"></div>
+					</div>
+
+					<div class="amount-month-box volunteerTile">
+						<div class="amount-count sub-amount-count1" id="volunteersThisYear"></div>                     
                
-                    <div class="month-span" id="forFinancialYearTile5"></div>  
+						<div class="month-span" id="forFinancialYearTile4"></div>     
+					</div>	
+                    
+                    
                 </div>
             </div>
               <div class="col-md-2">
                 <div class="tile" style="background-color: rgb(186, 104, 200); top: 0px; left: 0px; opacity: 1;">
-                    <div class="tile-header">Donors Registered (YTD)</div>
-
-                    <div class="amount-count" id="donorsThisYear"></div> 
+                    <div class="tile-header">Registered Donors</div>
+					<div class="loader dataset3-Loader"></div>
+					<div class="amount-month-box dataset3">
+						<div class="amount-count sub-amount-count1" id="donorsThisMonth"></div> 
                     
-                 
-                    <div class="month-span" id="forFinancialYearTile4"></div>  
+						<div class="month-span" id="currentMonthTile5"></div>
+					</div>
+
+					<div class="amount-month-box">
+						<div class="amount-count sub-amount-count1" id="donorsThisYear"></div>                     
+               
+						<div class="month-span" id="forFinancialYearTile5"></div>  
+					</div>
+					
                 </div>
             </div>
         
             <div class="col-md-2">
                 <div class="tile" style="background-color: rgb(113, 83, 190); top: 0px; left: 0px; opacity: 1;">
                     <div class="tile-header">Total Donations (YTD)</div>
-                    
-					<div class="amount-month-box">
+                    <div class="loader dataset4-Loader"></div>
+					<div class="amount-month-box dataset4">
 						<div class="amount-count" id="CampaignDonationThisYear"></div> 
 						<div class="event-name">Campaigns</div>  
 					</div>
@@ -186,7 +142,7 @@
 					<div class="amount-month-box">
 						<div class="amount-count" id="EventDonationThisYear"></div> 
 						<div class="event-name">Events</div>    
-					<div>	
+					</div>	
                
                     <div class="month-span" id="forFinancialYearTile6"></div>  
                 </div>

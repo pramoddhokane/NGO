@@ -60,15 +60,15 @@ function getCurrentYearRenewalDetails(firstDate, lastDate)
 		if (retrieveReq.readyState == 4 && retrieveReq.status == 200)
 		{
 			console.log(JSON.parse(this.responseText).value);
-			
 			var currMonthRenewals = _.filter(JSON.parse(this.responseText).value, function (o)
 			{
 				var renewalDate = new Date(o.new_renewaldate);
 				if (renewalDate >= firstDay && renewalDate <= lastDay) return o
 			}).length;
-			
 			document.getElementById("membershipRenewalsThisMonth").innerHTML = "#" + currMonthRenewals;
 			document.getElementById("membershipRenewalsThisYear").innerHTML = "#" + JSON.parse(this.responseText).value.length;
+			$('.dataset2-Loader').hide();
+			$('.dataset2').show();
 		}
 	};
 	retrieveReq.send();
@@ -156,6 +156,8 @@ function getCurrentYearAccountDetails(firstDate, lastDate)
 			document.getElementById("serviceProvidersThisYear").innerHTML = "#" + serviceProviderCnt;
 			document.getElementById("membershipsThisYear").innerHTML = "#" + memberCnt;
 			document.getElementById("forFinancialYearTile1").innerHTML = document.getElementById("forFinancialYearTile2").innerHTML = document.getElementById("forFinancialYearTile3").innerHTML = document.getElementById("forFinancialYearTile4").innerHTML = document.getElementById("forFinancialYearTile5").innerHTML = document.getElementById("forFinancialYearTile6").innerHTML = lastYear + '-' + currentYear;
+			$('.dataset1-Loader').hide();
+			$('.dataset1').show();
 		}
 	};
 	retrieveReq.send();
@@ -190,3 +192,10 @@ function getODataUTCDateFilter(date)
 	DateFilter += dateString;
 	return DateFilter;
 }
+$(document).ready(function ()
+{
+	$('.dataset1-Loader').show();
+	$('.dataset1').hide();
+	$('.dataset2-Loader').show();
+	$('.dataset2').hide();
+});
