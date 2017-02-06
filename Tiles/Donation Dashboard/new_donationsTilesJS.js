@@ -1,6 +1,6 @@
 var allStudents;
 var differedDonationAmount = 0;
-var canceledDonationsAmount=0;
+var canceledDonationsAmount = 0;
 var donationAmount = 0;
 var donationCount = 0;
 var UnpaidDonationAmount = 0;
@@ -9,18 +9,20 @@ var PaidDonation = 0;
 var data = {};
 var today = new Date();
 var dd = today.getDate();
-var mm = today.getMonth()+1; //January is 0!
+var mm = today.getMonth() + 1; //January is 0!
 var yyyy = today.getFullYear();
-if(dd<10){
-    dd='0'+dd;
-} 
-if(mm<10){
-    mm='0'+mm;
-} 
-var today = dd+'/'+mm+'/'+yyyy;
+if (dd < 10) {
+    dd = dd;
+}
+if (mm < 10) {
+    mm = mm;
+}
+var today = mm + '/' + dd + '/' + yyyy;
 data.GrandTotal = 0;
-data.DifferedPercentage=0;
-data.canceledPercentage=0;
+data.DifferedPercentage = 0;
+data.canceledPercentage = 0;
+var firstDayYear;
+var lastDayYear;
 var retrieveReq = new XMLHttpRequest();
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var date = new Date();
@@ -43,6 +45,7 @@ function getPaidDonationDetails() {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
             calculateDonation(JSON.parse(this.responseText).value);
             document.getElementById("receiveddonationthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+
         }
     };
     retrieveReq.send();
@@ -66,6 +69,8 @@ function getPlannedDonationDetails() {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
             calculatePlannedDonation(JSON.parse(this.responseText).value);
             document.getElementById("ExpectedDonationthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            $('.dataset3-Loader').hide();
+            $('.dataset3').show();
         }
     };
     retrieveReq.send();
@@ -98,7 +103,9 @@ function differedDonations() {
             data.Differed = Differed;
             data.GrandTotal += Differed;
             canceledDonations();
-            document.getElementById("differedDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            document.getElementById("defferedDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            $('.dataset4-Loader').hide();
+            $('.dataset4').show();
         }
     };
     retrieveReq.send();
@@ -133,30 +140,38 @@ function canceledDonations() {
             unpaidDonations();
 
             document.getElementById("canceledDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            $('.dataset5-Loader').hide();
+            $('.dataset5').show();
         }
     };
     retrieveReq.send();
 }
 
-// Tile 6 Total Donations for the current Year
+// Tile 1 Total Donations for the current Year
 function getTotalDonations() {
-    var length;
     var currentDate = new Date();
-    var currentYear = currentDate.getFullYear();
+    var lastYear = firstDayYear.getFullYear();
+    var currentYear = lastDayYear.getFullYear();
+    var y = currentDate.getFullYear(), m = currentDate.getMonth();
+    var firstDay = new Date(y, m, 1);
+    var lastDay = new Date(y, m + 1, 0);
+    var length;
     var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_donationtransactions?$filter=statuscode eq 100000003 and Microsoft.Dynamics.CRM.Between(PropertyName='new_donationreceiveddate',";
-    odataSelect += 'PropertyValues=["' + currentYear + '-01-01T00:00:00Z","' + currentYear + '-12-31T23:59:59Z"])';
+    odataSelect += 'PropertyValues=["' + firstDayYear.toISOString() + '","' + lastDayYear.toISOString() + '"])';
     retrieveReq.open("GET", odataSelect, true);
     retrieveReq.setRequestHeader("Accept", "application/json");
     retrieveReq.setRequestHeader("Content-Type", "application/json");
     retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
     retrieveReq.setRequestHeader("Prefer", 'odata.include-annotations="*"');
-    retrieveReq.setRequestHeader("OData-Version", "4.0");    retrieveReq.onreadystatechange = function () {
+    retrieveReq.setRequestHeader("OData-Version", "4.0"); retrieveReq.onreadystatechange = function () {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
             donationsResult = JSON.parse(this.response).value;
             for (var donation = 0; donation < donationsResult.length; donation++) {
                 donationAmount += donationsResult[donation].new_amount;
             }
             document.getElementById("DonationThisyear").innerHTML = date.getFullYear();
+
+
             if (donationAmount < 1000) {
                 document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) * 100) / 100).toLocaleString();
             }
@@ -169,12 +184,15 @@ function getTotalDonations() {
             else if (donationAmount >= 10000000) {
                 document.getElementById("TotalDonationsThisYear").innerHTML = "₹" + (Math.round(parseFloat(donationAmount) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
             }
-            getTotalnumberOfDonationsCurrentMonth();
+            $('.dataset1-Loader').hide();
+            $('.dataset1').show();
+
         }
     };
     retrieveReq.send();
 }
 
+//Tile 6
 function unpaidDonations() {
 
     var date = new Date();
@@ -193,19 +211,21 @@ function unpaidDonations() {
         if (retrieveReq.readyState == 4 && retrieveReq.status == 200) {
             var response = JSON.parse(this.responseText).value;
             for (var don = 0; don < response.length; don++) {
-                if (response[don].new_donationtype = 100000000 && response[don]['new_duedate@OData.Community.Display.V1.FormattedValue']<=today) {
+                if (response[don].new_donationtype = 100000000 && response[don]['new_duedate@OData.Community.Display.V1.FormattedValue'] <= today) {
                     UnpaidDonationAmount += response[don].new_amount;
                 }
             }
             var Unpaid = UnpaidDonationAmount;
             data.Unpaid = Unpaid;
             totalDonors(data)
-             document.getElementById("UnpaidDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            document.getElementById("UnpaidDonationsthisyear").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
+            $('.dataset6-Loader').hide();
+            $('.dataset6').show();
+
         }
     };
     retrieveReq.send();
 }
-
 
 // Tile  5 Total Donors for the current month
 function totalDonors(data) {
@@ -238,6 +258,7 @@ function totalDonors(data) {
             else if (data.PaidDonation >= 10000000) {
                 document.getElementById("receiveddonation").innerHTML = "₹" + (Math.round(parseFloat(data.PaidDonation) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
             }
+
             /******************************************************************************************** */
             if (data.plannedDonation < 1000) {
                 document.getElementById("expectedDonation").innerHTML = "₹" + (Math.round(parseFloat(data.plannedDonation) * 100) / 100).toLocaleString();
@@ -257,9 +278,9 @@ function totalDonors(data) {
             document.getElementById("differedDonation").innerHTML = (Math.round(parseFloat(data.DifferedPercentage) * 100) / 100).toLocaleString() + "%";
 
             /***************************************************************************************** */
-           data.canceledPercentage=(data.canceled * 100)/data.GrandTotal;
-                document.getElementById("canceledDonations").innerHTML = (Math.round(parseFloat( data.canceledPercentage) * 100) / 100).toLocaleString()+"%";
-          
+            data.canceledPercentage = (data.canceled * 100) / data.GrandTotal;
+            document.getElementById("canceledDonations").innerHTML = (Math.round(parseFloat(data.canceledPercentage) * 100) / 100).toLocaleString() + "%";
+
             /************************************************************************************************ */
             if (data.Unpaid < 1000) {
                 document.getElementById("UnpaidDonationAmount").innerHTML = "₹" + (Math.round(parseFloat(data.Unpaid) * 100) / 100).toLocaleString();
@@ -274,18 +295,15 @@ function totalDonors(data) {
                 document.getElementById("UnpaidDonationAmount").innerHTML = "₹" + (Math.round(parseFloat(data.Unpaid) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
             }
             /************************************************************************************************ */
-
-
             // document.getElementById("totalDonors").innerHTML = data.totalDonors;
             //  document.getElementById("totalDonorsthismonth").innerHTML = months[date.getMonth()] + '-' + date.getFullYear();
             getTotalDonations();
-
-            console.log(data);
+            $('.dataset2-Loader').hide();
+            $('.dataset2').show();
         }
     };
     retrieveReq.send();
 }
-
 
 function calculateDonation(res) {
     for (var don = 0; don < res.length; don++) {
@@ -300,7 +318,6 @@ function calculateDonation(res) {
     data.DonationCount = res.length;
     getPlannedDonationDetails(data);
 }
-
 
 function getODataUTCDateFilter(date) {
     var monthString;
@@ -356,8 +373,9 @@ function getCurrentFiscalYear() {
                 var fiscalcalendarend = new Date(new Date().setFullYear(fiscalcalendarstart.getFullYear() + 1, fiscalcalendarstart.getMonth(), fiscalcalendarstart.getDate()));
                 console.log("lastday" + fiscalcalendarend);
 
-                getCurrentYearAccountDetails(fiscalcalendarstart, fiscalcalendarend);
-
+                firstDayYear = fiscalcalendarstart;
+                lastDayYear = fiscalcalendarend;
+                getPaidDonationDetails();
             }
             else {
                 Xrm.Utility.alertDialog(this.statusText);
@@ -390,3 +408,17 @@ function getODataUTCDateFilter(date) {
     DateFilter += dateString;
     return DateFilter;
 }
+$(document).ready(function () {
+    $('.dataset1-Loader').show();
+    $('.dataset1').hide();
+    $('.dataset2-Loader').show();
+    $('.dataset2').hide();
+    $('.dataset3-Loader').show();
+    $('.dataset3').hide();
+    $('.dataset4-Loader').show();
+    $('.dataset4').hide();
+    $('.dataset5-Loader').show();
+    $('.dataset5').hide();
+    $('.dataset6-Loader').show();
+    $('.dataset6').hide();
+});
