@@ -1,0 +1,52 @@
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="author" content="Script Tutorials">
+      <title>Photo Gallery For Entity Attachment</title>
+      <meta name="description" content="Photo Gallery with AngularJS and CSS3">
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <!-- add styles -->
+      <link href="espl_style.css" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <link rel="stylesheet" href="new_heatMapStylesheet">
+      <!-- add javascripts -->
+      <script type="text/javascript" charset="UTF-8" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&amp;s=1"></script>
+     <!--      <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.js"></script>-->
+      
+      <script src="https://code.angularjs.org/1.5.7/angular.min.js"></script>
+      <script src="https://code.angularjs.org/1.5.0/angular-animate.min.js"></script>
+      <script src="new_JQuery_1.11.3"></script>
+      <script src="new_Loadash.js"></script>  
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=visualization"></script>
+      <script src="new_heatMapModule"></script>
+         <script src="new_activityMap.js"></script>
+          <script>
+         $(function(){
+         $('.w3-black').on('click', 'li', function() {
+              $('.w3-black li.active').removeClass('active');
+             $(this).addClass('active');
+          });
+          });
+      </script> 
+      <meta>
+      <meta>
+      <meta>
+      <meta>
+      <meta>
+      <meta>
+   </head>
+   <body style="word-wrap: break-word;" ng-app="APP"  ng-controller="MainCtrl">
+     <form name="form"  data-ng-init="getMap()" >
+         <ul class="w3-navbar w3-black" >
+         <li class="active"><a href="javascript:void(0)" id="Constituents" ng-click="getMap()">Constituents</a></li>
+         <li><a href="javascript:void(0)" id="Donations" ng-click="displayDonationPushpinsOnMap(0)">Donations</a></li>
+     	 </ul>
+     	 <div style="width: 100%; height: 80%; font-family: undefined; position: relative;" class="map" id="map">
+      	</div>
+     	 <div style="font-family: undefined;">
+     	 </div>
+<!--      	</form>-->
+   </body>
+</html>
