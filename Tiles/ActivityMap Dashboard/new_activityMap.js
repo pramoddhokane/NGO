@@ -16,6 +16,9 @@ angular.module('APP', ['ngAnimate'])
 	$scope.donorPinLayer = new Microsoft.Maps.EntityCollection();
 	$scope.constituentInfoboxLayer = new Microsoft.Maps.EntityCollection();
 	$scope.constituentPinLayer = new Microsoft.Maps.EntityCollection();
+	$scope.conditions = ['Current Financial Year','Current Month'];
+	$scope.heatMap = null;
+	$scope.selectedCondition = null;
 	$scope.getMap = function ()
 	{
 		$scope.mapOptions = {
@@ -35,15 +38,8 @@ angular.module('APP', ['ngAnimate'])
 	}
 	$scope.displayDonationPushpinsOnMap = function (filter)
 	{
-//		$scope.pinInfobox.setOptions(
-//		{
-//			visible: false
-//		});
-		//$scope.map.entities.push($scope.pinInfobox);
-		$scope.map.entities.clear(); 
-		// $scope.constituentInfoboxLayer.clear();
-		//$scope.map.remove($scope.pinInfobox);
-		//$scope.donorInfoboxLayer.clear();
+		$scope.map.entities.remove($scope.constituentPinLayer);
+		$scope.map.entities.remove($scope.constituentInfoboxLayer);
 		$scope.thisMonthRegisteredDonors = _.filter($scope.thisMonthRegisteredConstituents, function (o)
 		{
 			if (o.new_donor === true) return o
@@ -52,8 +48,7 @@ angular.module('APP', ['ngAnimate'])
 		{
 			if (o.new_donor === true) return o
 		});
-		//$scope.DonorLocations = [];
-		if ($scope.DonorLocations.length <= 0)
+		if ($scope.DonorLocations.length === 0)
 		{
 			filter = 1;
 			//for current Month
@@ -120,24 +115,22 @@ angular.module('APP', ['ngAnimate'])
 					}
 				}
 			}
-			// Construct heatmap layer, using heatmapping module:
-			$scope.heatmapLayer = new HeatMapLayer(
-			$scope.map, [],
-			{
-				intensity: 0.7,
-				//  radius: 10,
-				radius: 10,
-				unit: 'pixels',
-				// radius: 2000,
-				// unit: 'meters',
-				colourgradient: {
-					0.00: 'rgba(0,255,0,80)', // Green
-					0.50: 'rgba(255,255,0,120)', // Yellow
-					1.00: 'rgba(255,0,0,150)' // Red                 
-				},
-			});
 		}
-		$scope.heatmapLayer.SetPoints($scope.DonorLocations);
+		$scope.heatMap = new HeatMapLayer($scope.map, $scope.DonorLocations,
+		{
+			intensity: 0.7,
+			//  radius: 10,
+			radius: 10,
+			unit: 'pixels',
+			// radius: 2000,
+			// unit: 'meters',
+			colourgradient: {
+				0.00: 'rgba(0,255,0,80)', // Green
+				0.50: 'rgba(255,255,0,120)', // Yellow
+				1.00: 'rgba(255,0,0,150)' // Red                 
+			},
+		});
+		$scope.map.entities.push($scope.heatMap);
 	}
 	$scope.getConstituentDetails = function (filter)
 	{
@@ -162,8 +155,7 @@ angular.module('APP', ['ngAnimate'])
 	}
 	$scope.displayConstituentPushpinsOnMap = function (filter)
 	{
-		//            $scope.constituentInfoboxLayer.clear();
-		//            $scope.constituentInfoboxLayer.push($scope.pinInfobox);
+		if ($scope.heatMap != null) $scope.heatMap.Remove();
 		var currentDate = new Date();
 		var y = currentDate.getFullYear(),
 			m = currentDate.getMonth();
@@ -224,6 +216,12 @@ angular.module('APP', ['ngAnimate'])
 		}
 		$scope.map.entities.push($scope.constituentPinLayer);
 		$scope.map.entities.push($scope.constituentInfoboxLayer);
+	}
+	$scope.GetValue = function (x)
+	{
+		var selectedCondition = $scope.selectedCondition;
+		$window.alert("Selected Value: " + selectedCondition);
+	
 	}
 
 	function displayInfobox(e)

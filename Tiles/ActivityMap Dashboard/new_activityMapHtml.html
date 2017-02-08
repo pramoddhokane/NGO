@@ -39,10 +39,16 @@
    </head>
    <body style="word-wrap: break-word;" ng-app="APP"  ng-controller="MainCtrl">
      <form name="form"  data-ng-init="getMap()" >
-         <ul class="w3-navbar w3-black" >
+         <div class="row">
+         <div class="col-md-10" style="background-color: #000!important;">
+         <ul class="w3-navbar w3-black">
          <li class="active"><a href="javascript:void(0)" id="Constituents" ng-click="displayConstituentPushpinsOnMap(0)">Constituents</a></li>
-         <li><a href="javascript:void(0)" id="Donations" ng-click="displayDonationPushpinsOnMap(0)">Donations</a></li>
+         <li><a href="javascript:void(0)" id="Donations" ng-click="displayDonationPushpinsOnMap(0)">Donations</a></li>         
      	 </ul>
+     	 </div>
+     	 <div class="col-md-2" style="background-color: #000!important;">
+     	 <ul class="w3-select" ><li><select ng-model="selectedCondition" ng-init="selectedCondition = conditions[0]" ng-options="x for x in conditions" ng-change="GetValue()"></select></li></ul></div>
+     	 </div>
      	 <div style="width: 100%; height: 80%; font-family: undefined; position: relative;" class="map" id="map">
       	</div>
       	
