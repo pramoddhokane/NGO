@@ -1,4 +1,6 @@
-<html><head>
+<html>
+
+<head>
     <title>Entity Locations On Map </title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 
@@ -13,8 +15,11 @@
     <script src="new_jquery.easing.js"></script>
     <script src="new_Loadash.js"></script>
     <script src="new_donationsTilesJS"></script>
-
-   
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+    .up{color:green};
+    .down{color:red};
+    </style>
 <meta>
 <meta>
 <script>
@@ -47,63 +52,82 @@
 <meta>
 <meta>
 <meta>
-<meta></head>
+<meta>
+<meta>
+<meta>
+<meta>
+<meta>
+</head>
 
 <body style="word-wrap: break-word;width:98%" onload="getCurrentFiscalYear()">
 <div class="row">
 
+    <!--Donations Received This Year ********************-->
     <div class="col-md-2">
-        <div class="tile" style="background-color: #2196F3">
-<div class="tile-header">Donations Received (YTD) </div>
+        <div class="tile" style="background-color: rgb(68,113,239)">
+<div class="tile-header">Donations Received<br>(YTD) </div>
 <div class="loader dataset1-Loader "></div>
-<div class="amount-count dataset1" id="TotalDonationsThisYear"></div>
-
+<div class="amount-count dataset1" id="TotalDonationsThisYear">
+</div>
+<span id="varianceThisYearArrow">
+     <span id="varianceThisYear"></span>
+</span>
 <div id="DonationThisyear" class="month-span"></div>
 </div>
 </div>
 
+<!--Donations Received This Month ********************-->
 <div class="col-md-2">
-    <div class="tile" style="background-color: #ed5a4f">
-<div class="tile-header">Donation Received (MTD)</div>
+    <div class="tile" style="background-color: rgb(37,94,145)">
+<div class="tile-header">Donation Received<br>(MTD)</div>
 <div class="loader dataset2-Loader "></div>
-<div class="amount-count dataset2 " id="receiveddonation"></div>
-
+<div class="amount-count dataset2 " id="receiveddonation">
+</div>
+<span id="varianceThisMonthPaidArrow">
+     <span id="varianceThisMonthPaid"></span>
+</span>
 <div id="receiveddonationthismonth" class="month-span"></div>
 </div>
 </div>
+
+<!--Expected Donation This Month ********************-->
 <div class="col-md-2">
-    <div class="tile" style="background-color: #00BCD4">
-<div class="tile-header">Expected Donation (MTD)</div>
+    <div class="tile" style="background-color: rgb(52,168,162)">
+<div class="tile-header">Expected Donation<br>(MTD)</div>
 <div class="loader dataset3-Loader "></div>
 <div class="amount-count dataset3" id="expectedDonation"></div>
+<span id="varianceThisMonthPlannedArrow">
+     <span id="varianceThisMonthPlanned"></span>
 
 <div id="ExpectedDonationthismonth" class="month-span"></div>
 </div>
 </div>
+
+<!--Deferred Donations This Month ********************-->
 <div class="col-md-2">
-    <div class="tile" style="background-color: #009688">
-<div class="tile-header">Differed Donations (MTD)</div>
+    <div class="tile" style="background-color: rgb(152,86,141)">
+<div class="tile-header">Deferred Donations<br>(MTD)</div>
 <div class="loader dataset4-Loader "></div>
-<div class="amount-count dataset4 " id="differedDonation"></div>
-
-<div id="differedDonationsthisyear" class="month-span">Year</div>
+<div class="amount-count dataset4 " id="deferredDonation"></div>
+<div id="DeferredDonationsthisyear" class="month-span">Year</div>
 
 </div>
 </div>
 
+<!--Canceled Donations This Month ********************-->
 <div class="col-md-2">
-    <div class="tile" style="background-color: #BA68C8">
-<div class="tile-header">Canceled Donations (MTD)</div>
+    <div class="tile" style="background-color: rgb(228,95,86)">
+<div class="tile-header">Canceled Donations<br>(MTD)</div>
 <div class="loader dataset5-Loader "></div>
 <div class="amount-count dataset5 " id="canceledDonations"></div>
 
 <div id="canceledDonationsthisyear" class="month-span">Year</div>
 </div>
 </div>
-
+<!--Unpaid Donations This Month ********************-->
 <div class="col-md-2">
-    <div class="tile" style="background-color: #7153BE">
-<div class="tile-header">Unpaid Donations (MTD)</div>
+    <div class="tile" style="background-color: rgb(149,90,215)">
+<div class="tile-header">Unpaid Donations<br>(MTD)</div>
 <div class="loader dataset6-Loader "></div>
 <div class="amount-count dataset6" id="UnpaidDonationAmount"></div>
 
@@ -113,5 +137,6 @@
 
 </div>
 
+</body>
 
-</body></html>
+</html>
