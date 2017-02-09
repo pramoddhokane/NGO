@@ -23,7 +23,7 @@ function getCurrentFiscalYear()
 				var result = JSON.parse(this.responseText).value;
 				fiscalcalendarstart = new Date(result[0]["fiscalcalendarstart"]);
 				var fiscalcalendarend = new Date(new Date().setFullYear(fiscalcalendarstart.getFullYear() + 1, fiscalcalendarstart.getMonth(), fiscalcalendarstart.getDate()));
-				console.log("lastday" + fiscalcalendarend);
+//				console.log("lastday" + fiscalcalendarend);
 				getCurrentYearAccountDetails(fiscalcalendarstart, fiscalcalendarend);
 				getCurrentYearRenewalDetails(fiscalcalendarstart, fiscalcalendarend);
 			}
@@ -59,7 +59,7 @@ function getCurrentYearRenewalDetails(firstDate, lastDate)
 	{
 		if (retrieveReq.readyState == 4 && retrieveReq.status == 200)
 		{
-			console.log(JSON.parse(this.responseText).value);
+//			console.log(JSON.parse(this.responseText).value);
 			var currMonthRenewals = _.filter(JSON.parse(this.responseText).value, function (o)
 			{
 				var renewalDate = new Date(o.new_renewaldate);
