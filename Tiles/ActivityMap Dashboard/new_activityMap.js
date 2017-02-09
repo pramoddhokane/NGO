@@ -16,7 +16,15 @@ angular.module('APP', ['ngAnimate'])
 	$scope.donorPinLayer = new Microsoft.Maps.EntityCollection();
 	$scope.constituentInfoboxLayer = new Microsoft.Maps.EntityCollection();
 	$scope.constituentPinLayer = new Microsoft.Maps.EntityCollection();
-	$scope.conditions = ['Current Financial Year','Current Month'];
+	$scope.conditions = [
+	{
+		id: 1,
+		label: 'Current Financial Year',
+		},
+	{
+		id: 2,
+		label: 'Current Month',
+		}]; // ['Current Financial Year', 'Current Month'];
 	$scope.heatMap = null;
 	$scope.selectedCondition = null;
 	$scope.getMap = function ()
@@ -40,6 +48,7 @@ angular.module('APP', ['ngAnimate'])
 	{
 		$scope.map.entities.remove($scope.constituentPinLayer);
 		$scope.map.entities.remove($scope.constituentInfoboxLayer);
+		//if ($scope.heatMap != null) $scope.heatMap.Remove();
 		$scope.thisMonthRegisteredDonors = _.filter($scope.thisMonthRegisteredConstituents, function (o)
 		{
 			if (o.new_donor === true) return o
@@ -50,9 +59,9 @@ angular.module('APP', ['ngAnimate'])
 		});
 		if ($scope.DonorLocations.length === 0)
 		{
-			filter = 1;
+//			filter = 1;
 			//for current Month
-			if (filter === 0)
+			if (filter === 2)
 			{
 				for (var constituent = 0; constituent < $scope.thisMonthRegisteredDonors.length; constituent++)
 				{
@@ -116,6 +125,11 @@ angular.module('APP', ['ngAnimate'])
 				}
 			}
 		}
+		if ($scope.heatMap != null)
+		{
+			$scope.map.entities.clear();
+			//$scope.heatMap.Remove();
+		}
 		$scope.heatMap = new HeatMapLayer($scope.map, $scope.DonorLocations,
 		{
 			intensity: 0.7,
@@ -166,9 +180,9 @@ angular.module('APP', ['ngAnimate'])
 			var registrationDate = new Date(o.new_registrationdate);
 			if (registrationDate >= firstDay && registrationDate <= lastDay) return o
 		});
-		filter = 0;
+//		filter = 0;
 		console.log("thisMonthRegisteredConstituents" + $scope.thisMonthRegisteredConstituents);
-		if (filter === 0)
+		if (filter === 2)
 		{
 			for (var constituent = 0; constituent < $scope.thisMonthRegisteredConstituents.length; constituent++)
 			{
@@ -220,8 +234,8 @@ angular.module('APP', ['ngAnimate'])
 	$scope.GetValue = function (x)
 	{
 		var selectedCondition = $scope.selectedCondition;
-		$window.alert("Selected Value: " + selectedCondition);
-	
+		$window.alert("Selected Value: " + selectedCondition.id);
+		
 	}
 
 	function displayInfobox(e)

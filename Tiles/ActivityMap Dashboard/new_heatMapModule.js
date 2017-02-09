@@ -232,8 +232,8 @@ function _createHeatMap() {
     // Removes the heatmap layer from the DOM
     this.Remove = function () {
         var _mapDiv = _map.getRootElement();
-        //_mapDiv.parentNode.lastChild.removeChild(_canvas);
-        _container.removeChild(_canvas);
+        _mapDiv.parentNode.lastChild.removeChild(_canvas);
+       // _container.removeChild(_canvas);
         _mapDiv.childNodes[2].childNodes[1].removeChild(_container);
         if (_viewchangestarthandler) { Microsoft.Maps.Events.removeHandler(_viewchangestarthandler); }
         if (_viewchangeendhandler) { Microsoft.Maps.Events.removeHandler(_viewchangeendhandler); }
