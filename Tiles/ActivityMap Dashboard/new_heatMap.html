@@ -35,11 +35,13 @@
      <meta></head>
    <body style="word-wrap: break-word;" onload="getMap('Constituents');">
       <ul class="w3-navbar w3-black">
-<!--         <li class="active"><a href="javascript:void(0)" id="Constituents" onclick="getMap('Constituents')">Constituents</a></li>-->
-         <li><a href="javascript:void(0)" id="Donations" onclick="getDonationDetails()">Donations</a></li>
-         <li><a href="javascript:void(0)" id="Beneficiary" onclick="getBeneficiaryDetails()">Beneficiaries</a></li>
-         <li><a href="javascript:void(0)" id="Volunteers" onclick="getVolunteersDetails()">Volunteers</a></li>
+         <li class="active"><a href="javascript:void(0)" id="Constituents" onclick="getMap('Constituents')">Constituents</a></li>
+<!--         <li><a href="javascript:void(0)" id="Donations" onclick="getDonationDetails()">Donations</a></li>-->
+         <li><a href="javascript:void(0)" id="Beneficiary" onclick="getBeneficiaryDetails()">Beneficiaries</a></li>         
          <li><a href="javascript:void(0)" id="Donors" onclick="getDonorDetails()">Donors</a></li>
+         <li><a href="javascript:void(0)" id="Volunteers" onclick="getVolunteersDetails()">Volunteers</a></li>
+          <li><a href="javascript:void(0)" id="Donations" onclick="getMembershipDetails()">Members</a></li>
+         
       </ul>
       <div style="width: 100%; height: 80%; font-family: undefined;" class="map" id="map">
       </div>

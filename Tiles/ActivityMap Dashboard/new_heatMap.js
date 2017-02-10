@@ -12,7 +12,7 @@
   var constituentInfoboxLayer = new Microsoft.Maps.EntityCollection();
   var pushpinLayer = new Microsoft.Maps.EntityCollection();
   var constituentPinLayer = new Microsoft.Maps.EntityCollection();
-  //  var volunteerInfoboxLayer= new Microsoft.Maps.EntityCollection();
+  var pushpinInfoboxLayer = new Microsoft.Maps.EntityCollection();
   //  var beneficiaryInfoboxLayer = new Microsoft.Maps.EntityCollection();
   var registeredDonors = null,
   	registeredBeneficiaries = null,
@@ -32,37 +32,21 @@
   	{
   		visible: false
   	});
-  	//  	if (mapName == "Donations")
-  	//  	{
-  	//  		getDonationDetails();
-  	//  	}
-  	//  	else
+  	pinInfobox1 = new Microsoft.Maps.Infobox(new Microsoft.Maps.Location(0, 0),
+  	{
+  		visible: false
+  	});
+  	
   	if (mapName == "Constituents")
   	{
   		constituentInfoboxLayer.clear();
-  		constituentInfoboxLayer.push(pinInfobox);
+  		constituentInfoboxLayer.push(pinInfobox1);
   		getConstituentDetails();
   		pushpinLayer.clear();
   		pushpinLayer.push(pinInfobox);
+  		
   	}
-  	//  	else if (mapName == "Donor")
-  	//  	{
-  	//  		donorInfoboxLayer.clear();
-  	//  		donorInfoboxLayer.push(pinInfobox);
-  	//  		getDonorDetails(donorInfoboxLayer);
-  	//  	}
-  	//  	else if (mapName == "Volunteers")
-  	//  	{
-  	//  		volunteerInfoboxLayer.clear();
-  	//  		volunteerInfoboxLayer.push(pinInfobox);
-  	//  		getVolunteersDetails(volunteerInfoboxLayer);
-  	//  	}
-  	//  	else if (mapName == "Beneficiary")
-  	//  	{
-  	//  		beneficiaryInfoboxLayer.clear();
-  	//  		beneficiaryInfoboxLayer.push(pinInfobox);
-  	//  		getBeneficiaryDetails(beneficiaryInfoboxLayer);
-  	//  	}
+  	
   }
 
   function getDonorDetails()
@@ -89,80 +73,14 @@
   	displayPushpinsOnMap(registeredBeneficiaries, "B");
   }
 
-//  function getDonationDetails()
-//  {
-  	//  	var retrieveReq = new XMLHttpRequest();
-  	//  	var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/accounts?$filter=new_donor eq true and new_totalpaiddonation gt 0 ";
-  	//    var odataSelect = window.parent.Xrm.Page.context.getClientUrl() + "/api/data/v8.0/new_accounts";
-  	//  	retrieveReq.open("GET", odataSelect, true);
-  	//  	retrieveReq.setRequestHeader("Accept", "application/json");
-  	//  	retrieveReq.setRequestHeader("Content-Type", "application/json");
-  	//  	retrieveReq.setRequestHeader("OData-MaxVersion", "4.0");
-  	//  	retrieveReq.setRequestHeader("Prefer", 'odata.include-annotations="*"');
-  	//  	retrieveReq.setRequestHeader("OData-Version", "4.0");
-  	//  	retrieveReq.onreadystatechange = function ()
-  	//  	{
-  	//  		if (retrieveReq.readyState == 4 && retrieveReq.status == 200)
-  	//  		{
-  	//  			constituentDetails = JSON.parse(this.responseText).value;
-  	//  	pushpinLayer.clear();
-  	//  	pushpinLayer.push(pinInfobox);
-  	//  	constituentInfoboxLayer.clear();
-  	//  	constituentInfoboxLayer.push(pinInfobox);
-  	map.entities.clear();
-  	displayDonationPushpinsOnMap(registeredDonors);
-  	//  		}
-  	//  	};
-  	//  	retrieveReq.send();
-  }
-
-  function displayDonationPushpinsOnMap(constituentDetails)
+  function getMembershipDetails()
   {
-  	DonorLocations = [];
-  	if(heatmapLayer!=null) heatmapLayer.Remove();
-  	for (var constituent = 0; constituent < constituentDetails.length; constituent++)
-  	{
-  		var constituentid = constituentDetails[constituent];
-  		if (constituentid.new_longitude && constituentid.new_latitude)
-  		{
-  			donationReceived = constituentid.new_totalpaiddonation;
-  			if (constituentid.new_latitude && constituentid.new_longitude && constituentid.new_latitude != 0 && constituentid.new_longitude != 0)
-  			{
-  				// Create location:    
-  				var location = new Microsoft.Maps.Location(constituentid.new_latitude, constituentid.new_longitude);
-  				if (donationReceived >= 0)
-  				{
-  					if (donationReceived <= 1000000)
-  					{
-  						var locMultiplier = donationReceived / 100000;
-  					}
-  					else
-  					{
-  						var locMultiplier = donationReceived / 2000000;
-  					}
-  					location.multiplier = locMultiplier;
-  				}
-  				DonorLocations.push(location);
-  			}
-  		}
-  	}
-  	heatmapLayer = new HeatMapLayer(
-  	map, [],
-  	{
-  		intensity: 0.7,
-  		//  radius: 10,
-  		radius: 10,
-  		unit: 'pixels',
-  		// radius: 2000,
-  		// unit: 'meters',
-  		colourgradient: {
-  			0.00: 'rgba(0,255,0,80)', // Green
-  			0.50: 'rgba(255,255,0,120)', // Yellow
-  			1.00: 'rgba(255,0,0,150)' // Red                 
-  		},
-  	});
-  	heatmapLayer.SetPoints(DonorLocations);
+  	map.entities.clear();
+  	pushpinLayer.clear();
+  	pushpinLayer.push(pinInfobox);
+  	displayPushpinsOnMap(registeredMembers, "M");
   }
+  
 
   function getConstituentDetails()
   {
@@ -180,27 +98,54 @@
   		if (retrieveReq.readyState == 4 && retrieveReq.status == 200)
   		{
   			constituentDetails = JSON.parse(this.responseText).value;
-  			displayConstituentPushpinsOnMap(constituentDetails);
+  			var constituentSorted = _.forEach(constituentDetails, function (constituent)
+  			{
+  				if (constituent.new_beneficiary === true)
+  				{
+  					return constituent.priority = 'B';
+  				}
+  				else if (constituent.new_donor === true)
+  				{
+  					return constituent.priority = 'D';
+  				}
+  				else if (constituent.new_volunteer === true)
+  				{
+  					return constituent.priority = 'V';
+  				}
+  				else if (constituent.new_membership === true)
+  				{
+  					return constituent.priority = 'M';
+  				}
+  				else
+  				{
+  					return constituent.priority = 'C';
+  				}
+  			});
+  			displayConstituentPushpinsOnMap(constituentSorted);
   			registeredDonors = _.filter(constituentDetails, function (o)
   			{
-  				if (o.new_donor === true && o.new_totalpaiddonation > 0) return o
+  				if (o.new_donor === true && o.new_totalpaiddonation > 0) return o;
   			});
   			registeredBeneficiaries = _.filter(constituentDetails, function (o)
   			{
-  				if (o.new_beneficiary === true) return o
+  				if (o.new_beneficiary === true) return o;
   			});
   			registeredVolunteers = _.filter(constituentDetails, function (o)
   			{
-  				if (o.new_volunteer === true) return o
+  				if (o.new_volunteer === true) return o;
+  			});
+  			registeredMembers = _.filter(constituentDetails, function (o)
+  			{
+  				if (o.new_membership === true) return o;
   			});
   		}
   	};
   	retrieveReq.send();
   }
 
-  function displayPushpinsOnMap(collection, Letter)
+  function displayPushpinsOnMap(collection, priority)
   {
-  	DonorLocations = [];
+  	//DonorLocations = [];
   	for (var constituent = 0; constituent < collection.length; constituent++)
   	{
   		var constituentid = collection[constituent];
@@ -213,7 +158,7 @@
   			var clientURL = window.parent.Xrm.Page.context.getClientUrl();
   			var pin = new Microsoft.Maps.Pushpin(location,
   			{
-  				text: Letter
+  				text: priority
   			});
   			pin.Title = constituentid.name;
   			pin.Description = 'Constituent Id: ' + constituentid.new_organizationid + '<br><a  href="' + clientURL + '/main.aspx?id=%7B' + constituentid.accountid + '%7D&newWindow=true&pagetype=entityrecord&etn=account" target="_blank">Click Here</a>';
@@ -222,12 +167,12 @@
   		}
   	}
   	map.entities.push(pushpinLayer);
-  	//map.entities.push(constituentInfoboxLayer);
+  	//	map.entities.push(pushpinInfoboxLayer);
   }
 
   function displayConstituentPushpinsOnMap(constituentDetails)
   {
-  	DonorLocations = [];
+  	
   	for (var constituent = 0; constituent < constituentDetails.length; constituent++)
   	{
   		var constituentid = constituentDetails[constituent];
@@ -237,15 +182,16 @@
   			{
   				var location = new Microsoft.Maps.Location(constituentid.new_latitude, constituentid.new_longitude);
   			}
+  			//  			getPriority(constituentDetails);
   			var clientURL = window.parent.Xrm.Page.context.getClientUrl();
   			var pin = new Microsoft.Maps.Pushpin(location,
   			{
-  				text: 'C'
+  				text: constituentid.priority
   			});
   			pin.Title = constituentid.name;
   			pin.Description = 'Constituent Id: ' + constituentid.new_organizationid + '<br><a  href="' + clientURL + '/main.aspx?id=%7B' + constituentid.accountid + '%7D&newWindow=true&pagetype=entityrecord&etn=account" target="_blank">Click Here</a>';
   			constituentPinLayer.push(pin);
-  			Microsoft.Maps.Events.addHandler(pin, 'click', displayInfobox);
+  			Microsoft.Maps.Events.addHandler(pin, 'click', displayInfobox1);
   		}
   	}
   	map.entities.push(constituentPinLayer);
@@ -262,6 +208,26 @@
   		offset: new Microsoft.Maps.Point(0, 25)
   	});
   	pinInfobox.setLocation(e.target.getLocation());
+  	pinInfobox1.setOptions(
+  	{
+  		title: e.target.Title,
+  		description: e.target.Description,
+  		visible: true,
+  		offset: new Microsoft.Maps.Point(0, 25)
+  	});
+  	pinInfobox1.setLocation(e.target.getLocation());
+  }
+
+  function displayInfobox1(e)
+  {
+  	pinInfobox1.setOptions(
+  	{
+  		title: e.target.Title,
+  		description: e.target.Description,
+  		visible: true,
+  		offset: new Microsoft.Maps.Point(0, 25)
+  	});
+  	pinInfobox1.setLocation(e.target.getLocation());
   }
 
   function hideInfobox(e)
