@@ -11,10 +11,13 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
       <!-- add javascripts -->
-      <script src="https://code.angularjs.org/1.5.0/angular.min.js"></script>
+      <script src="https://code.angularjs.org/1.5.7/angular.min.js"></script>
       <script src="https://code.angularjs.org/1.5.0/angular-animate.min.js"></script>
       <script src="https://code.angularjs.org/1.5.0/angular-touch.min.js"></script>
       <script src="https://cdn.rawgit.com/adonespitogo/angular-base64-upload/master/src/angular-base64-upload.js"></script>
+      <script src="espl_Jquery.min.js"></script>
+      <script src="espl_fileSaverjs"></script>
+      <script src="espl_jquery.elevatezoom.js"></script>
       <script src="espl_app.js"></script>
       <meta>
       <meta>
@@ -27,48 +30,88 @@
       <form name="form" ng-controller="MainCtrl">
          <header>
          </header>
-         
          <!-- slider container -->
-         <div class="container slider">
-            <!-- enumerate all photos -->
-            <img class="slide" ng-src="data:image/png;base64,{{photo.documentbody}}" ng-show="isActive($index)" ng-swipe-left="showNext()" ng-swipe-right="showPrev()" ng-repeat="photo in photos" id="{{photo.annotationid}}">
-            <!--<a href="#" class="del_photo" ng-click="deleteImage()" ng-show="photos.length>0" >X</a>-->
-            <!-- prev / next controls -->
-            <a class="arrow prev" href="#" ng-click="showPrev()"></a>
-            <a class="arrow next" href="#" ng-click="showNext()"></a>
-            <span class="ms-crm-CommandBar-Button ms-crm-Menu-Label del_photo" style="max-width:200px">
-               <a class="ms-crm-Menu-Label" ng-click="deleteImage()" ng-show="photos.length>0">
-                  <i class="fa fa-trash"></i>                  
-                  <span class="ms-crm-CommandBar-Menu" style="max-width:150px"> Delete </span>
-               </a>
-            </span>
-           <div id="dropbox" class="dropbox" ng-class="dropClass"></div>
-           <div ng-show="files.length">
-             <div class="fileNames">
-                  <div ng-repeat="file in files.slice(0)">
-                     <span>{{file.webkitRelativePath || file.name}}</span> (
-                     <span ng-switch="file.size > 1024*1024">
-                     <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
-                     <span ng-switch-default="">{{file.size / 1024 | number:2}} kB</span>
-                     </span>)
-                  </div>
+         <div class="container">
+            <div class="descContainer">
+               <div class="input-group" ng-show="photos.length">
+                  <span class="fileName" image1="" ng-cloak style="font-size: 24px;font-weight: bolder;">{{currentNote.filename}}</span>
+                  <!--<span style="font-size: 12px;font-weight: bolder;">{{selectedFilesize}}</span>-->
+<!--                  <input class="btn btn-secondary" type="button" style="padding: 2px;" value="Edit Details" ng-click="editDetails()">-->
+                 <a href="#" style="font-size: 26px; color: black; margin-left: 9px;text-align: center;vertical-align: middle;"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Edit Note Details" ng-click="editDetails()"></i></a>
                </div>
-               <input type="button" ng-click="uploadFile()" value="Upload"><span> {{files.length}} Files Selected</span>
-               <div ng-show="progressVisible">
-                  <div class="percent">{{progress}}%</div>
-                  <div class="progressBar">
-                     <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
-                  </div>
+               <div class="description" ng-cloak>{{currentNote.notetext}}</div>
+               <div class="description" ng-hide="showDescription()">Click on Edit button to add note text</div>
+            </div>
+            <div class="slider">
+               <!-- enumerate all photos -->
+               <div class="imgSlider"> 
+                 
+                  <img class="slide" ng-src="data:image/png;base64,{{photo.documentbody}}" ng-show="isActive($index)" ng-swipe-left="showNext()"
+                     ng-swipe-right="showPrev()" ng-repeat="photo in photos" id="{{photo.annotationid}}" data-zoom-image="data:image/png;base64,{{photo.documentbody}}" ng-mouseover="onMouseOver()" >
+<!--                  <div ng-hide="photos.length">-->
+                    <img ng-hide="photos.length" class="default"  width="400" height="300">
+<!--                  <div><img ng-hide="true" id="actualImgContainer" ng-src="data:image/png;base64,{{currentNote.documentbody}}" ></div>-->
+<!--                  </div>-->
+                 <!--<a href="#" class="del_photo" ng-click="deleteImage()" ng-show="photos.length>0" >X</a>-->
+                 <a href=# class="del_photo" ng-show="photos.length" ng-click="getFile()"><i class="fa fa-download" title="Download"></i></a>
+                  <!-- prev / next controls -->
+                 <div ng-show="photos.length"> <a class="arrow prev" href="#" ng-click="showPrev()"><span class="glyphicon glyphicon-chevron-left"></span></a></div>
+                    <div ng-show="photos.length"> <a class="arrow next" href="#" ng-click="showNext()"><span class="glyphicon glyphicon-chevron-right"></span></a>  </div>               
+               </div> 
+               <!-- extra navigation controls -->
+               <div class="navImages">
+                  <ul class="nav">
+                     <li ng-repeat="photo in photos" ng-class="{'active':isActive($index)}">
+                        <img title="{{photo.filename}}" alt="{{photo.filename}}" ng-click="showPhoto($index);" ng-src="data:image/png;base64,{{photo.documentbody}}">
+                     </li>
+                  </ul>
                </div>
             </div>
-            <!-- extra navigation controls -->
-            <ul class="nav">
-               <li ng-repeat="photo in photos" ng-class="{'active':isActive($index)}">
-                  <img title="{{photo.filename}}" alt="{{photo.filename}}" ng-click="showPhoto($index);" ng-src="data:image/png;base64,{{photo.documentbody}}">
-               </li>
-            </ul>
+            <div id="dropbox" class="dropbox" ng-class="dropClass">
+               <span ng-hide="files.length || isEditMode" class="dropText">Drag and drop your images here</span>
+             <div ng-hide="files.length || isEditMode" ><!--  class="input-group"-->
+                  <label  style="vertical-align: middle;display: block !important;font-size: 19px;font-weight: bold;text-align: center !important;">Or</label>
+                  <label class="btn btn-primary fileInputlbl" for="my-file-selector">Choose file<input id="my-file-selector" type="file" ng-model="files"  class="inputfile" name="files" base-sixty-four-input multiple accept="image/*" minsize="500" required minnum="2" on-change="onChange" style="display:none;">
+                  </label>
+               </div>
+               <div ng-show="files.length">
+                  <div class="fileNames table-responsive">
+                     <span class="glyphicon glyphicon-chevron-left" style="padding-top: 10px;font-size: 17px;margin-left: 5px;"></span>
+                     <span style="padding-top: 10px;font-size: 17px;    font-weight: bold;">{{files.length}} Files Selected</span>
+                     <hr style=" margin: 7px;border: none;" width="90">
+                     <table class="table" style="border-top: 1px solid #ddd !important;">
+                        <tr ng-repeat="file in files.slice(0)">
+                           <td style="width:90%"><span class="fileName">{{file.webkitRelativePath || file.name || file.filename}}</span>(<span class="fileSize" ng-switch="file.size > 1024*1024"><span class="fileSize" ng-switch-when="true">{{file.size || file.filesize / 1024 / 1024 | number:2}}MB</span>
+                              <span class="fileSize" ng-switch-default="">{{file.size || file.filesize / 1024 | number:2}}kB</span>
+                              </span>)
+                           </td>
+                           <td style="width:10%"><span ng-click="deleteThis(file)" style="color:red; cursor: pointer;font-weight: bolder;">x</span></td>
+                        </tr>
+                     </table>
+                  </div>
+                  <center><input class="btn btn-primary" type="button" ng-click="uploadFile()" value="Upload"><input class="btn btn-outline-secondary"
+                     type="button" ng-click="removeAll()" value="Clear All"></center>
+                  <div ng-show="progressVisible">
+                     <div class="percent">{{progress}}%</div>
+                     <div class="progressBar">
+                        <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+                     </div>
+                  </div>
+               </div>
+               <div ng-show="isEditMode">
+                  <span class="glyphicon glyphicon-chevron-left" style="padding-top: 10px;font-size: 17px;margin-left: 5px;color: #080808 !important;"></span>
+                  <span style="padding-top: 10px;font-size: 17px;color: #080808 !important; font-weight: bold;">Edit Details</span>
+                  <hr style=" margin: 7px;">
+                  <div class="form-group">
+                     <label>Enter Name</label>
+                     <input type="text" class="form-control" placeholder="Enter name" ng-model="currentNote.filename" ng-maxlength="30">
+                     <label>Enter description</label>
+                     <textarea class="form-control"  rows="3" ng-model="currentNote.notetext"></textarea>
+                  </div>
+                  <center><input class="btn btn-primary" type="submit" value="Save" ng-click="save(currentNote)"><input class="btn btn-outline-secondary" type="button" value="Delete" ng-click="deleteImage()"></center>
+               </div>
+            </div>
          </div>
-       
       </form>
    </body>
 </html>

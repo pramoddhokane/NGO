@@ -10,7 +10,6 @@
 <!-- add styles -->
 <link href="espl_style.css" rel="stylesheet" type="text/css" />
 <!-- add javascripts -->
-
 <script src="https://code.angularjs.org/1.2.0rc1/angular.js"></script>
 <script src="https://code.angularjs.org/1.2.0rc1/angular-animate.min.js"></script>
 <script src="https://code.angularjs.org/1.2.0rc1/angular-touch.min.js"></script>
@@ -18,19 +17,11 @@
 <script src="espl_app.js"></script>
 </head>
 
-
-
 <form name="myForm" ng-controller="MainCtrl">
 <body>
 <header>
 </header>
 
-<div class="input-group">
-        <label for="file">Select File</label>
-        <input type="file" ng-model="file" name="file" base-sixty-four-input required onload="onLoad" maxsize="500" accept="image/*">
-        <input type="text" name="notetext" ng-model="notetext" required>
-</div>
-<button ng-click="uploadImages()" ng-disabled="myForm.file.$invalid || myForm.notetext.$invalid">Upload..</button>
 <!-- slider container -->
 <div class="container slider">
 <!-- enumerate all photos -->

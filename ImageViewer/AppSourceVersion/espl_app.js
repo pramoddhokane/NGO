@@ -6,10 +6,13 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	$scope.photos = [];
 	// initial image index
 	$scope._Index = 0;
-	// if a current image is the same as requested image
+	$scope.currentNote = null;
 	$scope.files = [];
 	$scope.file = {};
+	$scope.master = {};
+	$scope.isEditMode = false;
 	var uploadedCount = 0;
+	$scope.isDragdrop = true;
 	$scope.isActive = function (index)
 	{
 		return $scope._Index === index;
@@ -17,32 +20,170 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	// show prev image
 	$scope.showPrev = function ()
 	{
-		$scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+		$scope.clearZoomContainer();
+		if ($scope.isEditMode)
+		{
+			if ($scope.showconfirmbox())
+			{
+				$scope.isEditMode = false;
+				$scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+				$scope.currentNote = $scope.photos[$scope._Index];
+			}
+		}
+		else if ($scope.files.length)
+		{
+			if ($scope.showconfirmbox())
+			{
+				$scope.files = [];
+				$scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+				$scope.currentNote = $scope.photos[$scope._Index];
+			}
+		}
+		else
+		{
+			$scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+			$scope.currentNote = $scope.photos[$scope._Index];
+		}
 	};
 	// show next image
 	$scope.showNext = function ()
 	{
-		$scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+		$scope.clearZoomContainer();
+		if ($scope.isEditMode)
+		{
+			if ($scope.showconfirmbox())
+			{
+				$scope.isEditMode = false;
+				$scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+				$scope.currentNote = $scope.photos[$scope._Index];
+			}
+		}
+		else if ($scope.files.length)
+		{
+			if ($scope.showconfirmbox())
+			{
+				$scope.files = [];
+				$scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+				$scope.currentNote = $scope.photos[$scope._Index];
+			}
+		}
+		else
+		{
+			$scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+			$scope.currentNote = $scope.photos[$scope._Index];
+		}
 	};
 	// show a certain image
 	$scope.showPhoto = function (index)
 	{
-		$scope._Index = index;
+		$scope.clearZoomContainer();
+		if ($scope.isEditMode)
+		{
+			if ($scope.showconfirmbox())
+			{
+				$scope.isEditMode = false;
+				$scope._Index = index;
+				$scope.currentNote = $scope.photos[index];
+			}
+		}
+		else if ($scope.files.length)
+		{
+			if ($scope.showconfirmbox())
+			{
+				$scope.files = [];
+				$scope._Index = index;
+				$scope.currentNote = $scope.photos[index];
+			}
+		}
+		else
+		{
+			$scope._Index = index;
+			$scope.currentNote = $scope.photos[index];
+		}
 	};
 	$scope.onChange = function (e, fileList)
 	{
-		alert('this is on-change handler!');
-		console.log(fileList);
+		$scope.isDragdrop = false;
 	};
 	$scope.showconfirmbox = function ()
 	{
-		if ($window.confirm("Do you want to continue?"))
-		//$scope.result = "Yes";
-		return true;
-		else
-		//$scope.result = "No";
-		return false;
+		if ($window.confirm("Do you want to continue?")) return true;
+		else return false;
 	};
+	$scope.deleteThis = function (file)
+	{
+		var files = $scope.files;
+		files.splice(files.indexOf(file), 1);
+	}
+	$scope.editDetails = function ()
+	{
+		//$scope.isEditMode = true;
+		if ($scope.files.length)
+		{
+			if ($scope.showconfirmbox())
+			{
+				$scope.files = [];
+				$scope.isEditMode = true;
+			}
+		}
+		else $scope.isEditMode = true;
+	}
+	$scope.save = function (currentNote)
+	{
+		var UpdateNote = {
+			filename: currentNote.filename,
+			notetext: currentNote.notetext,
+		}
+		var currentIndex = $scope._Index;
+		var annotationID = $scope.photos[currentIndex].annotationid;
+		$http(
+		{
+			method: 'PATCH',
+			url: $scope.clientURL + '/api/data/v8.1/annotations(' + annotationID + ')',
+			data: UpdateNote,
+		}).then(
+
+		function (response)
+		{
+			alert("Note Updated Successfully");
+			$scope.clearZoomContainer();
+			//$scope.getImages();
+			$scope.isEditMode = false;
+			//$scope.showNext();
+		},
+
+		function (response)
+		{
+			console.log("Note is not updated ");
+		});
+	}
+	$scope.showDescription = function ()
+	{
+		if ($scope.photos.length > 0)
+		{
+			if ($scope.currentNote) return $scope.currentNote.notetext !== null
+		}
+		return true
+	}
+	$scope.getFile = function ()
+	{
+		$scope.currentNote
+		var DocumentBody = $scope.currentNote.documentbody;
+		var FileName = $scope.currentNote.filename;
+		$scope.dataURItoBlob(DocumentBody, FileName);
+	}
+	$scope.dataURItoBlob = function (dataURI, filename)
+	{
+		var byteString = atob(dataURI);
+		var ab = new ArrayBuffer(byteString.length);
+		//		var ia = new Uint8Array(ab);
+		//		for (var i = 0; i < byteString.length; i++)
+		//		{
+		//			ia[i] = byteString.charCodeAt(i);
+		//		}
+		var bb = new Blob([ab]);
+		saveAs(bb, filename); //pass blob and file name
+	}
 	$scope.deleteImage = function ()
 	{
 		if ($scope.showconfirmbox())
@@ -59,13 +200,16 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 
 			function (response)
 			{
-				console.log("Image deleted successfully");
+				alert("Image deleted successfully");
 				//$scope.getImages();
 				$scope.photos.splice(currentIndex, 1);
-				if ($scope.photos.length === currentIndex)
-				{
-					$scope.showNext();
-				}
+				$scope.isEditMode = false;
+				$scope.clearZoomContainer();
+				$scope.showNext();
+				//				if ($scope.photos.length === currentIndex)
+				//				{
+				//					$scope.showNext();
+				//				}
 			},
 
 			function (response)
@@ -130,6 +274,12 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 			}).then(function (response)
 			{
 				$scope.photos = response.data.value;
+				if ($scope.photos.length > 0)
+				{
+					$scope.currentNote = $scope.photos[0];
+					//					$scope.showDefault=false;
+				}
+				console.log($scope.currentNote);
 			});
 		}
 	};
@@ -145,8 +295,34 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		for (var i = 0; i < $scope.files.length; i++)
 		{
 			var file = $scope.files[i];
-			getBase64(file);
+			if ($scope.isDragdrop) getBase64(file);
+			else postData("", file, false)
 		}
+	};
+	$scope.removeAll = function ()
+	{
+		$scope.files = [];
+	}
+	$scope.clearZoomContainer = function ()
+	{
+		var myEl = angular.element(document.getElementsByClassName('zoomContainer')); //document.querySelector('.zoomContainer')
+		if (myEl) myEl.remove();
+	};
+	$scope.onMouseOver = function ()
+	{
+		var id = '#' + $scope.currentNote.annotationid;
+		$(id).elevateZoom(
+		{
+			//			zoomWindowPosition: 1,
+			//			zoomWindowHeight: 500,
+			//			zoomWindowWidth: 500,
+			//			cursor: 'pointer',
+			scrollZoom: true,
+			zoomType: "inner",
+			cursor: "crosshair",
+//			zoomType: "lens",			
+//			lensSize: 100
+		});
 	};
 
 	function getBase64(file)
@@ -157,7 +333,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		{
 			var data = e.target.result;
 			//console.log(data)
-			postData(data, file);
+			postData(data, file, true);
 		}
 		r.onerror = function (e)
 		{
@@ -165,31 +341,63 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		}
 	}
 
-	function postData(data, file)
+	function postData(data, file, isDragdrop)
 	{
 		if ($scope.entityId !== null && $scope.clientURL !== null)
 		{
 			var objectId = 'objectid_' + $scope.entityName + '@odata.bind';
 			var objectIdValue = $scope.entitySetName + '@odata.bind';
-			var annnotationdata = (
+			if (isDragdrop)
 			{
-				'filename': file.name,
-				'documentbody': data.split(',')[1],
-				'mimetype': 'image/png',
-				//'notetext': $scope.notetext
-			});
+				var annnotationdata = (
+				{
+					'filename': file.name,
+					'documentbody': data.split(',')[1],
+					'mimetype': file.type,
+				});
+			}
+			else
+			{
+				var annnotationdata = (
+				{
+					'filename': file.filename,
+					'documentbody': file.base64,
+					'mimetype': file.filetype,
+				});
+			}
 			annnotationdata[objectId] = '/' + $scope.entitySetName + '(' + $scope.entityId + ')';
-			$http.post($scope.clientURL + '/api/data/v8.1/annotations', annnotationdata)
-				.success(function (res)
+			$http(
+			{
+				url: $scope.clientURL + '/api/data/v8.1/annotations',
+				method: 'POST',
+				data: annnotationdata,
+				uploadEventHandlers: {
+					progress: function (e)
+					{
+						//						$scope.$apply(function ()
+						//						{
+						if (e.lengthComputable)
+						{
+							$scope.progress = Math.round(e.loaded * 100 / e.total)
+						}
+						else
+						{
+							$scope.progress = 'unable to compute'
+						}
+						//						})
+					}
+				}
+			}).success(function (res)
 			{
 				uploadedCount++;
-				$scope.progress = Math.round(uploadedCount * 100 / $scope.files.length);
+				//$scope.progress = Math.round(uploadedCount * 100 / $scope.files.length);
 				if (uploadedCount == $scope.files.length)
 				{
 					//	$window.alert('View uploaded files?');
 					$scope.files = [];
 					uploadedCount = 0;
 					$scope.progressVisible = false;
+					alert('Files Uploaded Successfully');
 					$scope.getImages();
 				}
 			})
@@ -201,16 +409,50 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		}
 	}
 
+	function uploadProgress(evt)
+	{
+		$scope.$apply(function ()
+		{
+			if (evt.lengthComputable)
+			{
+				$scope.progress = Math.round(evt.loaded * 100 / evt.total)
+			}
+			else
+			{
+				$scope.progress = 'unable to compute'
+			}
+		})
+	}
+
 	function dragEnterLeave(evt)
 	{
 		evt.stopPropagation();
 		evt.preventDefault();
 		$scope.$apply(function ()
 		{
-			$scope.dropClass = ''
+			if ($scope.isEditMode)
+			{
+				if ($scope.showconfirmbox())
+				{
+					$scope.isEditMode = false;
+					$scope.dropClass = '';
+				}
+			}
+			else if ($scope.files.length)
+			{
+				if ($scope.showconfirmbox())
+				{
+					$scope.files = [];
+					$scope.dropClass = '';
+				}
+			}
+			else
+			{
+				$scope.dropClass = '';
+			}
 		})
 	}
-	var dropbox ; 
+	var dropbox;
 	dropbox = document.getElementById("dropbox");
 	dropbox.addEventListener("dragenter", dragEnterLeave, false)
 	dropbox.addEventListener("dragleave", dragEnterLeave, false)
@@ -218,6 +460,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 	{
 		evt.stopPropagation();
 		evt.preventDefault();
+		$scope.isEditMode = false;
 		var ok = evt.dataTransfer && evt.dataTransfer.types //evt.dataTransfer.types.indexOf('Files') >= 0
 		var DragDataType = evt.dataTransfer.types;
 		if (ok)
@@ -229,7 +472,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 					$scope.$apply(function ()
 					{
 						//$scope.dropText = ok ? 'Drop files here...' : 'Only files are allowed!'
-						$scope.dropClass = ok ? 'over' : 'not-available'
+						$scope.dropClass = ok ? 'over' : 'not-available';
 					})
 				}
 			}
@@ -238,13 +481,30 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				$scope.$apply(function ()
 				{
 					//$scope.dropText = ok ? 'Drop files here...' : 'Only files are allowed!'
-					$scope.dropClass = ok ? 'over' : 'not-available'
+					if ($scope.isEditMode)
+					{
+						if ($scope.showconfirmbox())
+						{
+							$scope.isEditMode = false;
+							$scope.dropClass = ok ? 'over' : 'not-available';
+						}
+					}
+					else if ($scope.files.length)
+					{
+						if ($scope.showconfirmbox())
+						{
+							$scope.files = [];
+							$scope.dropClass = ok ? 'over' : 'not-available';
+						}
+					}
+					else
+					{
+						$scope.dropClass = ok ? 'over' : 'not-available';
+					}
 				})
 			}
 		}
 	}, false)
-
-	
 	dropbox.addEventListener("drop", function (evt)
 	{
 		console.log('drop evt:', JSON.parse(JSON.stringify(evt.dataTransfer)))
@@ -253,7 +513,26 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		$scope.$apply(function ()
 		{
 			//$scope.dropText = 'Drop files here...'
-			$scope.dropClass = ''
+			if ($scope.isEditMode)
+			{
+				if ($scope.showconfirmbox())
+				{
+					$scope.isEditMode = false;
+					$scope.dropClass = '';
+				}
+			}
+			else if ($scope.files.length)
+			{
+				if ($scope.showconfirmbox())
+				{
+					$scope.files = [];
+					$scope.dropClass = '';
+				}
+			}
+			else
+			{
+				$scope.dropClass = '';
+			}
 		})
 		var files = evt.dataTransfer.files;
 		console.log(files);
@@ -261,7 +540,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 		{
 			$scope.$apply(function ()
 			{
-				$scope.files = [];
+				//$scope.files = [];
 				var nonImageFiles = 0;
 				for (var i = 0; i < files.length; i++)
 				{
@@ -271,9 +550,7 @@ angular.module('APP', ['ngAnimate', 'ngTouch', 'naif.base64'])
 				if (nonImageFiles > 0) alert("Only image files are accepted")
 			})
 		}
-	}, false)
-	
-	}]).factory('httpRequestInterceptor', function ()
+	}, false)}]).factory('httpRequestInterceptor', function ()
 {
 	return {
 		request: function (config)

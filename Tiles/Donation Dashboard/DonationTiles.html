@@ -3,13 +3,13 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     
  
-      <link href="new_Fontawesome.css" rel="stylesheet" type="text/css">
+    <link href="new_Fontawesome.css" rel="stylesheet" type="text/css">
     <link href="new_Fontawesome.api.css" rel="stylesheet" type="text/css">
     <link href="new_bootstrap.min.css" rel="stylesheet">
     <script src="new_JQuery_1.11.3"></script>
     <script src="new_jquery.easing.js"></script>
-     <script src="new_Loadash.js"></script>   
- <script src="new_donationsTilesJS"></script>
+    <script src="new_Loadash.js"></script>   
+    <script src="new_donationsTilesJS"></script>
     <style>
         
         [class*="fontawesome-"]:before {
@@ -26,17 +26,18 @@
             position: relative;
             float: left;
             width: 100%;
-            height: 110px;
+            height: 100%;
            /* background: #A26FF9;
             margin: 0 10px 10px 0;*/
             padding-top: 10%;
+            padding-left: 10px;
             opacity: 0;
             text-align: center;
-            font-size: 2em;
-            color: #333;
+            font-size: 1.5em;
+            color: white;
             cursor: pointer;
-            border-style:groove;
-            border-radius:6%
+            /*border-style:groove;
+            border-radius:6%*/
         }
         
         .col-half-offset {
@@ -71,40 +72,55 @@
   }
 })
     </script>
-<meta></head>
+<meta><meta></head>
 
 <body style="word-wrap: break-word;width:98%" onload="getPaidDonationDetails()">
-    <div class="row" style="padding-top:1%">
+    <div class="row">
 
-        <div class="col-md-5 col-xs-5">
-            <div class="col-md-6 col-xs-6">
-                <div class="tile"><i></i><span>₹</span><span id="receiveddonation">                 
-                </span>
-                <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;color:green">Donation Received</div>
+        <div class="col-md-2">
+                <div class="tile" style="background-color: #e91e63">
+                    <div style="text-align: left;font-size: initial;">Donations Received </div>
+                    <div style="text-align: left; font-size: 23px; margin-bottom: 70px;" id="TotalDonationsThisYear"></div> 
+                    <div id="DonationThisyear" style="text-align: left;font-size: initial;"></div>  
+                </div>
+            </div>        
+            <div class="col-md-2">
+                <div class="tile" style="background-color: #6f1578">
+                    <div style="text-align: left;font-size: initial;">Donation Received</div>
+                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="receiveddonation"></div>
+                    <div id="receiveddonationthismonth" style="text-align: left;font-size: initial;"></div>                     
                 </div>
             </div>
-            <div class="col-md-6 col-xs-6">
-                <div class="tile"><i></i><span>₹</span><span id="expectedDonation"></span>  <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;color:orange">Expected Donation</div></div>
+            <div class="col-md-2">
+                <div class="tile" style="background-color: #728087"> 
+                    <div style="text-align: left;font-size: initial;">Expected Donation</div>
+                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="expectedDonation"></div>
+                   <div id="ExpectedDonationthismonth" style="text-align: left;font-size: initial;"></div>    
+                </div>
             </div>
-        </div>
-        <div class="col-md-2 col-xs-2">
-            <div class="tile "><i></i><span>₹</span><span id="averageDonation"></span>  <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;"> Average Donation</div></div>
-        </div>
-        <div class="col-md-5 col-xs-5">
-            <div class="col-md-6 col-xs-6">
-                <div class="tile "><span id="donationCount"></span> <i class="fa fa-users"></i> <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;"> Donation Count</div></div>
+            <div class="col-md-2">
+                <div class="tile" style="background-color: #0073c9">
+                    <div style="text-align: left;font-size: initial;"> Differed  Donations</div>
+                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="averageDonation">Canceled</div>  
+                     <div id="AverageDonationthisyear" style="text-align: left;font-size: initial;"></div>  
+                </div>
+            </div>
+        
+            <div class="col-md-2">
+                <div class="tile" style="background-color: #fe7128">
+                    <div style="text-align: left;font-size: initial;">Donations renewed </div>
+                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="donationCount"></div> 
+                    <div id="donationCountthismonth" style="text-align: left;font-size: initial;">Year</div>  
+                </div>
             </div>          
 
-            <div class="col-md-6 col-xs-6">
-                <div class="tile "><i></i><span id="totalDonors"></span>&nbsp;&nbsp;<img src="new_usericon"> <hr style="margin: 0; margin-bottom: 0;">
-                <div style="font-size: initial;color:blue">Total Donors</div></div>
+            <div class="col-md-2">
+                <div class="tile" style="background-color: #4caf50">
+                    <div style="text-align: left;font-size: initial;">Unpaid</div>
+                    <div style="text-align: left;font-size: 23px;margin-bottom: 70px;" id="totalDonors"></div>
+                    <div id="totalDonorsthismonth" style="text-align: left;font-size: initial;">Year</div>  
+                </div>
             </div>
-        </div>
+           
     </div>
-
-
 </body></html>

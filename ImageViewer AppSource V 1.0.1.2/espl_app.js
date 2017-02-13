@@ -39,39 +39,6 @@ $scope.getImages = function(){
 
 $scope.getImages();
 
-$scope.onLoad = function (e, reader, file, fileList, fileOjects, fileObj) {
-    $scope.base64text = fileObj.base64;
-    $scope.imageFileName = fileObj.filename;
-  };
-  
-  
-$scope.uploadImages = function(){
-     
-     
-     var annnotationdata = ({
-                'filename'  : $scope.imageFileName,
-                'documentbody' : $scope.base64text,
-                'objectid_new_beneficiary@odata.bind' : '/new_beneficiaries('+CommonService.recordId+')',
-                'mimetype' : 'image/png',
-                'notetext' : $scope.notetext
-            });
-
-     $http({
-               method: 'POST',
-               url: CommonService.serverURL + '/api/data/v8.1/annotations',
-               data: annnotationdata
-           }).then(
-       function(response){
-         // success callback
-         $scope.getImages();
-       }, 
-       function(response){
-         // failure callback
-       }
-    );
-               
-	
-};
 }]).factory('httpRequestInterceptor', function () {
         return {
             request: function (config) {

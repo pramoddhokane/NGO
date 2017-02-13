@@ -1,0 +1,51 @@
+<html><head>
+      <title>Entity Locations On Map </title>
+      <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+      <style type="text/css">
+        
+         .map {
+         position: relative;
+         width: 540px;
+         height: 540px;
+         }
+         .w3-navbar li.active {
+         color: #000;
+         background-color: #ccc;
+         }
+      </style>
+   
+      <script type="text/javascript" charset="UTF-8" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&amp;s=1"></script>
+     
+      <link rel="stylesheet" href="new_heatMapStylesheet">
+          <script src="new_JQuery_1.11.3"></script>
+<!--      <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.js"></script>-->
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=visualization"></script>
+      <script src="new_heatMapModule"></script>
+         <script src="new_heatMap.js"></script>
+    
+      <script src="new_Loadash.js"></script>
+      <script>
+         $(function(){
+         $('.w3-black').on('click', 'li', function() {
+              $('.w3-black li.active').removeClass('active');
+             $(this).addClass('active');
+          });
+          });
+      </script> 
+     <meta></head>
+   <body style="word-wrap: break-word;" onload="getMap('Constituents');">
+      <ul class="w3-navbar w3-black">
+         <li class="active"><a href="javascript:void(0)" id="Constituents" onclick="getMap('Constituents')">Constituents</a></li>
+<!--         <li><a href="javascript:void(0)" id="Donations" onclick="getDonationDetails()">Donations</a></li>-->
+         <li><a href="javascript:void(0)" id="Beneficiary" onclick="getBeneficiaryDetails()">Beneficiaries</a></li>         
+         <li><a href="javascript:void(0)" id="Donors" onclick="getDonorDetails()">Donors</a></li>
+         <li><a href="javascript:void(0)" id="Volunteers" onclick="getVolunteersDetails()">Volunteers</a></li>
+          <li><a href="javascript:void(0)" id="Donations" onclick="getMembershipDetails()">Members</a></li>
+         
+      </ul>
+      <div style="width: 100%; height: 80%; font-family: undefined;" class="map" id="map">
+      </div>
+      <div style="font-family: undefined;">
+      </div>
+   
+</body></html>

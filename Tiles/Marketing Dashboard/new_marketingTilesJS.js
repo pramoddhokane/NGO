@@ -37,14 +37,23 @@ function calculateCampaigns(res) {
         campdonation.record = camp + 1;
         document.getElementById("campaign" + campdonation.record).innerHTML = campdonation.name;
 
-        if (campdonation.fundRaised > 1000) {
-            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(parseFloat(campdonation.fundRaised) / 1000)).toLocaleString() + "K";
-        }
-        else {
-            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(campdonation.fundRaised * 100) / 100).toLocaleString();
+        if (campdonation.fundRaised < 1000) {
+            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(parseFloat(campdonation.fundRaised) * 100) / 100).toLocaleString() ;
         }
 
-        //  getConstituent(campdonation.record, allCampDonations[camp]);
+        if (campdonation.fundRaised > 1000 && campdonation.fundRaised < 99999) {
+            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(parseFloat(campdonation.fundRaised) / 1000 * 100) / 100).toLocaleString() + " " + "K";
+            // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
+        }
+        if (campdonation.fundRaised >= 100000 && campdonation.fundRaised < 9999999) {
+            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(parseFloat(campdonation.fundRaised) / 100000 * 100) / 100).toLocaleString() + " " + "L";
+            // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
+        }
+        if (campdonation.fundRaised >= 10000000) {
+            document.getElementById("donation" + campdonation.record).innerHTML = "₹" + (Math.round(parseFloat(campdonation.fundRaised) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
+            // document.getElementById("TotalDonationsThisYear").innerHTML =   donationAmount;
+        }
+
     }
     getConstituent(1, allCampDonations[0]);
     getConstituent(2, allCampDonations[1]);
@@ -67,7 +76,7 @@ function getConstituent(record, id) {
             //  allCampDonations.push(campdonation);
             //  console.log(allCampDonations);
             //     document.getElementById("campaign" + campdonation.record).innerHTML = campdonation.name;
-            console.log(record);
+
             document.getElementById("constituent" + record).innerHTML = campdonation.constituent;
 
             //     document.getElementById("donation" + campdonation.record).innerHTML = (campdonation.fundRaised / 1000).toLocaleString() + "K";
