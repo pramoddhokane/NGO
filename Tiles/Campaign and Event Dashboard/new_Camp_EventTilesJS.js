@@ -57,7 +57,7 @@ function getCurrentYearAccounts()
 	{
 		if (retrieveReq.readyState == 4 && retrieveReq.status == 200)
 		{
-//			console.log(JSON.parse(this.responseText).value);
+			console.log(JSON.parse(this.responseText).value);
 			/////////////////////////Current Month Count///////////////////////////
 			var currMonthBeneficiaries = _.filter(JSON.parse(this.responseText).value, function (o)
 			{
@@ -123,13 +123,13 @@ function getCurrentYearCampaignEventDonations()
 					if (o._new_campaign_value != null) return o
 				}
 			});
-//			console.log("campaignDonations" + campaignDonations);
+			console.log("campaignDonations" + campaignDonations);
 			var campaignCostTotal = _.reduce(campaignDonations, function (campaignCostTotal, entry)
 			{
 				if (entry.new_amount > 0) return campaignCostTotal + parseFloat(entry.new_amount);
 				else return campaignCostTotal;
 			}, 0);
-//			console.log("campaignCostTotal" + campaignCostTotal);
+			console.log("campaignCostTotal" + campaignCostTotal);
 			if (campaignCostTotal < 1000)
 			{
 				document.getElementById("CampaignDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(campaignCostTotal) * 100) / 100).toLocaleString();
@@ -154,13 +154,13 @@ function getCurrentYearCampaignEventDonations()
 					if (o._new_donatetocampevent_value != null) return o
 				}
 			});
-//			console.log("eventDonations" + eventDonations);
+			console.log("eventDonations" + eventDonations);
 			var eventDonationTotal = _.reduce(eventDonations, function (eventDonationTotal, entry)
 			{
 				if (entry.new_amount > 0) return eventDonationTotal + parseFloat(entry.new_amount);
 				else return eventDonationTotal;
 			}, 0);
-//			console.log("eventDonationTotal" + eventDonationTotal);
+			console.log("eventDonationTotal" + eventDonationTotal);
 			if (eventDonationTotal < 1000)
 			{
 				document.getElementById("EventDonationThisYear").innerHTML = "₹" + (Math.round(parseFloat(eventDonationTotal) * 100) / 100).toLocaleString();
@@ -210,7 +210,7 @@ function getCurrentYearCampaignCost()
 				var actualStartDate = new Date(o.new_actstart);
 				if (actualStartDate >= firstDay && actualStartDate <= lastDay) return o
 			});
-//			console.log("currMonthcampaigns" + currMonthcampaigns);
+			console.log("currMonthcampaigns" + currMonthcampaigns);
 			// Current Month total Campaign cost
 			var sum1 = _.reduce(currMonthcampaigns, function (sum1, entry)
 			{
@@ -288,7 +288,7 @@ function getCurrentYearEventCost()
 				var actualStartDate = new Date(o.new_actstart);
 				if (actualStartDate >= firstDay && actualStartDate <= lastDay) return o
 			});
-//			console.log("currMonthevents" + currMonthevents);
+			console.log("currMonthevents" + currMonthevents);
 			// Current Month total Event cost
 			var sum1 = _.reduce(currMonthevents, function (sum1, entry)
 			{
@@ -312,7 +312,7 @@ function getCurrentYearEventCost()
 				document.getElementById("eventCostThisMonth").innerHTML = "₹" + (Math.round(parseFloat(sum1) / 10000000 * 100) / 100).toLocaleString() + " " + "Cr";
 			}
 			// Current Year Event cost
-//			console.log(JSON.parse(this.responseText).value);
+			console.log(JSON.parse(this.responseText).value);
 			var sum = _.reduce(JSON.parse(this.responseText).value, function (sum, entry)
 			{
 				if (entry.new_totalcost > 0) return sum + parseFloat(entry.new_totalcost);

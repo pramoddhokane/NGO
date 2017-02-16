@@ -1,0 +1,149 @@
+		 [class*="fontawesome-"]:before {
+            font-family: 'FontAwesome', sans-serif;
+        }
+        
+        body {
+            background: #FFFFFF;
+            /*padding: 30px;*/
+            margin: 0;
+        }
+        
+        .tile {
+            position: relative;
+            float: left;
+            width: 100%;
+            height: 100%;
+           /* background: #A26FF9;
+            margin: 0 10px 10px 0;*/
+            padding-top: 10%;
+            padding-left: 10px;
+            opacity: 0;
+            text-align: center;
+            font-size: 1.5em;
+            color: white;
+            cursor: pointer;
+            /*border-style:groove;
+            border-radius:6%*/
+        }
+        
+        .col-half-offset {
+            margin-left: 6.166667%
+        }
+
+        .tile-header{
+            text-align: left;
+			font-size: 15px;
+			font-weight: 600;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			margin-bottom: 3px;
+        }
+		.amount-count{
+			text-align: left;
+            font-size: 32px;
+            font-weight: 300;    
+			font-family: Segoe\000020UI,Tahoma,Arial;	
+			letter-spacing: 1px;
+		}
+		.month-span{
+			text-align: left;
+			font-size: 14px;
+			font-weight: 500;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			letter-spacing: 0;
+			margin-top: 15px;
+			font-style: italic;
+			bottom: 8px;
+                        position: absolute;
+		}
+		.month-span1{
+			text-align: left;
+			font-size: 14px;
+			font-weight: 500;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			letter-spacing: 0;
+			margin-top: 15px;
+			font-style: italic;
+			bottom: 8px;
+            
+		}
+		.sub-amount-count1{
+			font-size: 22px;
+			margin-bottom: 10px;
+		}
+		.sub-amount-count2{
+			font-size: 22px;
+		}
+		.tile{
+			-webkit-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			-moz-box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			box-shadow: 0px -1px 25px 0px rgba(168,168,168,1)!important;
+			padding-top: 6%!important;
+		}
+        
+        
+       		 .data {
+			text-align: left;
+			font-size: 22px;
+			font-weight: bold;
+		}
+
+		.month {
+			text-align: left;
+			font-size: 16px;
+			
+		}
+
+		.headline {
+			text-align: left;
+			font-size: 22px;
+			font-weight: 200;
+		}
+		.amount-month-box{
+			margin-bottom: 15px;
+			margin-top: 6px;
+		}
+		.amount-month-box .amount-count{
+			font-size: 22px;
+			margin-bottom: -19px!important;
+		}
+		
+		.event-name{
+			text-align: left;
+			font-size: 14px;
+			font-weight: 400;
+			font-family: Segoe\000020UI,Tahoma,Arial;
+			letter-spacing: 0;
+			margin-top: 12px;
+		}
+		.amount-count1 {
+		margin-top: 25px;
+    text-align: left;
+    font-size: 32px;
+    font-weight: 300;
+    font-family: Segoe\000020UI,Tahoma,Arial;
+    letter-spacing: 1px;
+}
+
+.growth-percent-box{
+	float: right;   
+    bottom: 0;
+	margin-top: 50px;
+	margin-right: 8px;
+  	font-size: 13px;
+       width: 65px;
+}
+
+
+.growth-percent-subBox{
+	font-size: 15px;
+	margin-left: 0px;
+	font-family: Segoe\000020UI,Tahoma,Arial;
+}
+.growth-percent-boxOther{
+	float: right;   
+    bottom: 0;
+	margin-right: 8px;
+  	font-size: 13px;
+       width: 65px;
+	margin-top:70px;
+}
