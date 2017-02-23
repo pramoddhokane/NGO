@@ -3,9 +3,7 @@ angular.module('plApp', [])
     .controller('ngoProductLicesnseController', ['ngoPLService', 'commonPLService', '$filter', function (ngoPLService, commonPLService, $filter) {
         var vm = this;
         var secretKey = 'espl@123';
-        var licenseDetails = {};
-        var gracePeriod = 25;
-        var licenses = 32;
+        var licenseDetails = {};        
         var productLicense;
         vm.isRegistered = false;
         vm.productKey = null;
