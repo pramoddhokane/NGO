@@ -4,41 +4,30 @@ angular.module('fileUpload', [])
     .controller('upload', ['$scope', function ($scope) {
         var imageBase64 = window.parent.Xrm.Page.getAttribute("new_imagebasefile").getValue();
         if (imageBase64) {
-            $scope.fileinput = imageBase64;
             $scope.filepreview = imageBase64;
         }
-        $scope.$watch('file', function (newfile, oldfile) {
-            if (angular.equals(newfile, oldfile)) {
-                return;
-            }
-            if (newfile.size <= 5242880) {
-                var reader = new FileReader();
-                reader.readAsDataURL(newfile);
-                reader.onload = function () {
-                    window.parent.Xrm.Page.getAttribute("new_imagebasefile").setValue(reader.result);
-                    //console.log(reader.result);
-                };
-            }
-        });
 
-    }])
-    .directive('fileinput', [function () {
-        return {
-            scope: {
-                fileinput: '=',
-                filepreview: '='
-            },
-            link: function (scope, element, attributes) {
-                element.bind('change', function (changeEvent) {
-                    scope.fileinput = changeEvent.target.files[0];
-                    var reader = new FileReader();
-                    reader.onload = function (loadEvent) {
-                        scope.$apply(function () {
-                            scope.filepreview = loadEvent.target.result;
-                        });
-                    }
-                    reader.readAsDataURL(scope.fileinput);
-                });
+        $scope.fileVerify = function (event) {
+            var image = event.files[0];
+            var fileExt = image.name.match(/\.(.+)$/)[1];
+            if (angular.lowercase(fileExt) === 'jpg' || angular.lowercase(fileExt) === 'jpeg' || angular.lowercase(fileExt) === 'png') {
+                if (image.size <= 1232896) {
+                    var fr = new FileReader;
+                    fr.onload = function () {
+                        $scope.filepreview = this.result;
+                        window.parent.Xrm.Page.getAttribute("new_imagebasefile").setValue(this.result);
+                        $scope.$apply();
+                    };
+                    fr.readAsDataURL(image);
+                }
+                else {
+                    alert('Image Size shoulb be less than 1 MB');
+                    $scope.$apply();
+                }
             }
-        }
+            else {
+                alert('Invalid Image File');
+                $scope.$apply();
+            }
+        };
     }]);
